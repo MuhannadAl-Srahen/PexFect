@@ -5,5 +5,5 @@ export const Route = createFileRoute('/challenges/')({
 })
 
 function RouteComponent() {
-  return <div>Hello "/challenges/"!</div>
+  return <div>This is a simple test for the challenges page</div>
 }
