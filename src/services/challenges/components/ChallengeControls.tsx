@@ -1,14 +1,6 @@
 import { ChallengeSearch } from './ChallengeSearch'
 import { ChallengeFilters } from './ChallengeFilters'
-
-type ChallengeControlsProps = {
-  searchTerm: string
-  selectedDifficulty: string
-  selectedLanguage: string
-  onSearchChange: (value: string) => void
-  onDifficultyChange: (value: string) => void
-  onLanguageChange: (value: string) => void
-}
+import type { ChallengeControlsProps } from '../types'
 
 export function ChallengeControls({
   searchTerm,
@@ -19,7 +11,7 @@ export function ChallengeControls({
   onLanguageChange,
 }: ChallengeControlsProps) {
   return (
-    <div className='flex items-center justify-between flex-wrap lg:flex-row gap-4 mb-8'>
+    <div className='flex items-center justify-between flex-wrap lg:flex-row gap-4 mb-4'>
       <ChallengeSearch
         searchTerm={searchTerm}
         onSearchChange={onSearchChange}

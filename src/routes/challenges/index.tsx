@@ -7,6 +7,8 @@ import {
   ChallengeControls,
   ViewModeToggle,
   ChallengeCount,
+  ChallengeView,
+  EmptyState,
 } from '@/services/challenges'
 
 export const Route = createFileRoute('/challenges/')({
@@ -14,6 +16,7 @@ export const Route = createFileRoute('/challenges/')({
 })
 
 function RouteComponent() {
+  const [savedChallenges, setSavedChallenges] = useState<number[]>([])
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
 
   const {
@@ -24,12 +27,21 @@ function RouteComponent() {
     setSearchTerm,
     setSelectedDifficulty,
     setSelectedLanguage,
+    clearFilters,
   } = useChallengeFilters(challenges)
+
+  const toggleSaveChallenge = (challengeId: number) => {
+    setSavedChallenges((prev) =>
+      prev.includes(challengeId)
+        ? prev.filter((id) => id !== challengeId)
+        : [...prev, challengeId]
+    )
+  }
 
   return (
     <div className='bg-background'>
       <div className='container mx-auto px-4 py-8'>
-        <div className='max-w-7xl mx-auto'>
+        <div className='max-w-6xl mx-auto'>
           <ChallengePageHeader />
 
           <ChallengeControls
@@ -46,6 +58,17 @@ function RouteComponent() {
             filteredCount={filteredChallenges.length}
             totalCount={challenges.length}
           />
+
+          {filteredChallenges.length === 0 ? (
+            <EmptyState onClearFilters={clearFilters} />
+          ) : (
+            <ChallengeView
+              challenges={filteredChallenges}
+              savedChallenges={savedChallenges}
+              onToggleSave={toggleSaveChallenge}
+              viewMode={viewMode}
+            />
+          )}
         </div>
       </div>
     </div>

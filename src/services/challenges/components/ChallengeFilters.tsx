@@ -5,13 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-
-interface ChallengeFiltersProps {
-  selectedDifficulty: string
-  selectedLanguage: string
-  onDifficultyChange: (value: string) => void
-  onLanguageChange: (value: string) => void
-}
+import type { ChallengeFiltersProps } from '../types'
 
 export function ChallengeFilters({
   selectedDifficulty,
@@ -19,7 +13,7 @@ export function ChallengeFilters({
   onDifficultyChange,
   onLanguageChange,
 }: ChallengeFiltersProps) {
-  const tailwindClasses = 'w-44 !h-12 bg-card border-border shadow-sm'
+  const tailwindClasses = '!h-12 w-36 bg-card border-b border-shadow-sm'
 
   return (
     <div className='flex gap-2'>

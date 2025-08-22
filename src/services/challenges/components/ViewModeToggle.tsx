@@ -10,7 +10,7 @@ export function ViewModeToggle({
   onViewModeChange,
 }: ViewModeToggleProps) {
   return (
-    <div className='flex gap-2 mb-6'>
+    <div className='flex gap-2 mb-8'>
       <Button
         variant={viewMode === 'grid' ? 'default' : 'ghost'}
         onClick={() => onViewModeChange('grid')}

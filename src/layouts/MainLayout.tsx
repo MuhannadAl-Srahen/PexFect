@@ -8,14 +8,10 @@ type Props = {
 
 export function MainLayout({ children }: Props) {
   return (
-    <div className='flex min-h-screen flex-col'>
+    <div className='min-h-screen flex flex-col overflow-x-hidden'>
       <Navbar />
-      <div className='flex flex-1'>
-        <main className='flex-1 p-4'>{children}</main>
-      </div>
+      <main className='flex-1 w-full max-w-full'>{children}</main>
       <Footer />
     </div>
   )
 }
-
-// ;<div className='min-h-screen bg-background text-foreground'>{children}</div>

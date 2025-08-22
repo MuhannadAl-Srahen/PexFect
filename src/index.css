@@ -181,10 +181,41 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    border-color: var(--color-border);
+    outline-color: color-mix(in srgb, var(--color-ring) 50%, transparent);
+  }
+
+  html {
+    overflow-x: hidden;
+    /* Prevent layout shift when scroll-lock is applied */
+    scrollbar-gutter: stable;
   }
 
   body {
-    @apply bg-background text-foreground;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    overflow-x: hidden;
+    /* Prevent layout shift when scroll-lock is applied */
+    scrollbar-gutter: stable;
+  }
+
+  /* Prevent content shift when modal/dropdown scroll-lock is applied */
+  body[data-scroll-locked] {
+    margin-right: 0 !important;
+  }
+
+  /* Ensure root container maintains consistent width */
+  #root {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* Disable transitions during theme switch for consistency */
+  .disable-theme-transitions,
+  .disable-theme-transitions * {
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -o-transition: none !important;
+    transition: none !important;
   }
 }
