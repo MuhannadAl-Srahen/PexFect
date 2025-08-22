@@ -19,7 +19,7 @@ export function ChallengeControls({
   onLanguageChange,
 }: ChallengeControlsProps) {
   return (
-    <div className='flex items-center justify-around flex-wrap lg:flex-row gap-4 mb-8'>
+    <div className='flex items-center justify-between flex-wrap lg:flex-row gap-4 mb-8'>
       <ChallengeSearch
         searchTerm={searchTerm}
         onSearchChange={onSearchChange}
