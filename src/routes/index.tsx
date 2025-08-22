@@ -8,6 +8,7 @@ function Index() {
   return (
     <div className='p-2'>
       <h3>Welcome Home!</h3>
+      <p>This is a small test</p>
     </div>
   )
 }
