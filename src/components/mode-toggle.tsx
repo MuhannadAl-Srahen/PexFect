@@ -11,6 +11,26 @@ import {
 export function ModeToggle() {
   const { setTheme } = useTheme()
 
+  function withNoTransitions<T extends unknown[]>(fn: (...args: T) => void) {
+    return (...args: T) => {
+      const root = document.documentElement
+      // Attach a class that disables transitions globally
+      root.classList.add('disable-theme-transitions')
+      // Force a reflow so the class takes effect immediately
+      void root.offsetHeight
+      try {
+        fn(...args)
+      } finally {
+        // Let the DOM update, then remove the class on next tick
+        requestAnimationFrame(() => {
+          root.classList.remove('disable-theme-transitions')
+        })
+      }
+    }
+  }
+
+  const setThemeNoTransition = withNoTransitions(setTheme)
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -20,13 +40,13 @@ export function ModeToggle() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end'>
-        <DropdownMenuItem onClick={() => setTheme('light')}>
+        <DropdownMenuItem onClick={() => setThemeNoTransition('light')}>
           Light
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('dark')}>
+        <DropdownMenuItem onClick={() => setThemeNoTransition('dark')}>
           Dark
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('system')}>
+        <DropdownMenuItem onClick={() => setThemeNoTransition('system')}>
           System
         </DropdownMenuItem>
       </DropdownMenuContent>

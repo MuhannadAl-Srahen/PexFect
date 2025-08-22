@@ -2,16 +2,14 @@ import { Link } from '@tanstack/react-router'
 import { ModeToggle } from '@/components/mode-toggle'
 
 const navLinks = [
-  { to: '/', label: 'Home' },
   { to: '/challenges', label: 'Challenges' },
   { to: '/roadmap', label: 'Roadmap' },
   { to: '/resources', label: 'Resources' },
-  { to: '/progress', label: 'Progress' },
 ]
 
 export function Navbar() {
   return (
-    <header className='sticky top-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:border-gray-800 dark:bg-neutral-900/95 dark:supports-[backdrop-filter]:bg-neutral-900/60'>
+    <header className='sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
       <nav className='container mx-auto px-6 py-4'>
         <div className='flex items-center justify-between'>
           <div className='flex items-center gap-8'>
@@ -19,7 +17,7 @@ export function Navbar() {
               <Link
                 key={to}
                 to={to}
-                className='relative text-sm font-medium text-gray-600 transition-all duration-200 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100 [&.active]:text-primary [&.active]:font-semibold after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all after:duration-200 hover:after:w-full [&.active]:after:w-full'
+                className='relative text-sm font-medium text-muted-foreground transition-all duration-200 hover:text-foreground [&.active]:text-primary [&.active]:font-semibold after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all after:duration-200 hover:after:w-full [&.active]:after:w-full'
               >
                 {label}
               </Link>
