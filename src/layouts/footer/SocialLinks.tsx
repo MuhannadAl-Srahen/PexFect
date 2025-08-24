@@ -7,7 +7,7 @@ const socialLinks = [
     href: 'https://github.com/pexfect',
     icon: Github,
     color:
-      'hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-800 dark:hover:text-slate-200',
+      'hover:bg-slate-300 dark:hover:bg-slate-800 hover:text-slate-800 dark:hover:text-slate-200',
   },
   {
     name: 'LinkedIn',

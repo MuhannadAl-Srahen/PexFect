@@ -7,7 +7,7 @@ export const FooterLogo = () => {
       <div className='relative bg-gradient-to-br from-primary/10 to-secondary/10 p-2 rounded-xl transition-all duration-300 group-hover:scale-110'>
         <Code2 className='h-6 w-6 text-primary transition-all duration-300 group-hover:rotate-12' />
       </div>
-      <span className='text-2xl font-bold text-primary transition-all duration-300 group-hover:text-primary/80'>
+      <span className='text-3xl font-bold text-primary transition-all duration-300 group-hover:text-primary/80'>
         PexFect
       </span>
     </Link>
