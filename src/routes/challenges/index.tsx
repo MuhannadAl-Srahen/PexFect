@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
+import { PageLayout } from '@/layouts/PageLayout'
 import {
   challenges,
   useChallengeFilters,
@@ -39,38 +40,34 @@ function RouteComponent() {
   }
 
   return (
-    <div className='bg-background'>
-      <div className='container mx-auto px-4 py-8'>
-        <div className='max-w-6xl mx-auto'>
-          <ChallengePageHeader />
+    <PageLayout maxWidth='6xl'>
+      <ChallengePageHeader />
 
-          <ChallengeControls
-            searchTerm={searchTerm}
-            selectedDifficulty={selectedDifficulty}
-            selectedLanguage={selectedLanguage}
-            onSearchChange={setSearchTerm}
-            onDifficultyChange={setSelectedDifficulty}
-            onLanguageChange={setSelectedLanguage}
-          />
+      <ChallengeControls
+        searchTerm={searchTerm}
+        selectedDifficulty={selectedDifficulty}
+        selectedLanguage={selectedLanguage}
+        onSearchChange={setSearchTerm}
+        onDifficultyChange={setSelectedDifficulty}
+        onLanguageChange={setSelectedLanguage}
+      />
 
-          <ViewModeToggle viewMode={viewMode} onViewModeChange={setViewMode} />
-          <ChallengeCount
-            filteredCount={filteredChallenges.length}
-            totalCount={challenges.length}
-          />
+      <ViewModeToggle viewMode={viewMode} onViewModeChange={setViewMode} />
+      <ChallengeCount
+        filteredCount={filteredChallenges.length}
+        totalCount={challenges.length}
+      />
 
-          {filteredChallenges.length === 0 ? (
-            <EmptyState onClearFilters={clearFilters} />
-          ) : (
-            <ChallengeView
-              challenges={filteredChallenges}
-              savedChallenges={savedChallenges}
-              onToggleSave={toggleSaveChallenge}
-              viewMode={viewMode}
-            />
-          )}
-        </div>
-      </div>
-    </div>
+      {filteredChallenges.length === 0 ? (
+        <EmptyState onClearFilters={clearFilters} />
+      ) : (
+        <ChallengeView
+          challenges={filteredChallenges}
+          savedChallenges={savedChallenges}
+          onToggleSave={toggleSaveChallenge}
+          viewMode={viewMode}
+        />
+      )}
+    </PageLayout>
   )
 }

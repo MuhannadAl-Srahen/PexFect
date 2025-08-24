@@ -1,31 +1,61 @@
-import { Link } from '@tanstack/react-router'
-import { ModeToggle } from '@/components/mode-toggle'
+import { useNavbarLogic } from './navbar/useNavbarLogic'
+import { NavbarLogo } from './navbar/NavbarLogo'
+import { DesktopNav } from './navbar/DesktopNav'
+import { ThemeToggle } from './navbar/ThemeToggle'
+import { UserActions } from './navbar/UserActions'
+import { MobileMenuToggle } from './navbar/MobileMenuToggle'
+import { MobileMenu } from './navbar/MobileMenu'
 
-const navLinks = [
-  { to: '/challenges', label: 'Challenges' },
-  { to: '/roadmap', label: 'Roadmap' },
-  { to: '/resources', label: 'Resources' },
-]
+export default function Navbar() {
+  const {
+    pathname,
+    theme,
+    isLoggedIn,
+    isMobileMenuOpen,
+    navbarClasses,
+    toggleTheme,
+    closeMobileMenu,
+    handleLogout,
+    toggleMobileMenu,
+  } = useNavbarLogic()
 
-export function Navbar() {
   return (
-    <header className='sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
-      <nav className='container mx-auto px-6 py-4'>
-        <div className='flex items-center justify-between'>
-          <div className='flex items-center gap-8'>
-            {navLinks.map(({ to, label }) => (
-              <Link
-                key={to}
-                to={to}
-                className='relative text-sm font-medium text-muted-foreground transition-all duration-200 hover:text-foreground [&.active]:text-primary [&.active]:font-semibold after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all after:duration-200 hover:after:w-full [&.active]:after:w-full'
-              >
-                {label}
-              </Link>
-            ))}
+    <nav className={navbarClasses}>
+      <div className='mx-auto relative'>
+        <div className='flex items-center justify-between h-16 sm:h-20 px-4 max-w-7xl mx-auto'>
+          {/* Logo */}
+          <NavbarLogo />
+
+          {/* Desktop Navigation */}
+          <DesktopNav pathname={pathname} />
+
+          {/* Actions */}
+          <div className='flex items-center gap-3'>
+            {/* Theme Toggle */}
+            <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
+
+            {/* User Actions */}
+            <UserActions isLoggedIn={isLoggedIn} onLogout={handleLogout} />
+
+            {/* Mobile Menu Toggle */}
+            <MobileMenuToggle
+              isMobileMenuOpen={isMobileMenuOpen}
+              onToggle={toggleMobileMenu}
+            />
           </div>
-          <ModeToggle />
         </div>
-      </nav>
-    </header>
+
+        {/* Mobile Menu */}
+        <MobileMenu
+          isOpen={isMobileMenuOpen}
+          pathname={pathname}
+          theme={theme}
+          isLoggedIn={isLoggedIn}
+          onClose={closeMobileMenu}
+          onToggleTheme={toggleTheme}
+          onLogout={handleLogout}
+        />
+      </div>
+    </nav>
   )
 }
