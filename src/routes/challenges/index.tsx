@@ -1,8 +1,7 @@
-import { useState } from 'react'
-import { createFileRoute } from '@tanstack/react-router'
-import { PageLayout } from '@/layouts/PageLayout'
+import { useState } from 'react';
+import { createFileRoute } from '@tanstack/react-router';
+import { PageLayout } from '@/layouts/PageLayout';
 import {
-  challenges,
   useChallengeFilters,
   ChallengePageHeader,
   ChallengeControls,
@@ -10,15 +9,18 @@ import {
   ChallengeCount,
   ChallengeView,
   EmptyState,
-} from '@/services/challenges'
+  useChallenges,
+} from '@/services/challenges';
+
 
 export const Route = createFileRoute('/challenges/')({
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
-  const [savedChallenges, setSavedChallenges] = useState<number[]>([])
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const { challenges, loading, toggleSave } = useChallenges();
+  const [savedChallenges, setSavedChallenges] = useState<number[]>([]);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   const {
     searchTerm,
@@ -29,18 +31,22 @@ function RouteComponent() {
     setSelectedDifficulty,
     setSelectedLanguage,
     clearFilters,
-  } = useChallengeFilters(challenges)
+  } = useChallengeFilters(challenges);
 
   const toggleSaveChallenge = (challengeId: number) => {
     setSavedChallenges((prev) =>
       prev.includes(challengeId)
         ? prev.filter((id) => id !== challengeId)
         : [...prev, challengeId]
-    )
+    );
+  };
+
+  if (loading) {
+    return <p className="text-center text-gray-500">Loading challenges...</p>;
   }
 
   return (
-    <PageLayout maxWidth='6xl'>
+    <PageLayout maxWidth="6xl">
       <ChallengePageHeader />
 
       <ChallengeControls
@@ -69,5 +75,5 @@ function RouteComponent() {
         />
       )}
     </PageLayout>
-  )
+  );
 }

@@ -4,7 +4,7 @@ interface Challenge {
   id: number
   title: string
   difficulty: string
-  tags: string[]
+  technologies: string[]
   description: string
   estimatedTime: string
   submissions: number
@@ -25,7 +25,7 @@ export function useChallengeFilters(challenges: Challenge[]) {
         challenge.difficulty === selectedDifficulty
       const matchesLanguage =
         selectedLanguage === 'all' ||
-        challenge.tags.some((tag) =>
+        challenge.technologies.some((tag) =>
           tag.toLowerCase().includes(selectedLanguage.toLowerCase())
         )
 

@@ -1,64 +1,46 @@
-export const challenges = [
-  {
-    id: 1,
-    title: 'Responsive Navigation Bar',
-    difficulty: 'Beginner',
-    tags: ['responsive', 'navigation', 'flexbox'],
-    description:
-      'Create a mobile-friendly navigation component with dropdown menus',
-    image: '/placeholder.svg?height=200&width=300',
-    estimatedTime: '30 min',
-    submissions: 1250,
-  },
-  {
-    id: 2,
-    title: 'Todo App with Local Storage',
-    difficulty: 'Intermediate',
-    tags: ['dom', 'localStorage', 'events'],
-    description: 'Build a fully functional todo application with persistence',
-    image: '/placeholder.svg?height=200&width=300',
-    estimatedTime: '2 hours',
-    submissions: 890,
-  },
-  {
-    id: 3,
-    title: 'React Component Library',
-    difficulty: 'Advanced',
-    tags: ['components', 'props', 'typescript'],
-    description: 'Design and implement reusable React components',
-    image: '/placeholder.svg?height=200&width=300',
-    estimatedTime: '4 hours',
-    submissions: 456,
-  },
-  {
-    id: 4,
-    title: 'E-commerce Product Card',
-    difficulty: 'Beginner',
-    tags: ['HTML', 'CSS', 'Responsive'],
-    description:
-      'Create a modern product card with hover effects and responsive design',
-    image: '/placeholder.svg?height=200&width=300',
-    estimatedTime: '2-3 hours',
-    submissions: 1234,
-  },
-  {
-    id: 5,
-    title: 'Interactive Dashboard',
-    difficulty: 'Intermediate',
-    tags: ['React', 'JavaScript', 'Charts'],
-    description: 'Build a data visualization dashboard with interactive charts',
-    image: '/placeholder.svg?height=200&width=300',
-    estimatedTime: '4-6 hours',
-    submissions: 567,
-  },
-  {
-    id: 6,
-    title: 'Social Media Feed',
-    difficulty: 'Advanced',
-    tags: ['React', 'TypeScript', 'API'],
-    description: 'Create a dynamic social media feed with infinite scroll',
-    image: '/placeholder.svg?height=200&width=300',
-    estimatedTime: '6-8 hours',
-    submissions: 234,
-  },
-]
+import { useEffect, useState } from "react"
+import { fetchChallenges } from "./api"
+import { supabase } from "@/lib/supabase"
+import type { Challenge } from "./types"
+
+export function useChallenges() {
+  const [challenges, setChallenges] = useState<Challenge[]>([])
+  const [savedChallenges, setSavedChallenges] = useState<number[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const data = await fetchChallenges()
+        setChallenges(data)
+        setSavedChallenges(data.filter((c: any) => c.isSaved).map(c => c.id))
+      } catch (err) {
+        console.error(err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    load()
+  }, [])
+
+  async function toggleSave(id: number) {
+    const isCurrentlySaved = savedChallenges.includes(id)
+    setSavedChallenges(prev =>
+      isCurrentlySaved ? prev.filter(cid => cid !== id) : [...prev, id]
+    )
+
+    try {
+      const { error } = await supabase
+        .from("challenges")
+        .update({ is_saved: !isCurrentlySaved })
+        .eq("id", id)
+        .select()
+
+      if (error) throw error
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  return { challenges, savedChallenges, loading, toggleSave }
+}
