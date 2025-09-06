@@ -22,15 +22,8 @@ import { Route as ChallengesIndexRouteImport } from './routes/challenges/index'
 import { Route as RoadmapIntermediateRouteImport } from './routes/roadmap/intermediate'
 import { Route as RoadmapBeginnerRouteImport } from './routes/roadmap/beginner'
 import { Route as RoadmapAdvancedRouteImport } from './routes/roadmap/advanced'
-import { Route as ResourcesVideosRouteImport } from './routes/resources/videos'
-import { Route as ResourcesToolsRouteImport } from './routes/resources/tools'
-import { Route as ResourcesDocumentationRouteImport } from './routes/resources/documentation'
-import { Route as FeedbackChar91submissionIdChar93RouteImport } from './routes/feedback/[submissionId]'
-import { Route as ChallengesChar91idChar93IndexRouteImport } from './routes/challenges/[id]/index'
-import { Route as ChallengesChar91idChar93SubmitRouteImport } from './routes/challenges/[id]/submit'
-import { Route as ChallengesChar91idChar93SpecificationRouteImport } from './routes/challenges/[id]/specification'
-import { Route as ChallengesChar91idChar93ResourcesRouteImport } from './routes/challenges/[id]/resources'
-import { Route as ChallengesChar91idChar93DesignRouteImport } from './routes/challenges/[id]/design'
+import { Route as FeedbackSubmissionIdRouteImport } from './routes/feedback/$submissionId'
+import { Route as ChallengesIdIndexRouteImport } from './routes/challenges/$id/index'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -97,57 +90,16 @@ const RoadmapAdvancedRoute = RoadmapAdvancedRouteImport.update({
   path: '/roadmap/advanced',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ResourcesVideosRoute = ResourcesVideosRouteImport.update({
-  id: '/resources/videos',
-  path: '/resources/videos',
+const FeedbackSubmissionIdRoute = FeedbackSubmissionIdRouteImport.update({
+  id: '/feedback/$submissionId',
+  path: '/feedback/$submissionId',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ResourcesToolsRoute = ResourcesToolsRouteImport.update({
-  id: '/resources/tools',
-  path: '/resources/tools',
+const ChallengesIdIndexRoute = ChallengesIdIndexRouteImport.update({
+  id: '/challenges/$id/',
+  path: '/challenges/$id/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ResourcesDocumentationRoute = ResourcesDocumentationRouteImport.update({
-  id: '/resources/documentation',
-  path: '/resources/documentation',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FeedbackChar91submissionIdChar93Route =
-  FeedbackChar91submissionIdChar93RouteImport.update({
-    id: '/feedback/[submissionId]',
-    path: '/feedback/[submissionId]',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ChallengesChar91idChar93IndexRoute =
-  ChallengesChar91idChar93IndexRouteImport.update({
-    id: '/challenges/[id]/',
-    path: '/challenges/[id]/',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ChallengesChar91idChar93SubmitRoute =
-  ChallengesChar91idChar93SubmitRouteImport.update({
-    id: '/challenges/[id]/submit',
-    path: '/challenges/[id]/submit',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ChallengesChar91idChar93SpecificationRoute =
-  ChallengesChar91idChar93SpecificationRouteImport.update({
-    id: '/challenges/[id]/specification',
-    path: '/challenges/[id]/specification',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ChallengesChar91idChar93ResourcesRoute =
-  ChallengesChar91idChar93ResourcesRouteImport.update({
-    id: '/challenges/[id]/resources',
-    path: '/challenges/[id]/resources',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ChallengesChar91idChar93DesignRoute =
-  ChallengesChar91idChar93DesignRouteImport.update({
-    id: '/challenges/[id]/design',
-    path: '/challenges/[id]/design',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -156,10 +108,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
   '/signup': typeof SignupRoute
-  '/feedback/[submissionId]': typeof FeedbackChar91submissionIdChar93Route
-  '/resources/documentation': typeof ResourcesDocumentationRoute
-  '/resources/tools': typeof ResourcesToolsRoute
-  '/resources/videos': typeof ResourcesVideosRoute
+  '/feedback/$submissionId': typeof FeedbackSubmissionIdRoute
   '/roadmap/advanced': typeof RoadmapAdvancedRoute
   '/roadmap/beginner': typeof RoadmapBeginnerRoute
   '/roadmap/intermediate': typeof RoadmapIntermediateRoute
@@ -167,11 +116,7 @@ export interface FileRoutesByFullPath {
   '/resources': typeof ResourcesIndexRoute
   '/roadmap': typeof RoadmapIndexRoute
   '/settings': typeof SettingsIndexRoute
-  '/challenges/[id]/design': typeof ChallengesChar91idChar93DesignRoute
-  '/challenges/[id]/resources': typeof ChallengesChar91idChar93ResourcesRoute
-  '/challenges/[id]/specification': typeof ChallengesChar91idChar93SpecificationRoute
-  '/challenges/[id]/submit': typeof ChallengesChar91idChar93SubmitRoute
-  '/challenges/[id]': typeof ChallengesChar91idChar93IndexRoute
+  '/challenges/$id': typeof ChallengesIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -180,10 +125,7 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
   '/signup': typeof SignupRoute
-  '/feedback/[submissionId]': typeof FeedbackChar91submissionIdChar93Route
-  '/resources/documentation': typeof ResourcesDocumentationRoute
-  '/resources/tools': typeof ResourcesToolsRoute
-  '/resources/videos': typeof ResourcesVideosRoute
+  '/feedback/$submissionId': typeof FeedbackSubmissionIdRoute
   '/roadmap/advanced': typeof RoadmapAdvancedRoute
   '/roadmap/beginner': typeof RoadmapBeginnerRoute
   '/roadmap/intermediate': typeof RoadmapIntermediateRoute
@@ -191,11 +133,7 @@ export interface FileRoutesByTo {
   '/resources': typeof ResourcesIndexRoute
   '/roadmap': typeof RoadmapIndexRoute
   '/settings': typeof SettingsIndexRoute
-  '/challenges/[id]/design': typeof ChallengesChar91idChar93DesignRoute
-  '/challenges/[id]/resources': typeof ChallengesChar91idChar93ResourcesRoute
-  '/challenges/[id]/specification': typeof ChallengesChar91idChar93SpecificationRoute
-  '/challenges/[id]/submit': typeof ChallengesChar91idChar93SubmitRoute
-  '/challenges/[id]': typeof ChallengesChar91idChar93IndexRoute
+  '/challenges/$id': typeof ChallengesIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -205,10 +143,7 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
   '/signup': typeof SignupRoute
-  '/feedback/[submissionId]': typeof FeedbackChar91submissionIdChar93Route
-  '/resources/documentation': typeof ResourcesDocumentationRoute
-  '/resources/tools': typeof ResourcesToolsRoute
-  '/resources/videos': typeof ResourcesVideosRoute
+  '/feedback/$submissionId': typeof FeedbackSubmissionIdRoute
   '/roadmap/advanced': typeof RoadmapAdvancedRoute
   '/roadmap/beginner': typeof RoadmapBeginnerRoute
   '/roadmap/intermediate': typeof RoadmapIntermediateRoute
@@ -216,11 +151,7 @@ export interface FileRoutesById {
   '/resources/': typeof ResourcesIndexRoute
   '/roadmap/': typeof RoadmapIndexRoute
   '/settings/': typeof SettingsIndexRoute
-  '/challenges/[id]/design': typeof ChallengesChar91idChar93DesignRoute
-  '/challenges/[id]/resources': typeof ChallengesChar91idChar93ResourcesRoute
-  '/challenges/[id]/specification': typeof ChallengesChar91idChar93SpecificationRoute
-  '/challenges/[id]/submit': typeof ChallengesChar91idChar93SubmitRoute
-  '/challenges/[id]/': typeof ChallengesChar91idChar93IndexRoute
+  '/challenges/$id/': typeof ChallengesIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -231,10 +162,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/progress'
     | '/signup'
-    | '/feedback/[submissionId]'
-    | '/resources/documentation'
-    | '/resources/tools'
-    | '/resources/videos'
+    | '/feedback/$submissionId'
     | '/roadmap/advanced'
     | '/roadmap/beginner'
     | '/roadmap/intermediate'
@@ -242,11 +170,7 @@ export interface FileRouteTypes {
     | '/resources'
     | '/roadmap'
     | '/settings'
-    | '/challenges/[id]/design'
-    | '/challenges/[id]/resources'
-    | '/challenges/[id]/specification'
-    | '/challenges/[id]/submit'
-    | '/challenges/[id]'
+    | '/challenges/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -255,10 +179,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/progress'
     | '/signup'
-    | '/feedback/[submissionId]'
-    | '/resources/documentation'
-    | '/resources/tools'
-    | '/resources/videos'
+    | '/feedback/$submissionId'
     | '/roadmap/advanced'
     | '/roadmap/beginner'
     | '/roadmap/intermediate'
@@ -266,11 +187,7 @@ export interface FileRouteTypes {
     | '/resources'
     | '/roadmap'
     | '/settings'
-    | '/challenges/[id]/design'
-    | '/challenges/[id]/resources'
-    | '/challenges/[id]/specification'
-    | '/challenges/[id]/submit'
-    | '/challenges/[id]'
+    | '/challenges/$id'
   id:
     | '__root__'
     | '/'
@@ -279,10 +196,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/progress'
     | '/signup'
-    | '/feedback/[submissionId]'
-    | '/resources/documentation'
-    | '/resources/tools'
-    | '/resources/videos'
+    | '/feedback/$submissionId'
     | '/roadmap/advanced'
     | '/roadmap/beginner'
     | '/roadmap/intermediate'
@@ -290,11 +204,7 @@ export interface FileRouteTypes {
     | '/resources/'
     | '/roadmap/'
     | '/settings/'
-    | '/challenges/[id]/design'
-    | '/challenges/[id]/resources'
-    | '/challenges/[id]/specification'
-    | '/challenges/[id]/submit'
-    | '/challenges/[id]/'
+    | '/challenges/$id/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -304,10 +214,7 @@ export interface RootRouteChildren {
   ProfileRoute: typeof ProfileRoute
   ProgressRoute: typeof ProgressRoute
   SignupRoute: typeof SignupRoute
-  FeedbackChar91submissionIdChar93Route: typeof FeedbackChar91submissionIdChar93Route
-  ResourcesDocumentationRoute: typeof ResourcesDocumentationRoute
-  ResourcesToolsRoute: typeof ResourcesToolsRoute
-  ResourcesVideosRoute: typeof ResourcesVideosRoute
+  FeedbackSubmissionIdRoute: typeof FeedbackSubmissionIdRoute
   RoadmapAdvancedRoute: typeof RoadmapAdvancedRoute
   RoadmapBeginnerRoute: typeof RoadmapBeginnerRoute
   RoadmapIntermediateRoute: typeof RoadmapIntermediateRoute
@@ -315,11 +222,7 @@ export interface RootRouteChildren {
   ResourcesIndexRoute: typeof ResourcesIndexRoute
   RoadmapIndexRoute: typeof RoadmapIndexRoute
   SettingsIndexRoute: typeof SettingsIndexRoute
-  ChallengesChar91idChar93DesignRoute: typeof ChallengesChar91idChar93DesignRoute
-  ChallengesChar91idChar93ResourcesRoute: typeof ChallengesChar91idChar93ResourcesRoute
-  ChallengesChar91idChar93SpecificationRoute: typeof ChallengesChar91idChar93SpecificationRoute
-  ChallengesChar91idChar93SubmitRoute: typeof ChallengesChar91idChar93SubmitRoute
-  ChallengesChar91idChar93IndexRoute: typeof ChallengesChar91idChar93IndexRoute
+  ChallengesIdIndexRoute: typeof ChallengesIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -415,67 +318,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RoadmapAdvancedRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/resources/videos': {
-      id: '/resources/videos'
-      path: '/resources/videos'
-      fullPath: '/resources/videos'
-      preLoaderRoute: typeof ResourcesVideosRouteImport
+    '/feedback/$submissionId': {
+      id: '/feedback/$submissionId'
+      path: '/feedback/$submissionId'
+      fullPath: '/feedback/$submissionId'
+      preLoaderRoute: typeof FeedbackSubmissionIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/resources/tools': {
-      id: '/resources/tools'
-      path: '/resources/tools'
-      fullPath: '/resources/tools'
-      preLoaderRoute: typeof ResourcesToolsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/resources/documentation': {
-      id: '/resources/documentation'
-      path: '/resources/documentation'
-      fullPath: '/resources/documentation'
-      preLoaderRoute: typeof ResourcesDocumentationRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/feedback/[submissionId]': {
-      id: '/feedback/[submissionId]'
-      path: '/feedback/[submissionId]'
-      fullPath: '/feedback/[submissionId]'
-      preLoaderRoute: typeof FeedbackChar91submissionIdChar93RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/challenges/[id]/': {
-      id: '/challenges/[id]/'
-      path: '/challenges/[id]'
-      fullPath: '/challenges/[id]'
-      preLoaderRoute: typeof ChallengesChar91idChar93IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/challenges/[id]/submit': {
-      id: '/challenges/[id]/submit'
-      path: '/challenges/[id]/submit'
-      fullPath: '/challenges/[id]/submit'
-      preLoaderRoute: typeof ChallengesChar91idChar93SubmitRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/challenges/[id]/specification': {
-      id: '/challenges/[id]/specification'
-      path: '/challenges/[id]/specification'
-      fullPath: '/challenges/[id]/specification'
-      preLoaderRoute: typeof ChallengesChar91idChar93SpecificationRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/challenges/[id]/resources': {
-      id: '/challenges/[id]/resources'
-      path: '/challenges/[id]/resources'
-      fullPath: '/challenges/[id]/resources'
-      preLoaderRoute: typeof ChallengesChar91idChar93ResourcesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/challenges/[id]/design': {
-      id: '/challenges/[id]/design'
-      path: '/challenges/[id]/design'
-      fullPath: '/challenges/[id]/design'
-      preLoaderRoute: typeof ChallengesChar91idChar93DesignRouteImport
+    '/challenges/$id/': {
+      id: '/challenges/$id/'
+      path: '/challenges/$id'
+      fullPath: '/challenges/$id'
+      preLoaderRoute: typeof ChallengesIdIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -488,10 +342,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileRoute: ProfileRoute,
   ProgressRoute: ProgressRoute,
   SignupRoute: SignupRoute,
-  FeedbackChar91submissionIdChar93Route: FeedbackChar91submissionIdChar93Route,
-  ResourcesDocumentationRoute: ResourcesDocumentationRoute,
-  ResourcesToolsRoute: ResourcesToolsRoute,
-  ResourcesVideosRoute: ResourcesVideosRoute,
+  FeedbackSubmissionIdRoute: FeedbackSubmissionIdRoute,
   RoadmapAdvancedRoute: RoadmapAdvancedRoute,
   RoadmapBeginnerRoute: RoadmapBeginnerRoute,
   RoadmapIntermediateRoute: RoadmapIntermediateRoute,
@@ -499,13 +350,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResourcesIndexRoute: ResourcesIndexRoute,
   RoadmapIndexRoute: RoadmapIndexRoute,
   SettingsIndexRoute: SettingsIndexRoute,
-  ChallengesChar91idChar93DesignRoute: ChallengesChar91idChar93DesignRoute,
-  ChallengesChar91idChar93ResourcesRoute:
-    ChallengesChar91idChar93ResourcesRoute,
-  ChallengesChar91idChar93SpecificationRoute:
-    ChallengesChar91idChar93SpecificationRoute,
-  ChallengesChar91idChar93SubmitRoute: ChallengesChar91idChar93SubmitRoute,
-  ChallengesChar91idChar93IndexRoute: ChallengesChar91idChar93IndexRoute,
+  ChallengesIdIndexRoute: ChallengesIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
