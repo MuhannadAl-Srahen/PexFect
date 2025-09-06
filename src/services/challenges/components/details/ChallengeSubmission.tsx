@@ -55,7 +55,7 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
 
         setTimeout(() => {
           navigate({
-            to: `/feedback/${Math.random().toString(36).substr(2, 9)}`,
+            to: `/feedback/${Math.random().toString(36).slice(2, 11)}`,
           })
         }, 2000)
       } catch {
