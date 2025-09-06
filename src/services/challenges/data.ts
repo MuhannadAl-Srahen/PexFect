@@ -212,7 +212,7 @@ export const challenges = [
     difficulty: 'Advanced',
     tags: ['components', 'props', 'typescript'],
     description: 'Design and implement reusable React components',
-    image: '/src/assets/images/girl.jpg ',
+    image: '/src/assets/images/girl.jpg',
     estimatedTime: '4 hours',
     submissions: 456,
   },
