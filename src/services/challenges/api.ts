@@ -26,7 +26,7 @@ export const submitChallengeSolution = async (
   // Simulate successful submission
   return {
     success: true,
-    submissionId: Math.random().toString(36).substr(2, 9),
+    submissionId: Math.random().toString(36).slice(2, 11),
     message: 'Solution submitted successfully',
   }
 }
