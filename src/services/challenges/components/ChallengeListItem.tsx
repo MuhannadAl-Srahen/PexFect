@@ -15,7 +15,7 @@ export function ChallengeListItem({
       href={`/challenges/${challenge.id}`}
       className='block group focus:outline-none focus-visible:ring focus-visible:ring-primary/50 rounded-xl'
     >
-      <Card className='overflow-hidden rounded-xl border border-border/50 bg-card shadow-sm hover:shadow-md transition-transform duration-300 relative hover:scale-[102%]'>
+      <Card className='overflow-hidden rounded-xl border border-border/50 bg-card shadow-sm hover:shadow-md transition-transform duration-300 relative hover:scale-[102%] py-0'>
         {/* Like button */}
 
         <div className='flex flex-col md:flex-row '>

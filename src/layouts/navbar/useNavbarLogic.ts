@@ -30,7 +30,7 @@ export const useNavbarLogic = () => {
   const navbarClasses = useMemo(
     () =>
       cn(
-        'fixed top-0 w-full z-50 transition-all duration-300 ease-out',
+        'sticky top-0 w-full z-50 transition-all duration-300 ease-out',
         'bg-background/80 backdrop-blur-xl border-b',
         scrollY > SCROLL_THRESHOLD
           ? 'border-border/80 shadow-lg shadow-primary/5'
