@@ -51,7 +51,7 @@ export function ChallengeDesign({ challenge }: ChallengeDesignProps) {
                 Font Family
               </h4>
               <div
-                className='bg-background rounded-xl p-3 md:p-4 border border-border cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-1 group'
+                className='bg-background rounded-xl p-3 md:p-4 cursor-pointer transition-all duration-300 group'
                 onClick={handleFontCopy}
               >
                 <div className='flex items-center justify-between mb-2 md:mb-3'>
@@ -242,45 +242,29 @@ export function ChallengeDesign({ challenge }: ChallengeDesignProps) {
         </div>
 
         <div className='px-4 md:px-6'>
-          <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4'>
+          <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6'>
             {Object.entries(designSpecs.colorPalette).map(([name, color]) => (
               <div
                 key={name}
-                className='group cursor-pointer transition-all duration-300 hover:scale-105'
+                className='group relative cursor-pointer'
                 onClick={() => handleColorCopy(color)}
               >
-                <div className='bg-background rounded-xl border border-border overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300'>
-                  {/* Color Swatch */}
-                  <div
-                    className='w-full h-20 md:h-24 relative overflow-hidden'
-                    style={{ backgroundColor: color }}
-                  >
-                    <div className='absolute inset-0 bg-gradient-to-br from-transparent to-black/10'></div>
-                    <div className='absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
-                      <div className='bg-white/20 backdrop-blur-sm rounded-full p-1'>
-                        <div className='w-2 h-2 bg-white/60 rounded-full'></div>
-                      </div>
-                    </div>
+                <div
+                  className='w-full h-24 md:h-32 rounded-xl shadow-md transition-all duration-300 border border-border/20 group-hover:scale-105 group-hover:shadow-lg'
+                  style={{ backgroundColor: color }}
+                />
+                <div className='absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
+                  <div className='bg-white text-gray-800 text-xs px-2 py-1 rounded-full shadow-lg'>
+                    {copiedColor === color ? '✓ Copied' : 'Copy'}
                   </div>
-
-                  {/* Color Info */}
-                  <div className='p-3'>
-                    <h4 className='font-medium text-foreground text-sm capitalize leading-tight mb-2'>
-                      {name.replace(/([A-Z])/g, ' $1').trim()}
-                    </h4>
-                    <div className='space-y-1'>
-                      <code className='text-xs font-mono text-muted-foreground bg-muted/30 px-2 py-1 rounded block text-center'>
-                        {color}
-                      </code>
-                      <div className='opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
-                        <span className='text-xs text-primary font-medium block text-center'>
-                          {copiedColor === color
-                            ? '✓ Copied!'
-                            : 'Click to copy'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                </div>
+                <div className='mt-3 text-left'>
+                  <h4 className='text-sm font-semibold text-foreground capitalize'>
+                    {name.replace(/([A-Z])/g, ' $1').trim()}
+                  </h4>
+                  <code className='text-xs font-mono text-muted-foreground mt-1 block'>
+                    {color}
+                  </code>
                 </div>
               </div>
             ))}

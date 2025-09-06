@@ -36,104 +36,136 @@ export function ChallengeHero({ challenge }: ChallengeHeroProps) {
   }
 
   return (
-    <div className='bg-card rounded-lg shadow-sm border overflow-hidden mb-6 md:mb-8 transition-all duration-300 hover:shadow-xl hover:scale-[1.01]'>
-      <div className='aspect-[4/3] sm:aspect-video relative group'>
+    <div className='bg-card rounded-lg border overflow-hidden mb-6 md:mb-8 group'>
+      <div className='aspect-[4/3] sm:aspect-video relative'>
         <img
           src={challenge.images[currentImageIndex].url || '/placeholder.svg'}
           alt={challenge.images[currentImageIndex].alt}
           className='w-full h-full object-cover transition-transform duration-500 group-hover:scale-105'
         />
 
+        {/* Desktop Overlay Gradient - only on md+ */}
+        <div className='hidden md:block absolute inset-0 bg-gradient-to-t from-black/70 to-transparent' />
+
+        {/* Navigation */}
         {challenge.images.length > 1 && (
           <>
             <button
               onClick={prevImage}
-              className='absolute left-1 sm:left-2 md:left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-1.5 sm:p-2 md:p-3 rounded-full transition-all duration-300 hover:scale-110 shadow-lg z-10 opacity-100 md:opacity-0 md:group-hover:opacity-100'
+              className='absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-md transition-all z-20 opacity-100 md:opacity-0 md:group-hover:opacity-100 md:hover:scale-110'
             >
-              <ChevronLeft className='h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6' />
+              <ChevronLeft className='h-4 w-4 sm:h-5 sm:w-5' />
             </button>
             <button
               onClick={nextImage}
-              className='absolute right-1 sm:right-2 md:right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-1.5 sm:p-2 md:p-3 rounded-full transition-all duration-300 hover:scale-110 shadow-lg z-10 opacity-100 md:opacity-0 md:group-hover:opacity-100'
+              className='absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-md transition-all z-20 opacity-100 md:opacity-0 md:group-hover:opacity-100 md:hover:scale-110'
             >
-              <ChevronRight className='h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6' />
+              <ChevronRight className='h-4 w-4 sm:h-5 sm:w-5' />
             </button>
 
-            {/* Image indicators */}
-            <div className='absolute bottom-1 sm:bottom-2 md:bottom-4 left-1/2 -translate-x-1/2 flex space-x-1 sm:space-x-2 md:space-x-3'>
+            <div className='absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 flex space-x-2 z-20 opacity-100 md:opacity-60 md:group-hover:opacity-100 transition-opacity duration-300'>
               {challenge.images.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => setCurrentImageIndex(index)}
-                  className={`w-1.5 h-1.5 sm:w-2 sm:h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 hover:scale-125 ${
+                  className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all hover:scale-125 ${
                     index === currentImageIndex
-                      ? 'bg-white shadow-lg'
+                      ? 'bg-white'
                       : 'bg-white/50 hover:bg-white/80'
                   }`}
                 />
               ))}
             </div>
-
-            {/* Current image label */}
-            <div className='absolute top-1 sm:top-2 md:top-4 right-1 sm:right-2 md:right-4 bg-white/90 text-gray-800 px-1.5 sm:px-2 md:px-3 py-0.5 sm:py-1 md:py-2 rounded sm:rounded-md md:rounded-lg text-xs sm:text-xs md:text-sm font-medium shadow-lg transition-all duration-300 opacity-100 md:opacity-0 md:group-hover:opacity-100'>
-              <span className='hidden sm:inline'>
-                {challenge.images[currentImageIndex].label} View (
-                {currentImageIndex + 1}/{challenge.images.length})
-              </span>
-              <span className='sm:hidden'>
-                {currentImageIndex + 1}/{challenge.images.length}
-              </span>
-            </div>
           </>
         )}
 
-        <div className='absolute inset-0 bg-black/20 flex items-end'>
-          <div className='p-2 sm:p-3 md:p-6 text-white flex-1'>
-            <Badge
-              className={`${getDifficultyVariant(challenge.difficulty)} px-1.5 sm:px-2 md:px-3 py-0.5 sm:py-1 text-xs border-0 font-semibold shadow-sm mb-1 sm:mb-2 md:mb-3 transition-all duration-300 hover:scale-105`}
-            >
-              {challenge.difficulty}
-            </Badge>
-            <h1 className='text-lg sm:text-xl md:text-3xl font-bold mb-1 sm:mb-2 transition-all duration-300 hover:text-primary leading-tight'>
-              {challenge.title}
-            </h1>
-            <div className='flex flex-wrap items-center gap-1 sm:gap-2 md:gap-4 text-xs sm:text-xs md:text-sm'>
-              <div className='flex items-center transition-all duration-300 hover:scale-105'>
-                <Clock className='h-3 w-3 sm:h-3 sm:w-3 md:h-4 md:w-4 mr-1' />
-                <span className='hidden sm:inline'>
-                  {challenge.estimatedTime}
-                </span>
-                <span className='sm:hidden'>
-                  {challenge.estimatedTime.split(' ')[0]}h
-                </span>
-              </div>
-              <div className='flex items-center transition-all duration-300 hover:scale-105'>
-                <Users className='h-3 w-3 sm:h-3 sm:w-3 md:h-4 md:w-4 mr-1' />
-                <span className='hidden sm:inline'>
-                  {challenge.completions.toLocaleString()} completed
-                </span>
-                <span className='sm:hidden'>
-                  {Math.round(challenge.completions / 1000)}k
-                </span>
-              </div>
-              <div className='flex items-center transition-all duration-300 hover:scale-105'>
-                <Star className='h-3 w-3 sm:h-3 sm:w-3 md:h-4 md:w-4 mr-1 fill-current' />
-                {challenge.rating}
+        {/* Desktop Content Overlay - only visible on md+ */}
+        <div className='hidden md:flex absolute inset-0 flex-col justify-end p-6 z-10'>
+          <div className='flex items-end justify-between'>
+            <div className='space-y-4 text-white'>
+              <Badge
+                className={`${getDifficultyVariant(
+                  challenge.difficulty
+                )} px-4 py-2 text-base font-semibold w-fit shadow-lg transition-all duration-300 group-hover:scale-105`}
+              >
+                {challenge.difficulty}
+              </Badge>
+
+              <h1 className='text-2xl lg:text-3xl xl:text-4xl font-bold leading-tight drop-shadow-lg transition-all duration-300 group-hover:drop-shadow-2xl'>
+                {challenge.title}
+              </h1>
+
+              <div className='flex items-center gap-8 text-lg text-white/95 opacity-80 group-hover:opacity-100 transition-opacity duration-300'>
+                <div className='flex items-center gap-2 hover:scale-105 transition-transform'>
+                  <Clock className='h-5 w-5' />
+                  <span className='font-medium'>{challenge.estimatedTime}</span>
+                </div>
+                <div className='flex items-center gap-2 hover:scale-105 transition-transform'>
+                  <Users className='h-5 w-5' />
+                  <span className='font-medium'>
+                    {challenge.completions.toLocaleString()}
+                  </span>
+                </div>
+                <div className='flex items-center gap-2 hover:scale-105 transition-transform'>
+                  <Star className='h-5 w-5 fill-current text-yellow-400' />
+                  <span className='font-medium'>{challenge.rating}</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className='p-2 sm:p-3 md:p-6'>
             <a
               href={challenge.livePreviewUrl}
               target='_blank'
               rel='noopener noreferrer'
-              className='inline-flex items-center px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded sm:rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg text-xs sm:text-xs md:text-sm'
+              className='inline-flex items-center justify-center gap-3 px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-semibold text-base transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 group-hover:shadow-2xl'
             >
-              <Eye className='h-3 w-3 sm:h-3 sm:w-3 md:h-4 md:w-4 mr-1 sm:mr-1 md:mr-2' />
-              <span className='hidden sm:inline'>Live Preview</span>
-              <span className='sm:hidden'>Preview</span>
+              <Eye className='h-5 w-5' />
+              <span>Live Preview</span>
             </a>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Content Section - only visible on sm and below */}
+      <div className='md:hidden p-3 space-y-3'>
+        <div className='flex items-start justify-between gap-3'>
+          <div className='space-y-2 flex-1'>
+            <Badge
+              className={`${getDifficultyVariant(
+                challenge.difficulty
+              )} px-2 py-1 text-xs font-semibold w-fit`}
+            >
+              {challenge.difficulty}
+            </Badge>
+
+            <h1 className='text-lg font-bold text-foreground leading-tight'>
+              {challenge.title}
+            </h1>
+          </div>
+
+          <a
+            href={challenge.livePreviewUrl}
+            target='_blank'
+            rel='noopener noreferrer'
+            className='inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-md font-medium text-sm transition-colors flex-shrink-0'
+          >
+            <Eye className='h-4 w-4' />
+            <span>Preview</span>
+          </a>
+        </div>
+
+        <div className='flex flex-wrap items-center gap-3 text-xs text-muted-foreground'>
+          <div className='flex items-center gap-1'>
+            <Clock className='h-3 w-3' />
+            <span>{challenge.estimatedTime}</span>
+          </div>
+          <div className='flex items-center gap-1'>
+            <Users className='h-3 w-3' />
+            <span>{challenge.completions.toLocaleString()}</span>
+          </div>
+          <div className='flex items-center gap-1'>
+            <Star className='h-3 w-3 fill-current text-yellow-500' />
+            <span>{challenge.rating}</span>
           </div>
         </div>
       </div>

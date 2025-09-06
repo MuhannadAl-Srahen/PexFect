@@ -25,6 +25,8 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [isDragOver, setIsDragOver] = useState(false)
+  const [, setDragCounter] = useState(0)
 
   const form = useForm({
     defaultValues: {
@@ -67,12 +69,62 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      if (file.size > 10 * 1024 * 1024) {
-        setError('File size exceeds 10MB limit.')
-        return
+      validateAndSetFile(file)
+    }
+  }
+
+  const validateAndSetFile = (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      setError('Please upload an image file.')
+      return
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      setError('File size exceeds 10MB limit.')
+      return
+    }
+
+    setScreenshot(file)
+    setError(null)
+  }
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragCounter((prev) => prev + 1)
+    setIsDragOver(true)
+  }
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragCounter((prev) => {
+      const newCounter = prev - 1
+      if (newCounter === 0) {
+        setIsDragOver(false)
       }
-      setScreenshot(file)
-      setError(null)
+      return newCounter
+    })
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragCounter(0)
+    setIsDragOver(false)
+
+    const files = Array.from(e.dataTransfer.files)
+    const imageFile = files.find((file) => file.type.startsWith('image/'))
+
+    if (imageFile) {
+      validateAndSetFile(imageFile)
+    } else if (files.length > 0) {
+      setError('Please upload an image file.')
     }
   }
 
@@ -97,16 +149,16 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
   }
 
   return (
-    <div className='space-y-6 md:space-y-8'>
-      <div className='grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8'>
+    <div className='space-y-4 md:space-y-8'>
+      <div className='grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8'>
         {/* Submit Form */}
-        <div className='lg:col-span-2 bg-card text-card-foreground flex flex-col gap-4 md:gap-6 rounded-xl border py-4 md:py-6 shadow-sm transition-all duration-300 hover:shadow-xl hover:scale-[1.01]'>
-          <div className='flex items-center px-4 md:px-6'>
-            <div className='p-2 bg-primary/10 rounded-lg mr-3'>
+        <div className='lg:col-span-2 bg-card text-card-foreground flex flex-col gap-3 md:gap-6 rounded-xl border py-3 md:py-6 shadow-sm'>
+          <div className='flex items-center px-3 md:px-6'>
+            <div className='p-1.5 md:p-2 bg-primary/10 rounded-lg mr-2 md:mr-3'>
               <Upload className='h-4 w-4 md:h-6 md:w-6 text-primary' />
             </div>
             <div>
-              <h3 className='text-base md:text-xl font-bold text-foreground'>
+              <h3 className='text-sm md:text-xl font-bold text-foreground'>
                 Submit Your Solution
               </h3>
               <p className='text-xs md:text-sm text-muted-foreground'>
@@ -114,119 +166,97 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
               </p>
             </div>
           </div>
-          <div className='px-4 md:px-6'>
+          <div className='px-3 md:px-6'>
             <form
               onSubmit={(e) => {
                 e.preventDefault()
                 e.stopPropagation()
                 form.handleSubmit()
               }}
-              className='space-y-6'
+              className='space-y-4 md:space-y-6'
             >
-              {/* Challenge Title */}
-              <form.Field
-                name='title'
-                children={(field) => (
-                  <div className='space-y-2'>
-                    <Label htmlFor={field.name}>Challenge Title</Label>
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      className='bg-muted'
-                      readOnly
-                    />
-                  </div>
-                )}
-              />
-
-              <form.Field
-                name='githubUrl'
-                children={(field) => (
-                  <div className='space-y-2'>
-                    <div className='flex items-center space-x-2'>
-                      <Label
-                        htmlFor={field.name}
-                        className='flex items-center text-base font-semibold'
-                      >
-                        <Github className='h-5 w-5 mr-2 text-muted-foreground' />
-                        GitHub Repository URL{' '}
-                        <span className='text-destructive ml-1'>*</span>
-                      </Label>
-                      <div className='group relative'>
-                        <HelpCircle className='h-4 w-4 text-muted-foreground hover:text-foreground cursor-help' />
-                        <div className='invisible group-hover:visible absolute z-10 w-72 p-2 mt-1 text-sm text-muted-foreground bg-card border rounded-lg shadow-lg'>
-                          Your GitHub repository contains your project's source
-                          code. Make sure it's public so our AI can analyze your
-                          code.
-                        </div>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6'>
+                <form.Field
+                  name='githubUrl'
+                  children={(field) => (
+                    <div className='space-y-2'>
+                      <div className='flex items-center space-x-2'>
+                        <Label
+                          htmlFor={field.name}
+                          className='flex items-center text-sm md:text-base font-semibold'
+                        >
+                          <Github className='h-4 w-4 md:h-5 md:w-5 mr-1.5 md:mr-2 text-muted-foreground' />
+                          GitHub Repository URL{' '}
+                          <span className='text-destructive ml-1'>*</span>
+                        </Label>
                       </div>
+                      <Input
+                        id={field.name}
+                        name={field.name}
+                        type='url'
+                        placeholder='https://github.com/username/project-name'
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        className='py-2 md:py-3 px-3 md:px-4 text-sm md:text-base border-2 border-border rounded-lg focus:border-primary focus:ring-0'
+                        required
+                      />
                     </div>
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      type='url'
-                      placeholder='https://github.com/username/project-name'
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      className='py-3 px-4 text-base border-2 border-border rounded-lg focus:border-primary focus:ring-0'
-                      required
-                    />
-                  </div>
-                )}
-              />
+                  )}
+                />
 
-              <form.Field
-                name='liveUrl'
-                children={(field) => (
-                  <div className='space-y-2'>
-                    <div className='flex items-center space-x-2'>
-                      <Label
-                        htmlFor={field.name}
-                        className='flex items-center text-base font-semibold'
-                      >
-                        <ExternalLink className='h-5 w-5 mr-2 text-muted-foreground' />
-                        Live Site URL{' '}
-                        <span className='text-destructive ml-1'>*</span>
-                      </Label>
-                      <div className='group relative'>
-                        <HelpCircle className='h-4 w-4 text-muted-foreground hover:text-foreground cursor-help' />
-                        <div className='invisible group-hover:visible absolute z-10 w-72 p-2 mt-1 text-sm text-muted-foreground bg-card border rounded-lg shadow-lg'>
-                          The live site URL where your project is hosted. Our AI
-                          will test responsiveness and performance.
-                        </div>
+                <form.Field
+                  name='liveUrl'
+                  children={(field) => (
+                    <div className='space-y-2'>
+                      <div className='flex items-center space-x-2'>
+                        <Label
+                          htmlFor={field.name}
+                          className='flex items-center text-sm md:text-base font-semibold'
+                        >
+                          <ExternalLink className='h-4 w-4 md:h-5 md:w-5 mr-1.5 md:mr-2 text-muted-foreground' />
+                          Live Site URL{' '}
+                          <span className='text-destructive ml-1'>*</span>
+                        </Label>
                       </div>
+                      <Input
+                        id={field.name}
+                        name={field.name}
+                        type='url'
+                        placeholder='https://your-project.netlify.app'
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        className='py-2 md:py-3 px-3 md:px-4 text-sm md:text-base border-2 border-border rounded-lg focus:border-primary focus:ring-0'
+                        required
+                      />
                     </div>
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      type='url'
-                      placeholder='https://your-project.netlify.app'
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      className='py-3 px-4 text-base border-2 border-border rounded-lg focus:border-primary focus:ring-0'
-                      required
-                    />
-                  </div>
-                )}
-              />
+                  )}
+                />
+              </div>
 
               {/* Screenshot Upload */}
               <div className='space-y-2'>
                 <div className='flex items-center space-x-2'>
                   <Label
                     htmlFor='screenshot'
-                    className='flex items-center text-base font-semibold'
+                    className='flex items-center text-sm md:text-base font-semibold'
                   >
-                    <Upload className='h-5 w-5 mr-2 text-muted-foreground' />
+                    <Upload className='h-4 w-4 md:h-5 md:w-5 mr-1.5 md:mr-2 text-muted-foreground' />
                     Project Screenshot (Optional)
                   </Label>
                 </div>
-                <div className='border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-primary/40 hover:bg-primary/5 transition-all duration-200 cursor-pointer'>
+                <div
+                  className={`border-2 border-dashed rounded-xl p-4 md:p-8 text-center transition-all duration-200 cursor-pointer ${
+                    isDragOver
+                      ? 'border-primary bg-primary/10 scale-105'
+                      : 'border-border hover:border-primary/40 hover:bg-primary/5'
+                  }`}
+                  onDragOver={handleDragOver}
+                  onDragEnter={handleDragEnter}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                >
                   <input
                     id='screenshot'
                     type='file'
@@ -243,15 +273,15 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
                         <img
                           src={URL.createObjectURL(screenshot)}
                           alt='Uploaded screenshot preview'
-                          className='max-h-48 object-contain mb-4 rounded-lg shadow-sm'
+                          className='max-h-32 md:max-h-48 object-contain mb-2 md:mb-4 rounded-lg shadow-sm'
                         />
-                        <p className='text-sm text-foreground font-medium mb-2'>
+                        <p className='text-xs md:text-sm text-foreground font-medium mb-1 md:mb-2'>
                           {screenshot.name}
                         </p>
                         <Button
                           variant='ghost'
                           size='sm'
-                          className='text-destructive hover:text-destructive hover:bg-destructive/10'
+                          className='text-destructive hover:text-destructive hover:bg-destructive/10 text-xs md:text-sm'
                           onClick={(e) => {
                             e.preventDefault()
                             setScreenshot(null)
@@ -263,14 +293,30 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
                       </div>
                     ) : (
                       <>
-                        <Upload className='h-12 w-12 text-muted-foreground mx-auto mb-4' />
-                        <p className='text-lg text-muted-foreground font-medium mb-2'>
-                          Drag & drop or{' '}
-                          <span className='text-primary hover:underline'>
-                            click to upload
-                          </span>
+                        <Upload
+                          className={`h-8 w-8 md:h-12 md:w-12 text-muted-foreground mx-auto mb-2 md:mb-4 transition-all duration-200 ${
+                            isDragOver ? 'scale-110 text-primary' : ''
+                          }`}
+                        />
+                        <p
+                          className={`text-sm md:text-lg font-medium mb-1 md:mb-2 transition-colors duration-200 ${
+                            isDragOver
+                              ? 'text-primary'
+                              : 'text-muted-foreground'
+                          }`}
+                        >
+                          {isDragOver ? (
+                            'Drop your image here'
+                          ) : (
+                            <>
+                              Drag & drop or{' '}
+                              <span className='text-primary hover:underline'>
+                                click to upload
+                              </span>
+                            </>
+                          )}
                         </p>
-                        <p className='text-sm text-muted-foreground'>
+                        <p className='text-xs md:text-sm text-muted-foreground'>
                           PNG, JPG up to 10MB
                         </p>
                       </>
@@ -285,7 +331,7 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
                   <div className='space-y-2'>
                     <Label
                       htmlFor={field.name}
-                      className='text-base font-semibold'
+                      className='text-sm md:text-base font-semibold'
                     >
                       Project Description (Optional)
                     </Label>
@@ -298,33 +344,22 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
                       onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
                         field.handleChange(e.target.value)
                       }
-                      rows={5}
-                      className='w-full py-3 px-4 text-base border-2 border-border rounded-lg focus:border-primary focus:ring-0 resize-none bg-background'
+                      rows={4}
+                      className='w-full py-2 md:py-3 px-3 md:px-4 text-sm md:text-base border-2 border-border rounded-lg focus:border-primary focus:ring-0 resize-none bg-background'
                     />
                   </div>
                 )}
               />
 
               {error && (
-                <div className='bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-lg'>
+                <div className='bg-destructive/10 border border-destructive/20 text-destructive px-3 md:px-4 py-2 md:py-3 rounded-lg'>
                   <div className='flex items-center'>
                     <AlertCircle className='h-4 w-4 mr-2' />
-                    <span className='font-semibold'>Submission Error</span>
+                    <span className='font-semibold text-sm md:text-base'>
+                      Submission Error
+                    </span>
                   </div>
-                  <p className='mt-1 text-sm'>{error}</p>
-                </div>
-              )}
-
-              {!error && (
-                <div className='bg-primary/10 border border-primary/20 text-primary px-4 py-3 rounded-lg'>
-                  <div className='flex items-center'>
-                    <AlertCircle className='h-4 w-4 mr-2' />
-                    <span className='font-semibold'>Important!</span>
-                  </div>
-                  <p className='mt-1 text-sm'>
-                    Ensure both URLs are working and your repository is public.
-                    Our AI will analyze your code, design, and responsiveness.
-                  </p>
+                  <p className='mt-1 text-xs md:text-sm'>{error}</p>
                 </div>
               )}
 
@@ -333,17 +368,17 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
                 children={([canSubmit, isSubmittingForm]) => (
                   <Button
                     type='submit'
-                    className='w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground text-lg py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200'
+                    className='w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground text-base md:text-lg py-4 md:py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200'
                     disabled={!canSubmit || isSubmitting || isSubmittingForm}
                   >
                     {isSubmitting || isSubmittingForm ? (
                       <>
-                        <div className='animate-spin w-5 h-5 border-2 border-primary-foreground border-t-transparent rounded-full mr-3'></div>
+                        <div className='animate-spin w-4 h-4 md:w-5 md:h-5 border-2 border-primary-foreground border-t-transparent rounded-full mr-2 md:mr-3'></div>
                         Analyzing Solution...
                       </>
                     ) : (
                       <>
-                        <Upload className='mr-2 h-5 w-5' />
+                        <Upload className='mr-2 h-4 w-4 md:h-5 md:w-5' />
                         Submit for AI Review
                       </>
                     )}
@@ -355,14 +390,14 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
         </div>
 
         {/* Tips & Guidelines */}
-        <div className='space-y-6'>
-          <div className='bg-card text-card-foreground flex flex-col gap-4 md:gap-6 rounded-xl border py-4 md:py-6 shadow-sm transition-all duration-300 hover:shadow-xl hover:scale-[1.01]'>
-            <div className='flex items-center px-4 md:px-6'>
-              <div className='p-2 bg-primary/10 rounded-lg mr-3'>
-                <HelpCircle className='h-5 w-5 md:h-6 md:w-6 text-primary' />
+        <div className='space-y-4 md:space-y-6'>
+          <div className='bg-card text-card-foreground flex flex-col gap-3 md:gap-6 rounded-xl border py-3 md:py-6 shadow-sm'>
+            <div className='flex items-center px-3 md:px-6'>
+              <div className='p-1.5 md:p-2 bg-primary/10 rounded-lg mr-2 md:mr-3'>
+                <HelpCircle className='h-4 w-4 md:h-6 md:w-6 text-primary' />
               </div>
               <div>
-                <h3 className='text-base md:text-xl font-bold text-foreground'>
+                <h3 className='text-sm md:text-xl font-bold text-foreground'>
                   Submission Tips
                 </h3>
                 <p className='text-xs md:text-sm text-muted-foreground'>
@@ -370,25 +405,25 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
                 </p>
               </div>
             </div>
-            <div className='px-4 md:px-6 space-y-4'>
-              <div className='flex items-start space-x-3 group'>
-                <div className='w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0 transition-all duration-300 group-hover:scale-125'></div>
+            <div className='px-3 md:px-6 space-y-3 md:space-y-4'>
+              <div className='flex items-start space-x-2 md:space-x-3 group'>
+                <div className='w-1.5 h-1.5 md:w-2 md:h-2 bg-primary rounded-full mt-1.5 md:mt-2 flex-shrink-0 transition-all duration-300 group-hover:scale-125'></div>
                 <div>
-                  <h4 className='font-medium text-foreground mb-1'>
+                  <h4 className='font-medium text-foreground mb-1 text-sm md:text-base'>
                     Test Your Links
                   </h4>
-                  <p className='text-sm text-muted-foreground'>
+                  <p className='text-xs md:text-sm text-muted-foreground'>
                     Ensure both URLs are working correctly.
                   </p>
                 </div>
               </div>
-              <div className='flex items-start space-x-3 group'>
-                <div className='w-2 h-2 bg-secondary rounded-full mt-2 flex-shrink-0 transition-all duration-300 group-hover:scale-125'></div>
+              <div className='flex items-start space-x-2 md:space-x-3 group'>
+                <div className='w-1.5 h-1.5 md:w-2 md:h-2 bg-secondary rounded-full mt-1.5 md:mt-2 flex-shrink-0 transition-all duration-300 group-hover:scale-125'></div>
                 <div>
-                  <h4 className='font-medium text-foreground mb-1'>
+                  <h4 className='font-medium text-foreground mb-1 text-sm md:text-base'>
                     Clean Code
                   </h4>
-                  <p className='text-sm text-muted-foreground'>
+                  <p className='text-xs md:text-sm text-muted-foreground'>
                     Organize your code for better feedback.
                   </p>
                 </div>
@@ -396,13 +431,13 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
             </div>
           </div>
 
-          <div className='bg-card text-card-foreground flex flex-col gap-4 md:gap-6 rounded-xl border py-4 md:py-6 shadow-sm transition-all duration-300 hover:shadow-xl hover:scale-[1.01]'>
-            <div className='flex items-center px-4 md:px-6'>
-              <div className='p-2 bg-primary/10 rounded-lg mr-3'>
-                <CheckCircle className='h-5 w-5 md:h-6 md:w-6 text-primary' />
+          <div className='bg-card text-card-foreground flex flex-col gap-3 md:gap-6 rounded-xl border py-3 md:py-6 shadow-sm'>
+            <div className='flex items-center px-3 md:px-6'>
+              <div className='p-1.5 md:p-2 bg-primary/10 rounded-lg mr-2 md:mr-3'>
+                <CheckCircle className='h-4 w-4 md:h-6 md:w-6 text-primary' />
               </div>
               <div>
-                <h3 className='text-base md:text-xl font-bold text-foreground'>
+                <h3 className='text-sm md:text-xl font-bold text-foreground'>
                   What We Analyze
                 </h3>
                 <p className='text-xs md:text-sm text-muted-foreground'>
@@ -410,34 +445,34 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
                 </p>
               </div>
             </div>
-            <div className='px-4 md:px-6 space-y-3'>
+            <div className='px-3 md:px-6 space-y-2 md:space-y-3'>
               <div className='flex items-center space-x-2 group'>
-                <CheckCircle className='h-4 w-4 text-primary transition-all duration-300 group-hover:scale-110' />
-                <span className='text-sm text-muted-foreground'>
+                <CheckCircle className='h-3 w-3 md:h-4 md:w-4 text-primary transition-all duration-300 group-hover:scale-110' />
+                <span className='text-xs md:text-sm text-muted-foreground'>
                   Code structure & organization
                 </span>
               </div>
               <div className='flex items-center space-x-2 group'>
-                <CheckCircle className='h-4 w-4 text-primary transition-all duration-300 group-hover:scale-110' />
-                <span className='text-sm text-muted-foreground'>
+                <CheckCircle className='h-3 w-3 md:h-4 md:w-4 text-primary transition-all duration-300 group-hover:scale-110' />
+                <span className='text-xs md:text-sm text-muted-foreground'>
                   Responsive design implementation
                 </span>
               </div>
               <div className='flex items-center space-x-2 group'>
-                <CheckCircle className='h-4 w-4 text-primary transition-all duration-300 group-hover:scale-110' />
-                <span className='text-sm text-muted-foreground'>
+                <CheckCircle className='h-3 w-3 md:h-4 md:w-4 text-primary transition-all duration-300 group-hover:scale-110' />
+                <span className='text-xs md:text-sm text-muted-foreground'>
                   Accessibility best practices
                 </span>
               </div>
               <div className='flex items-center space-x-2 group'>
-                <CheckCircle className='h-4 w-4 text-primary transition-all duration-300 group-hover:scale-110' />
-                <span className='text-sm text-muted-foreground'>
+                <CheckCircle className='h-3 w-3 md:h-4 md:w-4 text-primary transition-all duration-300 group-hover:scale-110' />
+                <span className='text-xs md:text-sm text-muted-foreground'>
                   Performance optimization
                 </span>
               </div>
               <div className='flex items-center space-x-2 group'>
-                <CheckCircle className='h-4 w-4 text-primary transition-all duration-300 group-hover:scale-110' />
-                <span className='text-sm text-muted-foreground'>
+                <CheckCircle className='h-3 w-3 md:h-4 md:w-4 text-primary transition-all duration-300 group-hover:scale-110' />
+                <span className='text-xs md:text-sm text-muted-foreground'>
                   Design accuracy & creativity
                 </span>
               </div>

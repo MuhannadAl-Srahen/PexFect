@@ -22,9 +22,6 @@ import { Route as ChallengesIndexRouteImport } from './routes/challenges/index'
 import { Route as RoadmapIntermediateRouteImport } from './routes/roadmap/intermediate'
 import { Route as RoadmapBeginnerRouteImport } from './routes/roadmap/beginner'
 import { Route as RoadmapAdvancedRouteImport } from './routes/roadmap/advanced'
-import { Route as ResourcesVideosRouteImport } from './routes/resources/videos'
-import { Route as ResourcesToolsRouteImport } from './routes/resources/tools'
-import { Route as ResourcesDocumentationRouteImport } from './routes/resources/documentation'
 import { Route as FeedbackSubmissionIdRouteImport } from './routes/feedback/$submissionId'
 import { Route as ChallengesIdIndexRouteImport } from './routes/challenges/$id/index'
 
@@ -93,21 +90,6 @@ const RoadmapAdvancedRoute = RoadmapAdvancedRouteImport.update({
   path: '/roadmap/advanced',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ResourcesVideosRoute = ResourcesVideosRouteImport.update({
-  id: '/resources/videos',
-  path: '/resources/videos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResourcesToolsRoute = ResourcesToolsRouteImport.update({
-  id: '/resources/tools',
-  path: '/resources/tools',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResourcesDocumentationRoute = ResourcesDocumentationRouteImport.update({
-  id: '/resources/documentation',
-  path: '/resources/documentation',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const FeedbackSubmissionIdRoute = FeedbackSubmissionIdRouteImport.update({
   id: '/feedback/$submissionId',
   path: '/feedback/$submissionId',
@@ -127,9 +109,6 @@ export interface FileRoutesByFullPath {
   '/progress': typeof ProgressRoute
   '/signup': typeof SignupRoute
   '/feedback/$submissionId': typeof FeedbackSubmissionIdRoute
-  '/resources/documentation': typeof ResourcesDocumentationRoute
-  '/resources/tools': typeof ResourcesToolsRoute
-  '/resources/videos': typeof ResourcesVideosRoute
   '/roadmap/advanced': typeof RoadmapAdvancedRoute
   '/roadmap/beginner': typeof RoadmapBeginnerRoute
   '/roadmap/intermediate': typeof RoadmapIntermediateRoute
@@ -147,9 +126,6 @@ export interface FileRoutesByTo {
   '/progress': typeof ProgressRoute
   '/signup': typeof SignupRoute
   '/feedback/$submissionId': typeof FeedbackSubmissionIdRoute
-  '/resources/documentation': typeof ResourcesDocumentationRoute
-  '/resources/tools': typeof ResourcesToolsRoute
-  '/resources/videos': typeof ResourcesVideosRoute
   '/roadmap/advanced': typeof RoadmapAdvancedRoute
   '/roadmap/beginner': typeof RoadmapBeginnerRoute
   '/roadmap/intermediate': typeof RoadmapIntermediateRoute
@@ -168,9 +144,6 @@ export interface FileRoutesById {
   '/progress': typeof ProgressRoute
   '/signup': typeof SignupRoute
   '/feedback/$submissionId': typeof FeedbackSubmissionIdRoute
-  '/resources/documentation': typeof ResourcesDocumentationRoute
-  '/resources/tools': typeof ResourcesToolsRoute
-  '/resources/videos': typeof ResourcesVideosRoute
   '/roadmap/advanced': typeof RoadmapAdvancedRoute
   '/roadmap/beginner': typeof RoadmapBeginnerRoute
   '/roadmap/intermediate': typeof RoadmapIntermediateRoute
@@ -190,9 +163,6 @@ export interface FileRouteTypes {
     | '/progress'
     | '/signup'
     | '/feedback/$submissionId'
-    | '/resources/documentation'
-    | '/resources/tools'
-    | '/resources/videos'
     | '/roadmap/advanced'
     | '/roadmap/beginner'
     | '/roadmap/intermediate'
@@ -210,9 +180,6 @@ export interface FileRouteTypes {
     | '/progress'
     | '/signup'
     | '/feedback/$submissionId'
-    | '/resources/documentation'
-    | '/resources/tools'
-    | '/resources/videos'
     | '/roadmap/advanced'
     | '/roadmap/beginner'
     | '/roadmap/intermediate'
@@ -230,9 +197,6 @@ export interface FileRouteTypes {
     | '/progress'
     | '/signup'
     | '/feedback/$submissionId'
-    | '/resources/documentation'
-    | '/resources/tools'
-    | '/resources/videos'
     | '/roadmap/advanced'
     | '/roadmap/beginner'
     | '/roadmap/intermediate'
@@ -251,9 +215,6 @@ export interface RootRouteChildren {
   ProgressRoute: typeof ProgressRoute
   SignupRoute: typeof SignupRoute
   FeedbackSubmissionIdRoute: typeof FeedbackSubmissionIdRoute
-  ResourcesDocumentationRoute: typeof ResourcesDocumentationRoute
-  ResourcesToolsRoute: typeof ResourcesToolsRoute
-  ResourcesVideosRoute: typeof ResourcesVideosRoute
   RoadmapAdvancedRoute: typeof RoadmapAdvancedRoute
   RoadmapBeginnerRoute: typeof RoadmapBeginnerRoute
   RoadmapIntermediateRoute: typeof RoadmapIntermediateRoute
@@ -357,27 +318,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RoadmapAdvancedRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/resources/videos': {
-      id: '/resources/videos'
-      path: '/resources/videos'
-      fullPath: '/resources/videos'
-      preLoaderRoute: typeof ResourcesVideosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/resources/tools': {
-      id: '/resources/tools'
-      path: '/resources/tools'
-      fullPath: '/resources/tools'
-      preLoaderRoute: typeof ResourcesToolsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/resources/documentation': {
-      id: '/resources/documentation'
-      path: '/resources/documentation'
-      fullPath: '/resources/documentation'
-      preLoaderRoute: typeof ResourcesDocumentationRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/feedback/$submissionId': {
       id: '/feedback/$submissionId'
       path: '/feedback/$submissionId'
@@ -403,9 +343,6 @@ const rootRouteChildren: RootRouteChildren = {
   ProgressRoute: ProgressRoute,
   SignupRoute: SignupRoute,
   FeedbackSubmissionIdRoute: FeedbackSubmissionIdRoute,
-  ResourcesDocumentationRoute: ResourcesDocumentationRoute,
-  ResourcesToolsRoute: ResourcesToolsRoute,
-  ResourcesVideosRoute: ResourcesVideosRoute,
   RoadmapAdvancedRoute: RoadmapAdvancedRoute,
   RoadmapBeginnerRoute: RoadmapBeginnerRoute,
   RoadmapIntermediateRoute: RoadmapIntermediateRoute,

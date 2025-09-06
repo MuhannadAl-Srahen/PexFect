@@ -10,7 +10,7 @@ export const challengeDetailData: Record<number, Challenge> = {
       'Create a modern, responsive product card component that showcases a product with an image, title, price, and call-to-action button. This challenge focuses on clean design principles and responsive layout techniques.',
     images: [
       {
-        url: '/src/assets/images/girl.jpg',
+        url: '/src/assets/images/desktop.jpg',
         alt: 'Desktop view of the product card',
         label: 'Desktop',
       },

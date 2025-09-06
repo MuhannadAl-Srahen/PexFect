@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button'
 import { ArrowLeft, BookOpen, Palette, FileText, Upload } from 'lucide-react'
 import { PageLayout } from '@/layouts'
 import { getChallengeById } from '@/services/challenges/api'
-
 import {
   ChallengeHero,
   ChallengeOverview,
@@ -34,6 +33,7 @@ function RouteComponent() {
     queryFn: () => getChallengeById(parseInt(id)),
   })
 
+  // TODO: Add proper error handling and loading states
   if (isLoading) {
     return (
       <PageLayout>
@@ -80,7 +80,7 @@ function RouteComponent() {
           className='mb-4 md:mb-6 transition-all duration-300 hover:scale-105'
         >
           <ArrowLeft className='mr-2 h-4 w-4' />
-          <span className='hidden sm:inline'>Back to Challenges</span>
+          <span className='hidden sm:inline text-base'>Back to Challenges</span>
           <span className='sm:hidden'>Back</span>
         </Button>
       </Link>
