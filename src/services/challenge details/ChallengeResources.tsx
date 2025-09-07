@@ -40,7 +40,7 @@ export function ChallengeResources({ challenge }: ChallengeResourcesProps) {
                   alt={video.title}
                   className='w-full h-full object-cover transition-transform duration-500 group-hover:scale-105'
                 />
-                <div className='absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity'>
+                <div className='absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
                   <Link
                     to={video.url}
                     className='w-10 h-10 md:w-14 md:h-14 bg-primary rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110'
@@ -90,7 +90,7 @@ export function ChallengeResources({ challenge }: ChallengeResourcesProps) {
                 className='block bg-background rounded-lg p-3 md:p-4 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] border border-border group'
               >
                 <div className='flex items-start space-x-3 md:space-x-4'>
-                  <div className='p-2 md:p-3 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors'>
+                  <div className='p-2 md:p-3 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors duration-300'>
                     <FileText className='h-4 w-4 md:h-5 md:w-5 text-primary' />
                   </div>
                   <div className='flex-1 min-w-0'>
@@ -120,7 +120,7 @@ export function ChallengeResources({ challenge }: ChallengeResourcesProps) {
                 className='block bg-background rounded-lg p-3 md:p-4 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] border border-border group'
               >
                 <div className='flex items-start space-x-3 md:space-x-4'>
-                  <div className='p-2 md:p-3 bg-secondary/50 rounded-lg group-hover:bg-secondary/80 transition-colors'>
+                  <div className='p-2 md:p-3 bg-secondary/50 rounded-lg group-hover:bg-secondary/80 transition-colors duration-300'>
                     <BookOpen className='h-4 w-4 md:h-5 md:w-5 text-foreground' />
                   </div>
                   <div className='flex-1 min-w-0'>
@@ -168,7 +168,7 @@ export function ChallengeResources({ challenge }: ChallengeResourcesProps) {
                 className='block bg-background rounded-lg p-3 md:p-4 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] border border-border group'
               >
                 <div className='flex items-start space-x-3 md:space-x-4'>
-                  <div className='p-2 md:p-3 bg-secondary/50 rounded-lg group-hover:bg-secondary/80 transition-colors'>
+                  <div className='p-2 md:p-3 bg-secondary/50 rounded-lg group-hover:bg-secondary/80 transition-colors duration-300'>
                     <Wrench className='h-4 w-4 md:h-5 md:w-5 text-foreground' />
                   </div>
                   <div className='flex-1 min-w-0'>

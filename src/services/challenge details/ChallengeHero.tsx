@@ -61,13 +61,13 @@ export function ChallengeHero({ challenge }: ChallengeHeroProps) {
           <>
             <button
               onClick={prevImage}
-              className='absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-md transition-all z-20 opacity-100 md:opacity-0 md:group-hover:opacity-100 md:hover:scale-110'
+              className='absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-md transition-all duration-300 z-20 opacity-100 md:opacity-0 md:group-hover:opacity-100 md:hover:scale-110'
             >
               <ChevronLeft className='h-4 w-4 sm:h-5 sm:w-5' />
             </button>
             <button
               onClick={nextImage}
-              className='absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-md transition-all z-20 opacity-100 md:opacity-0 md:group-hover:opacity-100 md:hover:scale-110'
+              className='absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-md transition-all duration-300 z-20 opacity-100 md:opacity-0 md:group-hover:opacity-100 md:hover:scale-110'
             >
               <ChevronRight className='h-4 w-4 sm:h-5 sm:w-5' />
             </button>
@@ -77,7 +77,7 @@ export function ChallengeHero({ challenge }: ChallengeHeroProps) {
                 <button
                   key={index}
                   onClick={() => setCurrentImageIndex(index)}
-                  className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all hover:scale-125 ${
+                  className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 hover:scale-125 ${
                     index === currentImageIndex
                       ? 'bg-white'
                       : 'bg-white/50 hover:bg-white/80'
@@ -105,17 +105,17 @@ export function ChallengeHero({ challenge }: ChallengeHeroProps) {
               </h1>
 
               <div className='flex items-center gap-8 text-lg text-white/95 opacity-80 group-hover:opacity-100 transition-opacity duration-300'>
-                <div className='flex items-center gap-2 hover:scale-105 transition-transform'>
+                <div className='flex items-center gap-2 hover:scale-105 transition-transform duration-300'>
                   <Clock className='h-5 w-5' />
                   <span className='font-medium'>{challenge.estimatedTime}</span>
                 </div>
-                <div className='flex items-center gap-2 hover:scale-105 transition-transform'>
+                <div className='flex items-center gap-2 hover:scale-105 transition-transform duration-300'>
                   <Users className='h-5 w-5' />
                   <span className='font-medium'>
                     {challenge.completions.toLocaleString()}
                   </span>
                 </div>
-                <div className='flex items-center gap-2 hover:scale-105 transition-transform'>
+                <div className='flex items-center gap-2 hover:scale-105 transition-transform duration-300'>
                   <Star className='h-5 w-5 fill-current text-yellow-400' />
                   <span className='font-medium'>{challenge.rating}</span>
                 </div>
@@ -156,7 +156,7 @@ export function ChallengeHero({ challenge }: ChallengeHeroProps) {
             href={challenge.livePreviewUrl}
             target='_blank'
             rel='noopener noreferrer'
-            className='inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-md font-medium text-sm transition-colors flex-shrink-0'
+            className='inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-md font-medium text-sm transition-colors duration-300 flex-shrink-0'
           >
             <Eye className='h-4 w-4' />
             <span>Preview</span>
