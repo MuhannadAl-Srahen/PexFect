@@ -299,3 +299,14 @@ export interface FeedbackComment {
   type: 'suggestion' | 'issue' | 'praise'
   resolved: boolean
 }
+
+// ============================================================================
+// USER DATA TYPES
+// ============================================================================
+
+export interface UserData {
+  fullName: string
+  username: string
+  initials: string
+  avatarUrl?: string
+}
