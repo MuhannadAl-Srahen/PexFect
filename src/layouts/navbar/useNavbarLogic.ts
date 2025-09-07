@@ -2,8 +2,35 @@ import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useLocation } from '@tanstack/react-router'
 import { useTheme } from 'next-themes'
 import { cn } from '@/lib/utils'
-import { throttle } from './utils'
-import { SCROLL_THRESHOLD, THROTTLE_DELAY } from './constants'
+
+const SCROLL_THRESHOLD = 50
+const THROTTLE_DELAY = 16 // ~60fps
+
+// Throttle function for better scroll performance
+const throttle = <T extends (...args: unknown[]) => unknown>(
+  func: T,
+  delay: number
+) => {
+  let timeoutId: NodeJS.Timeout
+  let lastExecTime = 0
+  return function (...args: Parameters<T>) {
+    const currentTime = Date.now()
+
+    if (currentTime - lastExecTime > delay) {
+      func(...args)
+      lastExecTime = currentTime
+    } else {
+      clearTimeout(timeoutId)
+      timeoutId = setTimeout(
+        () => {
+          func(...args)
+          lastExecTime = Date.now()
+        },
+        delay - (currentTime - lastExecTime)
+      )
+    }
+  }
+}
 
 export const useNavbarLogic = () => {
   const location = useLocation()

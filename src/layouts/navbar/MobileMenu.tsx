@@ -1,9 +1,15 @@
 import { Link } from '@tanstack/react-router'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { LogOut, Github } from 'lucide-react'
+import { LogOut, Github, Map, BookOpen, Swords, Trophy } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { navItems } from './constants'
 import { ThemeToggle } from './ThemeToggle'
+
+const navItems = [
+  { name: 'Challenges', href: '/challenges', icon: Swords },
+  { name: 'Roadmap', href: '/roadmap', icon: Map },
+  { name: 'Resources', href: '/resources', icon: BookOpen },
+  { name: 'Progress', href: '/progress', icon: Trophy },
+] as const
 
 interface MobileMenuProps {
   isOpen: boolean

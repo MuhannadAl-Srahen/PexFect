@@ -1,6 +1,13 @@
 import { Link } from '@tanstack/react-router'
+import { Map, BookOpen, Swords, Trophy } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { navItems } from './constants'
+
+const navItems = [
+  { name: 'Challenges', href: '/challenges', icon: Swords },
+  { name: 'Roadmap', href: '/roadmap', icon: Map },
+  { name: 'Resources', href: '/resources', icon: BookOpen },
+  { name: 'Progress', href: '/progress', icon: Trophy },
+] as const
 
 interface DesktopNavProps {
   pathname: string
