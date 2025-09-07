@@ -1,4 +1,4 @@
-import type { Challenge } from '@/types/challenge'
+import type { Challenge, ChallengeListItem } from '@/types'
 
 export const challengeDetailData: Record<number, Challenge> = {
   1: {
@@ -184,7 +184,7 @@ export const challengeDetailData: Record<number, Challenge> = {
   },
 }
 
-export const challenges = [
+export const challenges: ChallengeListItem[] = [
   {
     id: 1,
     title: 'Responsive Navigation Bar',

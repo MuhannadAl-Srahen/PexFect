@@ -1,4 +1,4 @@
-import type { Challenge } from '@/types/challenge'
+import type { Challenge } from '@/types'
 import { challengeDetailData } from './data'
 
 export const getChallengeById = async (

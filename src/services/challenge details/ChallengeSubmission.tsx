@@ -12,8 +12,8 @@ import {
   AlertCircle,
   HelpCircle,
 } from 'lucide-react'
-import { submitChallengeSolution } from '../../api'
-import type { Challenge } from '@/types/challenge'
+import { submitChallengeSolution } from '../challenges/api'
+import type { Challenge } from '@/types'
 
 interface ChallengeSubmissionProps {
   challenge: Challenge

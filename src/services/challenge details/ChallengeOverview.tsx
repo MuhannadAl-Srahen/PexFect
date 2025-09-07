@@ -1,7 +1,7 @@
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Lightbulb, AlertTriangle, BookOpen, FileText } from 'lucide-react'
-import type { Challenge } from '@/types/challenge'
+import type { Challenge } from '@/types'
 
 interface ChallengeOverviewProps {
   challenge: Challenge

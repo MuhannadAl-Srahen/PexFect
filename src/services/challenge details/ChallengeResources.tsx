@@ -1,7 +1,7 @@
 import { Badge } from '@/components/ui/badge'
 import { Video, FileText, BookOpen, Wrench, Play } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
-import type { Challenge } from '@/types/challenge'
+import type { Challenge } from '@/types'
 
 interface ChallengeResourcesProps {
   challenge: Challenge
