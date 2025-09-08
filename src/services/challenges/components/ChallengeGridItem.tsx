@@ -21,7 +21,7 @@ export function ChallengeGridItem({
 }: ChallengeItemProps) {
   return (
     <a href={`/challenges/${challenge.id}`} className='block h-full group'>
-      <Card className='flex h-full flex-col overflow-hidden rounded-xl border border-border/50 bg-card shadow-md transition-transform duration-300 hover:shadow-xl hover:scale-[1.02] py-0 gap-2'>
+      <Card className='flex h-full flex-col overflow-hidden rounded-xl border border-border/50 bg-card shadow-md transition-transform duration-300 hover:shadow-xl hover:scale-[1.02] py-0 gap-0'>
         {/* Image Section */}
         <div className='relative aspect-[16/9] overflow-hidden rounded-t-xl'>
           <img
@@ -34,7 +34,7 @@ export function ChallengeGridItem({
           <div className='absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent' />
 
           {/* Difficulty Badge */}
-          <div className='absolute top-3 left-3'>
+          <div className='absolute top-4 left-4'>
             <Badge
               className={`${DIFFICULTY_COLORS[challenge.difficulty as DifficultyLevel]} px-2.5 py-0.5 text-xs border-0 font-semibold shadow-sm`}
             >
@@ -46,7 +46,7 @@ export function ChallengeGridItem({
           <Button
             variant='ghost'
             size='sm'
-            className='absolute top-3 right-3 h-9 w-9 rounded-full bg-background/70 backdrop-blur-sm transition-colors'
+            className='absolute top-4 right-4 h-10 w-10 rounded-full bg-background/70 backdrop-blur-sm transition-colors'
             onClick={(e) => {
               e.preventDefault()
               e.stopPropagation()
@@ -64,17 +64,17 @@ export function ChallengeGridItem({
         </div>
 
         {/* Content Section */}
-        <CardContent className='flex flex-col flex-1 px-4 py-4'>
-          <h3 className='mb-2 line-clamp-1 text-lg font-semibold tracking-tight text-card-foreground group-hover:text-primary transition-colors'>
+        <CardContent className='flex flex-col flex-1 px-6 py-5'>
+          <h3 className='mb-3 line-clamp-1 text-lg font-semibold tracking-tight text-card-foreground group-hover:text-primary transition-colors'>
             {challenge.title}
           </h3>
 
-          <p className='mb-3 line-clamp-2 text-sm text-muted-foreground'>
+          <p className='mb-4 line-clamp-2 text-sm text-muted-foreground'>
             {challenge.description}
           </p>
 
           {/* Tags */}
-          <div className='mb-4 flex flex-wrap gap-1.5'>
+          <div className='mb-4 flex flex-wrap gap-2'>
             {challenge.tags.slice(0, 3).map((tag) => (
               <Badge
                 key={tag}
@@ -95,7 +95,7 @@ export function ChallengeGridItem({
           </div>
 
           {/* Stats */}
-          <div className='mt-auto flex items-center justify-between border-t border-border/50 pt-3 text-sm text-muted-foreground'>
+          <div className='mt-auto flex items-center justify-between border-t border-border/50 pt-4 text-sm text-muted-foreground'>
             <div className='flex items-center gap-1.5'>
               <Users className='h-4 w-4 text-green-400/80' />
               <span className='font-medium'>
