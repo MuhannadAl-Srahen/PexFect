@@ -8,20 +8,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Search } from 'lucide-react'
-
-export interface ChallengeControlsProps {
-  searchTerm: string
-  selectedDifficulty: string
-  selectedLanguage: string
-  onSearchChange: (value: string) => void
-  onDifficultyChange: (value: string) => void
-  onLanguageChange: (value: string) => void
-  viewMode: 'grid' | 'list'
-  onViewModeChange: (mode: 'grid' | 'list') => void
-  filteredCount: number
-  totalCount: number
-}
-
+import type { ChallengeControlsProps } from '@/types'
 export function ChallengeControls({
   searchTerm,
   selectedDifficulty,
