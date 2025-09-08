@@ -151,26 +151,24 @@ const legalLinks = [
 const FooterBottom = () => {
   return (
     <div className='border-t border-border mt-5 pt-7'>
-      <div className='max-w-5xl mx-auto'>
-        <div className='flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0'>
-          <div className='text-sm text-muted-foreground flex items-center space-x-2'>
-            <span>© {currentYear} PexFect. All rights reserved.</span>
-          </div>
-          <div className='flex items-center space-x-6 text-sm'>
-            {legalLinks.map(({ name, href }, index) => (
-              <div key={name} className='flex items-center space-x-6'>
-                <a
-                  href={href}
-                  className='text-muted-foreground hover:text-primary transition-all duration-300 hover:underline hover:underline-offset-4 hover:scale-105'
-                >
-                  {name}
-                </a>
-                {index < legalLinks.length - 1 && (
-                  <div className='w-1 h-1 bg-muted-foreground/30 rounded-full' />
-                )}
-              </div>
-            ))}
-          </div>
+      <div className='flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0'>
+        <div className='text-sm text-muted-foreground flex items-center space-x-2'>
+          <span>© {currentYear} PexFect. All rights reserved.</span>
+        </div>
+        <div className='flex items-center space-x-6 text-sm'>
+          {legalLinks.map(({ name, href }, index) => (
+            <div key={name} className='flex items-center space-x-6'>
+              <a
+                href={href}
+                className='text-muted-foreground hover:text-primary transition-all duration-300 hover:underline hover:underline-offset-4 hover:scale-105'
+              >
+                {name}
+              </a>
+              {index < legalLinks.length - 1 && (
+                <div className='w-1 h-1 bg-muted-foreground/30 rounded-full' />
+              )}
+            </div>
+          ))}
         </div>
       </div>
     </div>
@@ -181,8 +179,8 @@ const FooterBottom = () => {
 export default function Footer() {
   return (
     <footer className='bg-background border-t border-border'>
-      <div className='mx-auto container py-10'>
-        <div className='mx-auto max-w-7xl'>
+      <div className='container mx-auto py-10'>
+        <div className='mx-auto max-w-7xl px-4'>
           <div className='grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16'>
             {/* Company Info */}
             <div className='md:col-span-1 flex flex-col gap-5'>
@@ -208,8 +206,8 @@ export default function Footer() {
           </div>
 
           {/* Bottom Section */}
+          <FooterBottom />
         </div>
-        <FooterBottom />
       </div>
     </footer>
   )
