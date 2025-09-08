@@ -35,7 +35,7 @@ export function ChallengeControls({
   totalCount,
 }: ChallengeControlsProps) {
   return (
-    <div className='space-y-4 mb-8'>
+    <div className='space-y-4 mb-3'>
       {/* Search and Filters */}
       <div className='flex items-center justify-between flex-wrap lg:flex-row gap-4'>
         {/* Search */}
@@ -80,11 +80,8 @@ export function ChallengeControls({
       </div>
 
       {/* View Mode Toggle and Count */}
-      <div className='flex items-center justify-between flex-wrap gap-4'>
-        <p className='text-muted-foreground'>
-          Showing {filteredCount} of {totalCount} challenges
-        </p>
 
+      <div className='flex flex-col gap-6 flex-wrap'>
         <div className='flex gap-2'>
           <Button
             variant={viewMode === 'grid' ? 'default' : 'ghost'}
@@ -101,6 +98,9 @@ export function ChallengeControls({
             List View
           </Button>
         </div>
+        <p className='text-muted-foreground ml-1'>
+          Showing {filteredCount} of {totalCount} challenges
+        </p>
       </div>
     </div>
   )

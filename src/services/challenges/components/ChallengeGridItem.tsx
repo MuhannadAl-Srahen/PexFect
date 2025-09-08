@@ -21,7 +21,7 @@ export function ChallengeGridItem({
 }: ChallengeItemProps) {
   return (
     <a href={`/challenges/${challenge.id}`} className='block h-full group'>
-      <Card className='flex h-full flex-col overflow-hidden rounded-xl border border-border/50 bg-card shadow-md transition-transform  duration-300 hover:shadow-xl hover:scale-[1.02] py-0'>
+      <Card className='flex h-full flex-col overflow-hidden rounded-xl border border-border/50 bg-card shadow-md transition-transform duration-300 hover:shadow-xl hover:scale-[1.02] py-0 gap-2'>
         {/* Image Section */}
         <div className='relative aspect-[16/9] overflow-hidden rounded-t-xl'>
           <img
@@ -36,7 +36,7 @@ export function ChallengeGridItem({
           {/* Difficulty Badge */}
           <div className='absolute top-3 left-3'>
             <Badge
-              className={`${DIFFICULTY_COLORS[challenge.difficulty as DifficultyLevel]} px-3 py-1 text-xs border-0 font-semibold shadow-sm`}
+              className={`${DIFFICULTY_COLORS[challenge.difficulty as DifficultyLevel]} px-2.5 py-0.5 text-xs border-0 font-semibold shadow-sm`}
             >
               {challenge.difficulty}
             </Badge>
@@ -64,7 +64,7 @@ export function ChallengeGridItem({
         </div>
 
         {/* Content Section */}
-        <CardContent className='flex flex-col flex-1 px-4 py-5'>
+        <CardContent className='flex flex-col flex-1 px-4 py-4'>
           <h3 className='mb-2 line-clamp-1 text-lg font-semibold tracking-tight text-card-foreground group-hover:text-primary transition-colors'>
             {challenge.title}
           </h3>
@@ -74,12 +74,12 @@ export function ChallengeGridItem({
           </p>
 
           {/* Tags */}
-          <div className='mb-6 flex flex-wrap gap-2'>
+          <div className='mb-4 flex flex-wrap gap-1.5'>
             {challenge.tags.slice(0, 3).map((tag) => (
               <Badge
                 key={tag}
                 variant='outline'
-                className='rounded-full px-3 py-1 text-xs font-medium border-border bg-muted/50 text-muted-foreground hover:bg-primary/10 transition-colors'
+                className='rounded-full px-2.5 py-0.5 text-xs font-medium border-border bg-muted/50 text-muted-foreground hover:bg-primary/10 transition-colors'
               >
                 {tag}
               </Badge>
@@ -87,7 +87,7 @@ export function ChallengeGridItem({
             {challenge.tags.length > 3 && (
               <Badge
                 variant='outline'
-                className='rounded-full px-3 py-1 text-xs font-medium border-border bg-muted/50 text-muted-foreground'
+                className='rounded-full px-2.5 py-0.5 text-xs font-medium border-border bg-muted/50 text-muted-foreground'
               >
                 +{challenge.tags.length - 3}
               </Badge>
@@ -95,7 +95,7 @@ export function ChallengeGridItem({
           </div>
 
           {/* Stats */}
-          <div className='mt-auto flex items-center justify-between border-t border-border/50 pt-4 px-3 text-sm text-muted-foreground'>
+          <div className='mt-auto flex items-center justify-between border-t border-border/50 pt-3 text-sm text-muted-foreground'>
             <div className='flex items-center gap-1.5'>
               <Users className='h-4 w-4 text-green-400/80' />
               <span className='font-medium'>
