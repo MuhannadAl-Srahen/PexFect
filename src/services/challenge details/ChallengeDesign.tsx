@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Type, Monitor, Palette } from 'lucide-react'
-import type { Challenge } from '@/types/challenge'
+import type { Challenge } from '@/types'
 
 interface ChallengeDesignProps {
   challenge: Challenge

@@ -8,8 +8,17 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react'
-import { DIFFICULTY_COLORS, type DifficultyLevel } from '../../constants'
-import type { Challenge } from '@/types/challenge'
+import type { Challenge } from '@/types'
+
+const DIFFICULTY_COLORS = {
+  Beginner:
+    'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-400',
+  Intermediate:
+    'bg-amber-100 text-amber-800 dark:bg-amber-900/20 dark:text-amber-400',
+  Advanced: 'bg-rose-100 text-rose-800 dark:bg-rose-900/20 dark:text-rose-400',
+} as const
+
+type DifficultyLevel = keyof typeof DIFFICULTY_COLORS
 
 interface ChallengeHeroProps {
   challenge: Challenge
@@ -52,13 +61,13 @@ export function ChallengeHero({ challenge }: ChallengeHeroProps) {
           <>
             <button
               onClick={prevImage}
-              className='absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-md transition-all z-20 opacity-100 md:opacity-0 md:group-hover:opacity-100 md:hover:scale-110'
+              className='absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-md transition-all duration-300 z-20 opacity-100 md:opacity-0 md:group-hover:opacity-100 md:hover:scale-110'
             >
               <ChevronLeft className='h-4 w-4 sm:h-5 sm:w-5' />
             </button>
             <button
               onClick={nextImage}
-              className='absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-md transition-all z-20 opacity-100 md:opacity-0 md:group-hover:opacity-100 md:hover:scale-110'
+              className='absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-md transition-all duration-300 z-20 opacity-100 md:opacity-0 md:group-hover:opacity-100 md:hover:scale-110'
             >
               <ChevronRight className='h-4 w-4 sm:h-5 sm:w-5' />
             </button>
@@ -68,7 +77,7 @@ export function ChallengeHero({ challenge }: ChallengeHeroProps) {
                 <button
                   key={index}
                   onClick={() => setCurrentImageIndex(index)}
-                  className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all hover:scale-125 ${
+                  className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 hover:scale-125 ${
                     index === currentImageIndex
                       ? 'bg-white'
                       : 'bg-white/50 hover:bg-white/80'
@@ -96,17 +105,17 @@ export function ChallengeHero({ challenge }: ChallengeHeroProps) {
               </h1>
 
               <div className='flex items-center gap-8 text-lg text-white/95 opacity-80 group-hover:opacity-100 transition-opacity duration-300'>
-                <div className='flex items-center gap-2 hover:scale-105 transition-transform'>
+                <div className='flex items-center gap-2 hover:scale-105 transition-transform duration-300'>
                   <Clock className='h-5 w-5' />
                   <span className='font-medium'>{challenge.estimatedTime}</span>
                 </div>
-                <div className='flex items-center gap-2 hover:scale-105 transition-transform'>
+                <div className='flex items-center gap-2 hover:scale-105 transition-transform duration-300'>
                   <Users className='h-5 w-5' />
                   <span className='font-medium'>
                     {challenge.completions.toLocaleString()}
                   </span>
                 </div>
-                <div className='flex items-center gap-2 hover:scale-105 transition-transform'>
+                <div className='flex items-center gap-2 hover:scale-105 transition-transform duration-300'>
                   <Star className='h-5 w-5 fill-current text-yellow-400' />
                   <span className='font-medium'>{challenge.rating}</span>
                 </div>
@@ -127,7 +136,7 @@ export function ChallengeHero({ challenge }: ChallengeHeroProps) {
       </div>
 
       {/* Mobile Content Section - only visible on sm and below */}
-      <div className='md:hidden p-3 space-y-3'>
+      <div className='md:hidden p-3 space-y-2'>
         <div className='flex items-start justify-between gap-3'>
           <div className='space-y-2 flex-1'>
             <Badge
@@ -142,30 +151,33 @@ export function ChallengeHero({ challenge }: ChallengeHeroProps) {
               {challenge.title}
             </h1>
           </div>
-
-          <a
-            href={challenge.livePreviewUrl}
-            target='_blank'
-            rel='noopener noreferrer'
-            className='inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-md font-medium text-sm transition-colors flex-shrink-0'
-          >
-            <Eye className='h-4 w-4' />
-            <span>Preview</span>
-          </a>
         </div>
 
-        <div className='flex flex-wrap items-center gap-3 text-xs text-muted-foreground'>
-          <div className='flex items-center gap-1'>
-            <Clock className='h-3 w-3' />
-            <span>{challenge.estimatedTime}</span>
+        <div className='flex items-center justify-between'>
+          <div className='flex flex-wrap items-center gap-3 text-xs text-muted-foreground'>
+            <div className='flex items-center gap-1'>
+              <Clock className='h-3 w-3' />
+              <span>{challenge.estimatedTime}</span>
+            </div>
+            <div className='flex items-center gap-1'>
+              <Users className='h-3 w-3' />
+              <span>{challenge.completions.toLocaleString()}</span>
+            </div>
+            <div className='flex items-center gap-1'>
+              <Star className='h-3 w-3 fill-current text-yellow-500' />
+              <span>{challenge.rating}</span>
+            </div>
           </div>
-          <div className='flex items-center gap-1'>
-            <Users className='h-3 w-3' />
-            <span>{challenge.completions.toLocaleString()}</span>
-          </div>
-          <div className='flex items-center gap-1'>
-            <Star className='h-3 w-3 fill-current text-yellow-500' />
-            <span>{challenge.rating}</span>
+          <div>
+            <a
+              href={challenge.livePreviewUrl}
+              target='_blank'
+              rel='noopener noreferrer'
+              className='inline-flex items-center justify-center gap-1.5 md:px-3 md:py-2 py-2 px-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-md font-medium text-sm transition-colors duration-300 flex-shrink-0'
+            >
+              <Eye className='h-4 w-4' />
+              <span>Preview</span>
+            </a>
           </div>
         </div>
       </div>

@@ -1,15 +1,13 @@
 import { useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { PageLayout } from '@/layouts/PageLayout'
+import { PageLayout } from '@/layouts'
 import {
-  challenges,
-  useChallengeFilters,
   ChallengePageHeader,
   ChallengeControls,
-  ViewModeToggle,
-  ChallengeCount,
   ChallengeView,
   EmptyState,
+  challenges,
+  useChallengeFilters,
 } from '@/services/challenges'
 
 export const Route = createFileRoute('/challenges/')({
@@ -50,10 +48,8 @@ function RouteComponent() {
         onSearchChange={setSearchTerm}
         onDifficultyChange={setSelectedDifficulty}
         onLanguageChange={setSelectedLanguage}
-      />
-
-      <ViewModeToggle viewMode={viewMode} onViewModeChange={setViewMode} />
-      <ChallengeCount
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
         filteredCount={filteredChallenges.length}
         totalCount={challenges.length}
       />

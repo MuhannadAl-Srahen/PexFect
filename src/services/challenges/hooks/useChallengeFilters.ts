@@ -1,16 +1,7 @@
 import { useState, useMemo } from 'react'
+import type { ChallengeListItem } from '@/types'
 
-interface Challenge {
-  id: number
-  title: string
-  difficulty: string
-  tags: string[]
-  description: string
-  estimatedTime: string
-  submissions: number
-}
-
-export function useChallengeFilters(challenges: Challenge[]) {
+export function useChallengeFilters(challenges: ChallengeListItem[]) {
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all')
   const [selectedLanguage, setSelectedLanguage] = useState<string>('all')

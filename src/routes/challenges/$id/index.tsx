@@ -10,8 +10,8 @@ import {
   ChallengeOverview,
   ChallengeDesign,
   ChallengeResources,
+  ChallengeSubmission,
 } from '@/services/challenges'
-import { ChallengeSubmission } from '@/services/challenges/components/details/ChallengeSubmission'
 
 type TabType = 'overview' | 'design' | 'resources' | 'submission'
 

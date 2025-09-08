@@ -8,7 +8,15 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { User, LogOut, Github } from 'lucide-react'
-import { currentUser } from '@/data/userData'
+import type { UserData } from '@/types'
+
+// Mock user data - in a real app this would come from auth state
+const currentUser: UserData = {
+  fullName: 'Muhannad Al-Srahen',
+  username: 'muhannad-dev',
+  initials: 'MA',
+  avatarUrl: '/placeholder.svg?height=40&width=40',
+}
 
 interface UserActionsProps {
   isLoggedIn: boolean
