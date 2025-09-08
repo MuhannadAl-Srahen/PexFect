@@ -6,6 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+
 import { Search, Grid3x3, List } from 'lucide-react'
 
 export interface ChallengeControlsProps {
@@ -20,7 +21,6 @@ export interface ChallengeControlsProps {
   filteredCount: number
   totalCount: number
 }
-
 export function ChallengeControls({
   searchTerm,
   selectedDifficulty,
