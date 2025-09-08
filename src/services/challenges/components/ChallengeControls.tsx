@@ -81,13 +81,16 @@ export function ChallengeControls({
       {/* View Mode Toggle and Count */}
       <div className='flex flex-col gap-6 flex-wrap'>
         <div className='flex items-center'>
-          <div className='relative inline-flex items-center rounded-xl bg-muted/50 p-1 shadow-sm border border-border/30'>
+          <div
+            className="relative inline-flex items-center rounded-xl bg-muted/50 p-1 shadow-sm border border-border/30"
+            style={{ ['--toggle-gap' as any]: '2px' }}
+          >
             {/* Animated sliding background */}
             <div
               className={`absolute top-1 bottom-1 bg-primary rounded-lg shadow-md transition-all duration-300 ease-out ${
                 viewMode === 'grid'
-                  ? 'left-1 right-[calc(50%+2px)]'
-                  : 'right-1 left-[calc(50%+2px)]'
+                  ? 'left-1 right-[calc(50%+var(--toggle-gap))]'
+                  : 'right-1 left-[calc(50%+var(--toggle-gap))]'
               }`}
             />
 
