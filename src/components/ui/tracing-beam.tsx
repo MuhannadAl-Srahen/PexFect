@@ -1,5 +1,5 @@
 'use client'
-import type React from 'react'
+import React from 'react'
 import { useEffect, useRef, useState } from 'react'
 import { motion, useTransform, useScroll, useSpring } from 'motion/react'
 import { cn } from '@/lib/utils'
@@ -28,17 +28,11 @@ export const TracingBeam = ({
 
   const y1 = useSpring(
     useTransform(scrollYProgress, [0, 0.8], [50, svgHeight]),
-    {
-      stiffness: 500,
-      damping: 90,
-    }
+    { stiffness: 500, damping: 90 }
   )
   const y2 = useSpring(
     useTransform(scrollYProgress, [0, 1], [50, svgHeight - 200]),
-    {
-      stiffness: 500,
-      damping: 90,
-    }
+    { stiffness: 500, damping: 90 }
   )
 
   return (
@@ -46,37 +40,32 @@ export const TracingBeam = ({
       ref={ref}
       className={cn('relative mx-auto h-full w-full max-w-4xl', className)}
     >
-      <div className='absolute top-3 left-1/2 -translate-x-1/2'>
+      <div className='absolute top-3 left-4 md:left-1/2 md:-translate-x-1/2'>
         <motion.div
-          transition={{
-            duration: 0.2,
-            delay: 0.5,
-          }}
+          transition={{ duration: 0.2, delay: 0.5 }}
           animate={{
             boxShadow:
               scrollYProgress.get() > 0
                 ? 'none'
-                : 'rgba(0, 0, 0., 0.24) 0px 3px 8px',
+                : 'rgba(0, 0, 0, 0.24) 0px 3px 8px',
           }}
-          className='border-primary bg-background flex h-5 w-5 items-center justify-center rounded-full border shadow-sm top-3 left-1/2 -translate-x-1/2'
+          className='border-primary bg-background flex h-5 w-5 items-center justify-center rounded-full border shadow-sm'
         >
           <motion.div
-            transition={{
-              duration: 0.2,
-              delay: 0.5,
-            }}
+            transition={{ duration: 0.2, delay: 0.5 }}
             animate={{
               backgroundColor: scrollYProgress.get() > 0 ? 'white' : '#3b82f6',
               borderColor: scrollYProgress.get() > 0 ? 'white' : '#2563eb',
             }}
-            className='h-2 w-2 rounded-full border  border-blue-600 bg-blue-500'
+            className='h-2 w-2 rounded-full border border-blue-600 bg-blue-500'
           />
         </motion.div>
+
         <svg
           viewBox={`0 0 20 ${svgHeight}`}
           width='20'
           height={svgHeight}
-          className='block transform -translate-x-1/2'
+          className='block'
           aria-hidden='true'
         >
           <motion.path
@@ -85,20 +74,14 @@ export const TracingBeam = ({
             stroke='#2563eb'
             strokeOpacity='0.16'
             strokeWidth='2'
-            transition={{
-              duration: 10,
-            }}
-          ></motion.path>
+          />
           <motion.path
             d={`M 10 0 L 10 ${svgHeight}`}
             fill='none'
             stroke='url(#gradient)'
             strokeWidth='3'
             className='motion-reduce:hidden'
-            transition={{
-              duration: 10,
-            }}
-          ></motion.path>
+          />
           <defs>
             <motion.linearGradient
               id='gradient'
@@ -116,7 +99,12 @@ export const TracingBeam = ({
           </defs>
         </svg>
       </div>
-      <div ref={contentRef}>{children}</div>
+
+      <div ref={contentRef} className='mt-8 flex flex-col gap-12 md:block'>
+        {React.Children.map(children, (child) => (
+          <div className='md:block md:pl-0 pl-16'>{child}</div>
+        ))}
+      </div>
     </motion.div>
   )
 }

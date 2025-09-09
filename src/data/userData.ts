@@ -9,5 +9,5 @@ export const currentUser: UserData = {
   fullName: 'Muhannad Al-Srahen',
   username: 'muhannad-dev',
   initials: 'MA',
-  avatarUrl: '/placeholder.svg?height=40&width=40'
+  avatarUrl: '/placeholder.svg?height=40&width=40',
 }

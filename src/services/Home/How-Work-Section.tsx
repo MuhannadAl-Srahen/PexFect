@@ -114,13 +114,13 @@ export function HowWorkSection() {
                             </div>
                           </div>
                           <h3 className='text-2xl font-semibold text-card-foreground group-hover:text-primary transition-colors'>
-                            Get AI Feedback{' '}
+                            Get Feedback
                           </h3>
                         </CardHeader>
                         <CardContent className='text-center'>
                           <p className='text-muted-foreground leading-relaxed'>
                             Receive instant insights on code quality, design,
-                            accessibility, and more
+                            accessibility and more
                           </p>
                         </CardContent>
                       </Card>
