@@ -18,9 +18,9 @@ export function HeroSection() {
         <div className='absolute bottom-40 right-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl'></div>
       </div>
 
-      <div className='relative max-w-6xl mx-auto z-10'>
+      <div className='relative mx-auto z-10'>
         <StaggerContainer
-          className='text-center py-20 lg:py-32'
+          className='text-center py-10 lg:py-15'
           staggerDelay={0.2}
         >
           {/* Badge */}
@@ -28,9 +28,9 @@ export function HeroSection() {
             <div className='flex justify-center mb-8'>
               <Badge
                 variant='secondary'
-                className='bg-primary/10 text-primary border-primary/20 px-4 py-2 sm:px-5 sm:py-2 text-xs sm:text-sm font-medium rounded-full hover:bg-primary/20 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105'
+                className='bg-primary/10 text-primary border-primary/20 px-3 py-2 sm:px-4 sm:py-2 text-lg sm:text-lg font-medium rounded-full hover:bg-primary/20 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105'
               >
-                <Sparkles className='inline-block mr-1 w-3 h-3 sm:w-4 sm:h-4' />
+                <Sparkles className='inline-block mr-1 !w-5 !h-5' />
                 AI-Powered Learning Journey
               </Badge>
             </div>
@@ -38,9 +38,9 @@ export function HeroSection() {
 
           {/* Main heading */}
           <StaggerItem animation='slideUp'>
-            <h1 className='text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight max-w-4xl mx-auto px-4'>
+            <h1 className='text-4xl sm:text-4xl md:text-4xl lg:text-7xl font-bold text-foreground mb-6 leading-tight max-w-7xl mx-auto px-4'>
               Master Frontend Development with{' '}
-              <span className='relative bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent'>
+              <span className='relative bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent lg:text-7xl'>
                 AI-Powered
               </span>{' '}
               Practice
@@ -61,7 +61,7 @@ export function HeroSection() {
               <Button
                 asChild
                 size='lg'
-                className='w-full sm:w-auto bg-primary hover:bg-primary/80 text-primary-foreground px-6 sm:px-8 py-3 text-base font-semibold rounded-lg shadow-lg hover:shadow-xl 
+                className='w-full sm:w-auto bg-primary hover:bg-primary/80 text-primary-foreground px-7 sm:px-8 py-7 text-xl font-semibold rounded-3xl shadow-lg hover:shadow-2xl 
                 hover:scale-[1.04] transition-all duration-300'
               >
                 <Link to='/signup'>Get Started</Link>
@@ -70,10 +70,10 @@ export function HeroSection() {
                 asChild
                 size='lg'
                 variant='outline'
-                className='w-full sm:w-auto border-2 border-border text-foreground hover:bg-accent/30 px-6 sm:px-8 py-3 text-base font-semibold rounded-lg hover:shadow-xl hover:scale-[1.04] transition-all duration-300'
+                className='w-full sm:w-auto border-2 border-border text-foreground hover:bg-accent/30 px-7 sm:px-8 py-7 text-xl font-semibold rounded-3xl hover:shadow-xl hover:scale-[1.04] transition-all duration-300'
               >
                 <Link to='/roadmap'>
-                  <Play className='inline-block mr-1 w-4 h-4' />
+                  <Play className='inline-block mr-1 !w-6 !h-6' />
                   View Roadmap
                 </Link>
               </Button>
@@ -82,7 +82,8 @@ export function HeroSection() {
         </StaggerContainer>
       </div>
     </section>
-  )
+
+)
 }
 
 export default HeroSection

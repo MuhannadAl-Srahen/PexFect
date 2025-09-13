@@ -52,7 +52,7 @@ export function ChallengeSection() {
     })
   }
   return (
-    <section className='bg-background py-16 sm:py-24 lg:py-32'>
+    <section className='bg-background py-16 sm:py-24 lg:py-34'>
       <div className='mx-auto max-w-7xl px-6 lg:px-8'>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -60,11 +60,11 @@ export function ChallengeSection() {
           transition={{ duration: 0.6 }}
           viewport={{ once: true, margin: '-100px' }}
         >
-          <div className='mx-auto max-w-2xl text-center'>
-            <h2 className='text-3xl font-semibold tracking-tight text-primary sm:text-4xl lg:text-5xl'>
+          <div className='mx-auto max-w-4xl text-center'>
+            <h2 className='text-3xl font-semibold tracking-tight text-primary sm:text-4xl lg:text-7xl'>
               Featured Challenges
             </h2>
-            <p className='mt-6 text-lg leading-8 text-muted-foreground'>
+            <p className='mt-6 text-xl leading-8 text-muted-foreground'>
               Dive into real-world projects and sharp your skills
             </p>
           </div>
@@ -102,7 +102,7 @@ export function ChallengeSection() {
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.1 }}
                 viewport={{ once: true, margin: '-100px' }}
-                className='w-full max-w-sm lg:max-w-xs xl:max-w-sm lg:mt-8'
+                className='w-full max-w-sm lg:max-w-xs xl:max-w-sm lg:mt-9 '
               >
                 <ChallengeGridItem
                   challenge={featuredChallenges[0]}
@@ -117,7 +117,7 @@ export function ChallengeSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
                 viewport={{ once: true, margin: '-100px' }}
-                className='w-full max-w-sm lg:max-w-xs xl:max-w-sm transform lg:scale-110 lg:shadow-2xl lg:z-10 relative'
+                className='w-full max-w-sm lg:max-w-xs xl:max-w-sm transform lg:scale-110 lg:shadow-2xl lg:z-10 relative rounded-3xl'
               >
                 <ChallengeGridItem
                   challenge={featuredChallenges[1]}
@@ -132,7 +132,7 @@ export function ChallengeSection() {
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
                 viewport={{ once: true, margin: '-100px' }}
-                className='w-full max-w-sm lg:max-w-xs xl:max-w-sm lg:mt-8'
+                className='w-full max-w-sm lg:max-w-xs xl:max-w-sm lg:mt-14 '
               >
                 <ChallengeGridItem
                   challenge={featuredChallenges[2]}
@@ -147,18 +147,18 @@ export function ChallengeSection() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
           viewport={{ once: true, margin: '-100px' }}
         >
           <div className='flex justify-center mt-24 sm:mt-32'>
             <Button
               asChild
               size='lg'
-              className='bg-primary hover:bg-primary/80 text-primary-foreground px-8 py-3 text-base font-semibold rounded-lg shadow-lg hover:shadow-xl hover:scale-[1.04] transition-all duration-300'
+              className='bg-primary hover:bg-primary/80 text-primary-foreground px-10 py-7 text-xl font-semibold rounded-3xl shadow-xl hover:shadow-xl hover:scale-[1.04] transition-all duration-300'
             >
               <Link to='/challenges'>
                 View All Challenges
-                <MoveRight className='inline-block ml-1' />
+                <MoveRight className='inline-block ml-1 !w-7 !h-7' />
               </Link>
             </Button>
           </div>
