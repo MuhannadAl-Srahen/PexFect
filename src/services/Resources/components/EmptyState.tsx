@@ -2,10 +2,11 @@ import { Button } from '@/components/ui/button'
 import { Search } from 'lucide-react'
 
 interface EmptyStateProps {
-  onClearFilters: () => void
+  searchTerm?: string
+  onClearSearch: () => void
 }
 
-export function EmptyState({ onClearFilters }: EmptyStateProps) {
+export function EmptyState({ searchTerm, onClearSearch }: EmptyStateProps) {
   return (
     <div className='text-center py-16'>
       <div className='max-w-md mx-auto'>
@@ -16,14 +17,12 @@ export function EmptyState({ onClearFilters }: EmptyStateProps) {
           No resources found
         </h3>
         <p className='text-muted-foreground mb-6'>
-          Try adjusting your search or filter criteria
+          {searchTerm
+            ? `No results found for "${searchTerm}". Try different keywords or clear your search.`
+            : 'Try adjusting your search keywords'}
         </p>
-        <Button
-          variant='outline'
-          onClick={onClearFilters}
-          className='px-6 py-4'
-        >
-          Clear All Filters
+        <Button variant='outline' onClick={onClearSearch} className='mt-2'>
+          Clear Search
         </Button>
       </div>
     </div>

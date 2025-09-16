@@ -1,13 +1,14 @@
 // Resource Components
 export { ResourcePageHeader } from './components/ResourcePageHeader'
 export { EmptyState } from './components/EmptyState'
-export { ResourceControls } from './components/ResourceControls'
+
 export { ResourceGrid } from './components/ResourceGrid'
 export { ResourceCard } from './components/ResourceCards'
 export { ResourcesSection } from './components/ResourcesSection'
+export { ResourceControls } from './components/ResourceControls'
 
-// Hooks
-export { useResourceFilters } from './hooks/useResourceFilters'
+// Utils
+export { getBadgeColors } from './utils/badgeColors'
 
 // Data and API
 export { resources } from './data'

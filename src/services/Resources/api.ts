@@ -8,7 +8,7 @@ export const getResourceById = (id: string): Resource | undefined => {
 export const searchResources = (query: string): Resource[] => {
   const lowercaseQuery = query.toLowerCase()
   return resources.filter(
-    (resource) =>
+    (resource: Resource) =>
       resource.title.toLowerCase().includes(lowercaseQuery) ||
       resource.description.toLowerCase().includes(lowercaseQuery) ||
       resource.tags.some((tag) => tag.toLowerCase().includes(lowercaseQuery))
@@ -16,9 +16,7 @@ export const searchResources = (query: string): Resource[] => {
 }
 
 export const getResourcesByCategory = (category: string): Resource[] => {
-  return resources.filter((resource) => resource.category === category)
-}
-
-export const getResourcesByDifficulty = (difficulty: string): Resource[] => {
-  return resources.filter((resource) => resource.difficulty === difficulty)
+  return resources.filter(
+    (resource: Resource) => resource.category === category
+  )
 }

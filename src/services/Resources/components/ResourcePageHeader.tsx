@@ -4,7 +4,7 @@ export function ResourcePageHeader() {
   return (
     <PageHeader
       title='Learning Resources'
-      description='Created tutorials, documentation, and Videos to accelerate your learning'
+      description='Created tools, documentation, and Videos to accelerate your learning'
     />
   )
 }

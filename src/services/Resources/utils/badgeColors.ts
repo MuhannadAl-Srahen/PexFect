@@ -1,7 +1,7 @@
 // Function to get badge colors based on category
 export const getBadgeColors = (category: string): string => {
   const categoryLower = category.toLowerCase()
-  
+
   // Documentation - Blue
   if (categoryLower.includes('documentation')) {
     return 'bg-blue-500/10 text-blue-700 border-blue-500/20 dark:bg-blue-500/20 dark:text-blue-300 dark:border-blue-500/30'
@@ -19,7 +19,12 @@ export const getBadgeColors = (category: string): string => {
     return 'bg-green-500/10 text-green-700 border-green-500/20 dark:bg-green-500/20 dark:text-green-300 dark:border-green-500/30'
   }
   // Tools/Editor/Debug/Hosting - Emerald
-  if (categoryLower.includes('tool') || categoryLower.includes('editor') || categoryLower.includes('debug') || categoryLower.includes('hosting')) {
+  if (
+    categoryLower.includes('tool') ||
+    categoryLower.includes('editor') ||
+    categoryLower.includes('debug') ||
+    categoryLower.includes('hosting')
+  ) {
     return 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border-emerald-500/30'
   }
   // Video/YouTube - Blue
@@ -31,7 +36,10 @@ export const getBadgeColors = (category: string): string => {
     return 'bg-yellow-500/10 text-yellow-700 border-yellow-500/20 dark:bg-yellow-500/20 dark:text-yellow-300 dark:border-yellow-500/30'
   }
   // JavaScript/Frontend - Purple
-  if (categoryLower.includes('javascript') || categoryLower.includes('frontend')) {
+  if (
+    categoryLower.includes('javascript') ||
+    categoryLower.includes('frontend')
+  ) {
     return 'bg-purple-500/10 text-purple-700 border-purple-500/20 dark:bg-purple-500/20 dark:text-purple-300 dark:border-purple-500/30'
   }
   // React - Primary (using primary color)
@@ -46,12 +54,19 @@ export const getBadgeColors = (category: string): string => {
   if (categoryLower.includes('framework')) {
     return 'bg-blue-500/10 text-blue-700 border-blue-500/20 dark:bg-blue-500/20 dark:text-blue-300 dark:border-blue-500/30'
   }
-  
-  // Default color - Red
-  return 'bg-red-500/10 text-red-700 border-red-500/20 dark:bg-red-500/20 dark:text-red-300 dark:border-red-500/30'
+  // Design - Orange
+  if (categoryLower.includes('design')) {
+    return 'bg-orange-500/10 text-orange-700 border-orange-500/20 dark:bg-orange-500/20 dark:text-orange-300 dark:border-orange-500/30'
+  }
+  // Version Control - Blue
+  if (categoryLower.includes('version control')) {
+    return 'bg-blue-500/10 text-blue-700 border-blue-500/20 dark:bg-blue-500/20 dark:text-blue-300 dark:border-blue-500/30'
+  }
+
+  // Default color - Gray
+  return 'bg-gray-500/10 text-gray-700 border-gray-500/20 dark:bg-gray-500/20 dark:text-gray-300 dark:border-gray-500/30'
 }
 
-// Color mapping for easier reference and potential future use
 export const BADGE_COLOR_MAP = {
   documentation: 'blue',
   reference: 'red',
@@ -69,5 +84,7 @@ export const BADGE_COLOR_MAP = {
   frontend: 'purple',
   language: 'purple',
   framework: 'blue',
-  default: 'red'
+  design: 'orange',
+  'version control': 'blue',
+  default: 'gray',
 } as const
