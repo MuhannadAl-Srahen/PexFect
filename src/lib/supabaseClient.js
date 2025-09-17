@@ -8,7 +8,19 @@ const SUPABASE_KEY =
 export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
 export async function signInWithGitHub() {
-  const { error } = await supabase.auth.signInWithOAuth({ provider: 'github' })
+  // Clear existing Supabase session
+  await supabase.auth.signOut()
+
+  // Redirect to GitHub OAuth with prompt
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: 'github',
+    options: {
+      queryParams: {
+        prompt: 'select_account', // force GitHub to show account chooser
+      },
+    },
+  })
+
   if (error) console.error(error)
 }
 
