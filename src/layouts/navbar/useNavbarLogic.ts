@@ -1,12 +1,13 @@
+// src/navbar/useNavbarLogic.ts
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useLocation } from '@tanstack/react-router'
 import { useTheme } from 'next-themes'
 import { cn } from '@/lib/utils'
+import { supabase } from '@/lib/supabaseClient.js' // keep your .js path if that works in your setup
 
 const SCROLL_THRESHOLD = 50
-const THROTTLE_DELAY = 16 // ~60fps
+const THROTTLE_DELAY = 16
 
-// Throttle function for better scroll performance
 const throttle = <T extends (...args: unknown[]) => unknown>(
   func: T,
   delay: number
@@ -15,19 +16,15 @@ const throttle = <T extends (...args: unknown[]) => unknown>(
   let lastExecTime = 0
   return function (...args: Parameters<T>) {
     const currentTime = Date.now()
-
     if (currentTime - lastExecTime > delay) {
       func(...args)
       lastExecTime = currentTime
     } else {
       clearTimeout(timeoutId)
-      timeoutId = setTimeout(
-        () => {
-          func(...args)
-          lastExecTime = Date.now()
-        },
-        delay - (currentTime - lastExecTime)
-      )
+      timeoutId = setTimeout(() => {
+        func(...args)
+        lastExecTime = Date.now()
+      }, delay - (currentTime - lastExecTime))
     }
   }
 }
@@ -37,12 +34,30 @@ export const useNavbarLogic = () => {
   const pathname = location.pathname
   const { theme, setTheme } = useTheme()
 
-  // State
-  const [isLoggedIn, setIsLoggedIn] = useState(true) // This will be replaced with actual auth state
+  const [user, setUser] = useState<any>(null)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [scrollY, setScrollY] = useState(0)
 
-  // Throttled scroll handler for better performance
+  useEffect(() => {
+    // get current user on mount
+    const fetchUser = async () => {
+      const { data } = await supabase.auth.getUser()
+      setUser(data.user ?? null)
+    }
+    fetchUser()
+
+    // listen to auth changes
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user ?? null)
+      }
+    )
+
+    return () => {
+      authListener.subscription?.unsubscribe?.()
+    }
+  }, [])
+
   const handleScroll = useCallback(() => {
     setScrollY(window.scrollY)
   }, [])
@@ -53,7 +68,6 @@ export const useNavbarLogic = () => {
     return () => window.removeEventListener('scroll', throttledHandler)
   }, [handleScroll])
 
-  // Memoize expensive calculations
   const navbarClasses = useMemo(
     () =>
       cn(
@@ -66,7 +80,6 @@ export const useNavbarLogic = () => {
     [scrollY]
   )
 
-  // Handlers
   const toggleTheme = useCallback(() => {
     setTheme(theme === 'light' ? 'dark' : 'light')
   }, [theme, setTheme])
@@ -75,29 +88,36 @@ export const useNavbarLogic = () => {
     setIsMobileMenuOpen(false)
   }, [])
 
-  const handleLogout = useCallback(() => {
-    setIsLoggedIn(false)
+  // sign in (GitHub OAuth)
+  const signInWithGitHub = useCallback(async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: 'github',
+      options: { redirectTo: window.location.origin },
+    })
+  }, [])
+
+  // sign out
+  const handleLogout = useCallback(async () => {
+    await supabase.auth.signOut()
+    setUser(null)
   }, [])
 
   const toggleMobileMenu = useCallback(() => {
-    setIsMobileMenuOpen(!isMobileMenuOpen)
-  }, [isMobileMenuOpen])
+    setIsMobileMenuOpen((v) => !v)
+  }, [])
 
   return {
-    // State
     pathname,
     theme,
-    isLoggedIn,
+    isLoggedIn: !!user,
+    user,
     isMobileMenuOpen,
     scrollY,
-
-    // Computed
     navbarClasses,
-
-    // Handlers
     toggleTheme,
     closeMobileMenu,
     handleLogout,
     toggleMobileMenu,
+    signInWithGitHub,
   }
 }
