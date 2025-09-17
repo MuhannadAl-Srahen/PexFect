@@ -1,18 +1,6 @@
 import { ResourceCard } from './ResourceCards'
-import { EmptyState } from './EmptyState'
-
-interface ResourceItem {
-  title: string
-  description: string
-  category: string
-  url: string
-  rating?: number
-  free?: boolean
-  image?: string
-  color?: string
-  users?: string
-  by?: string
-}
+import { EmptyState } from '@/layouts'
+import type { ResourceItem } from '@/types'
 
 export interface ResourceGridProps {
   items: ResourceItem[]
@@ -29,8 +17,10 @@ export function ResourceGrid({
   if (items.length === 0 && searchTerm && searchTerm.trim() !== '') {
     return (
       <EmptyState
+        title='No resources found'
         searchTerm={searchTerm}
-        onClearSearch={onClearSearch || (() => {})}
+        buttonText='Clear Search'
+        onAction={onClearSearch || (() => {})}
       />
     )
   }

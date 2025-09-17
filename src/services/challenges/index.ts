@@ -4,7 +4,6 @@ export { ChallengeControls } from './components/ChallengeControls'
 export { ChallengeGridItem } from './components/ChallengeGridItem'
 export { ChallengeListItem } from './components/ChallengeListItem'
 export { ChallengeView } from './components/ChallengeView'
-export { EmptyState } from './components/EmptyState'
 
 // Challenge Detail Components
 export { ChallengeHero } from '../challenge details/ChallengeHero'

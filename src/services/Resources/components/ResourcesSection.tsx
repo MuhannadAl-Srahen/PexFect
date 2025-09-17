@@ -1,22 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { BookOpen, Video, Wrench } from 'lucide-react'
 import { ResourceGrid } from './ResourceGrid'
-import { resources as docsData } from './ResourceDoc'
-import { resources as toolsData } from './ResourceTools'
-import { resources as videoData } from './ResourceVideo'
-
-interface ResourceItem {
-  title: string
-  description: string
-  category: string
-  url: string
-  rating?: number
-  free?: boolean
-  image?: string
-  color?: string
-  users?: string
-  by?: string
-}
+import { useResourceManagement } from '../hooks/useResourceManagement'
 
 interface TabItem {
   key: string
@@ -39,44 +24,8 @@ export function ResourcesSection({
   searchTerm = '',
   onSearchChange,
 }: ResourcesSectionProps) {
-  const [activeTab, setActiveTab] = useState('documentation')
-
-  const getTabData = (key: string): ResourceItem[] => {
-    let data: ResourceItem[] = []
-
-    switch (key) {
-      case 'documentation':
-        data = docsData.documentation || []
-        break
-      case 'tools':
-        data = toolsData.tools || []
-        break
-      case 'video':
-        data = videoData.videos || []
-        break
-      default:
-        data = []
-    }
-
-    return data
-  }
-
-  const searchResources = (term: string): ResourceItem[] => {
-    const allData = [
-      ...(docsData.documentation || []),
-      ...(toolsData.tools || []),
-      ...(videoData.videos || []),
-    ]
-    return allData.filter(
-      (item) =>
-        item.title.toLowerCase().includes(term.toLowerCase()) ||
-        item.description.toLowerCase().includes(term.toLowerCase())
-    )
-  }
-
-  const filteredData = searchTerm.trim()
-    ? searchResources(searchTerm)
-    : getTabData(activeTab)
+  const { activeTab, setActiveTab, filteredData } =
+    useResourceManagement(searchTerm)
 
   return (
     <div className='w-full mt-6 md:mt-10'>
