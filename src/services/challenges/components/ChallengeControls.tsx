@@ -82,7 +82,7 @@ export function ChallengeControls({
       <div className='flex flex-col gap-6 flex-wrap'>
         <div className='flex items-center'>
           <div
-            className="relative inline-flex items-center rounded-xl bg-muted/50 p-1 shadow-sm border border-border/30"
+            className='relative inline-flex items-center rounded-xl bg-muted/50 p-1 shadow-sm border border-border/30'
             style={{ ['--toggle-gap' as any]: '2px' }}
           >
             {/* Animated sliding background */}

@@ -5,10 +5,10 @@ import {
   ChallengePageHeader,
   ChallengeControls,
   ChallengeView,
-  EmptyState,
   challenges,
   useChallengeFilters,
 } from '@/services/challenges'
+import { EmptyState } from '@/layouts'
 
 export const Route = createFileRoute('/challenges/')({
   component: RouteComponent,
@@ -55,7 +55,12 @@ function RouteComponent() {
       />
 
       {filteredChallenges.length === 0 ? (
-        <EmptyState onClearFilters={clearFilters} />
+        <EmptyState
+          title='No challenges found'
+          message='Try adjusting your filters to see more challenges.'
+          buttonText='Clear Filters'
+          onAction={clearFilters}
+        />
       ) : (
         <ChallengeView
           challenges={filteredChallenges}
