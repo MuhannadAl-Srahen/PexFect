@@ -217,7 +217,7 @@ export const allResources = {
       description:
         'Complete guide to TypeScript with examples and advanced concepts',
       url: 'https://www.typescriptlang.org/docs/',
-      category: ' typescript',
+      category: 'typescript',
       by: 'TypeScript Team',
     },
     {
