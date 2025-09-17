@@ -218,7 +218,8 @@ export interface Resource {
   thumbnail?: string
   duration?: string
   author?: string
-  channel?: string // For video resources - YouTube channel name
+  /** For video resources - YouTube channel name */
+  channel?: string
   publishedAt?: string
   rating?: number
   views?: number
