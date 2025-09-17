@@ -15,7 +15,7 @@ function RouteComponent() {
     <PageLayout>
       <PageHeader
         title='Learning Resources'
-        description='Created tools, documentation, and Videos to accelerate your learning'
+        description='Created tools, documentation, and videos to accelerate your learning'
       />
 
       <ResourceControls
