@@ -8,33 +8,51 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { User, LogOut, Github } from 'lucide-react'
-import type { UserData } from '@/types'
 
-// Mock user data - in a real app this would come from auth state
-const currentUser: UserData = {
-  fullName: 'Muhannad Al-Srahen',
-  username: 'muhannad-dev',
-  initials: 'MA',
-  avatarUrl: '/placeholder.svg?height=40&width=40',
+interface UserData {
+  email?: string
+  user_metadata?: {
+    avatar_url?: string
+    name?: string
+  }
 }
 
 interface UserActionsProps {
   isLoggedIn: boolean
+  user?: UserData | null
   onLogout: () => void
+  onLogin: () => void
 }
 
-export const UserActions = ({ isLoggedIn, onLogout }: UserActionsProps) => {
+export const UserActions = ({
+  isLoggedIn,
+  user,
+  onLogout,
+  onLogin,
+}: UserActionsProps) => {
+  // not logged in -> use the GitHub login function (no page navigation)
   if (!isLoggedIn) {
     return (
-      <Link
-        to='/login'
+      <button
+        onClick={onLogin}
         className='hidden md:flex items-center gap-2 py-2 px-4 rounded-lg transition-all duration-300 hover:bg-muted/30 text-muted-foreground hover:text-foreground group'
       >
         <Github className='h-5 w-5 group-hover:scale-105 transition-transform duration-300' />
         <span className='text-sm font-medium'>Sign In</span>
-      </Link>
+      </button>
     )
   }
+
+  // logged in -> use data from Supabase user object
+  const avatarUrl =
+    user?.user_metadata?.avatar_url || '/placeholder.svg?height=40&width=40'
+  const fullName = user?.user_metadata?.name || user?.email || 'User'
+  const initials = fullName
+    .split(' ')
+    .map((s: string) => s?.[0] ?? '')
+    .join('')
+    .slice(0, 2)
+    .toUpperCase()
 
   return (
     <DropdownMenu>
@@ -44,45 +62,38 @@ export const UserActions = ({ isLoggedIn, onLogout }: UserActionsProps) => {
           className='hidden md:flex h-11 w-11 rounded-full hover:bg-transparent transition-all duration-300 p-0'
         >
           <Avatar className='h-11 w-11 transition-all duration-300'>
-            <AvatarImage
-              src={currentUser.avatarUrl}
-              alt={currentUser.fullName}
-            />
+            <AvatarImage src={avatarUrl} alt={fullName} />
             <AvatarFallback className='bg-primary/10 text-primary text-xs font-medium transition-colors duration-300'>
-              {currentUser.initials}
+              {initials}
             </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
+
       <DropdownMenuContent
-        className='w-60 bg-background border border-border shadow-2xl rounded-2xl p-0 animate-in slide-in-from-top-2 fade-in-0 duration-300 overflow-hidden'
+        className='w-72 bg-background border border-border shadow-2xl rounded-2xl p-0 animate-in slide-in-from-top-2 fade-in-0 duration-300 overflow-hidden'
         align='end'
         sideOffset={12}
       >
-        {/* Enhanced User Header */}
         <div className='relative px-4 py-4 bg-muted/30'>
           <div className='flex items-center gap-3'>
             <Avatar className='h-10 w-10'>
-              <AvatarImage
-                src={currentUser.avatarUrl}
-                alt={currentUser.fullName}
-              />
+              <AvatarImage src={avatarUrl} alt={fullName} />
               <AvatarFallback className='bg-primary/10 text-primary text-sm font-medium'>
-                {currentUser.initials}
+                {initials}
               </AvatarFallback>
             </Avatar>
             <div className='flex-1 min-w-0'>
               <p className='text-sm font-semibold text-foreground truncate'>
-                {currentUser.fullName}
+                {fullName}
               </p>
-              <p className='text-xs text-muted-foreground'>
-                @{currentUser.username}
+              <p className='text-xs text-muted-foreground truncate'>
+                {user?.email}
               </p>
             </div>
           </div>
         </div>
 
-        {/* Enhanced Menu Items */}
         <div className='p-2'>
           <DropdownMenuItem asChild>
             <Link

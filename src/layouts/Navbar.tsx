@@ -11,11 +11,13 @@ export default function Navbar() {
     pathname,
     theme,
     isLoggedIn,
+    user,
     isMobileMenuOpen,
     toggleTheme,
     closeMobileMenu,
     handleLogout,
     toggleMobileMenu,
+    signInWithGitHub,
   } = useNavbarLogic()
 
   return (
@@ -34,7 +36,12 @@ export default function Navbar() {
             <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
 
             {/* User Actions */}
-            <UserActions isLoggedIn={isLoggedIn} onLogout={handleLogout} />
+            <UserActions
+              isLoggedIn={isLoggedIn}
+              user={user}
+              onLogout={handleLogout}
+              onLogin={signInWithGitHub}
+            />
 
             {/* Mobile Menu Toggle */}
             <MobileMenuToggle
