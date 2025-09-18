@@ -102,7 +102,6 @@ export const useNavbarLogic = () => {
   // sign out
   const handleLogout = useCallback(async () => {
     await supabase.auth.signOut()
-    setUser(null)
   }, [])
 
   const toggleMobileMenu = useCallback(() => {
