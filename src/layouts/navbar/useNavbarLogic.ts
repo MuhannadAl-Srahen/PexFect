@@ -21,10 +21,13 @@ const throttle = <T extends (...args: unknown[]) => unknown>(
       lastExecTime = currentTime
     } else {
       clearTimeout(timeoutId)
-      timeoutId = setTimeout(() => {
-        func(...args)
-        lastExecTime = Date.now()
-      }, delay - (currentTime - lastExecTime))
+      timeoutId = setTimeout(
+        () => {
+          func(...args)
+          lastExecTime = Date.now()
+        },
+        delay - (currentTime - lastExecTime)
+      )
     }
   }
 }
