@@ -29,5 +29,5 @@ export async function signInWithGitHub() {
 
 export async function signOut() {
   const { error } = await supabase.auth.signOut()
-  if (error) console.error(error)
+  if (error) console.error('Failed to sign out:', error)
 }
