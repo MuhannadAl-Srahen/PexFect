@@ -24,7 +24,7 @@ export async function signInWithGitHub() {
     },
   })
 
-  if (error) console.error(error)
+  if (error) console.error('Failed to sign in with GitHub:', error)
 }
 
 export async function signOut() {
