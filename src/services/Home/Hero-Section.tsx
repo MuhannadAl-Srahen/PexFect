@@ -14,24 +14,26 @@ export function HeroSection() {
     <>
       <BackgroundRippleEffect />
       <section className="relative min-h-screen px-5 transition-all duration-300 overflow-hidden">
-        <div className="flex flex-col items-center justify-start min-h-screen text-center relative z-10 pt-16 sm:pt-16 lg:pt-24">
+        <div className="flex flex-col items-center justify-start min-h-screen text-center relative z-10 pt-16 sm:pt-16 lg:pt-10">
           <StaggerContainer>
             {/* Badge */}
+            
             <StaggerItem animation='slideUp'>
               <div className='flex justify-center mb-8'>
               <Badge
                 variant='secondary'
-                className='bg-primary/10 text-foreground border-primary/20 px-2 py-2 sm:px-4 sm:py-1 text-md sm:text-md font-medium rounded-full hover:bg-primary/20 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105'
+                className='bg-primary/10 text-primary border-primary/60 px-2 py-2 sm:px-4 sm:py-1 text-md sm:text-md font-medium rounded-full hover:bg-primary/20 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105'
               >
                 <Sparkles className='inline-block mr-1 !w-4 !h-4' />
                 AI-Powered Learning Journey
               </Badge>
             </div>
           </StaggerItem>
+          
 
           {/* Main heading */}
           <StaggerItem animation='slideUp'>
-            <h1 className='text-4xl sm:text-4xl md:text-4xl lg:text-6xl font-bold text-background mb-6 leading-tight max-w-4xl mx-auto px-4'>
+            <h1 className='text-4xl sm:text-4xl md:text-4xl lg:text-6xl font-bold text-white mb-6 leading-tight max-w-4xl mx-auto px-4'>
               Master Frontend Development with{' '}
               <span className='relative bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent lg:text-6xl'>
                 AI-Powered
@@ -54,7 +56,7 @@ export function HeroSection() {
               <Button
                 asChild
                 size='lg'
-                className='w-full sm:w-auto bg-primary hover:bg-primary/80 text-primary-foreground px-7 sm:px-8 py-7 text-lg font-semibold rounded-3xl shadow-lg hover:shadow-2xl 
+                className='w-full sm:w-auto bg-primary px-7 sm:px-8 py-7 text-lg font-semibold rounded-3xl shadow-lg hover:shadow-2xl 
                 hover:scale-[1.04] transition-all duration-300'
               >
                 <Link to='/signup'>Get Started</Link>
@@ -62,8 +64,8 @@ export function HeroSection() {
               <Button
                 asChild
                 size='lg'
-                variant='outline'
-                className='w-full sm:w-auto bg-background text-foreground border-2  px-7 sm:px-7 py-6 text-lg font-semibold rounded-3xl shadow-lg hover:shadow-2xl hover:scale-[1.04] transition-all duration-300'
+                variant='default'
+                className='w-full sm:w-auto bg-secondary hover:bg-secondary/90 hover:text-primary/80  text-foreground px-7 sm:px-7 py-6 text-lg font-semibold rounded-3xl shadow-lg hover:shadow-2xl hover:scale-[1.04] transition-all duration-300'
               >
                 <Link to='/roadmap'>
                   <Play className='inline-block mr-1 !w-5 !h-5' />
@@ -81,3 +83,4 @@ export function HeroSection() {
 }
 
 export default HeroSection
+

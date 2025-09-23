@@ -39,7 +39,9 @@ export function CIASection() {
                 Join PexFect today and transform your frontend skills with personalized challenges and AI-powered feedback
             </p>
               <div className='flex justify-center mt-8'>
-                <Button asChild className="bg-primary hover:bg-primary/80 text-primary-foreground font-semibold px-8 py-6 text-lg rounded-2xl shadow-xl hover:shadow-xl hover:scale-[1.04] transition-all duration-300 peer">
+                <Button 
+                asChild
+                 className="bg-primary hover:bg-primary/80 text-primary-foreground font-semibold px-8 py-6 text-lg rounded-2xl shadow-xl hover:shadow-xl hover:scale-[1.04] transition-all duration-300 peer">
                   <Link to="/signup">
                     Sign Up for free
                     <Rocket className='inline-block ml-1 !w-5 !h-5' />
