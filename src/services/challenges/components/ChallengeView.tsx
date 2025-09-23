@@ -1,6 +1,6 @@
 import { ChallengeGridItem } from './ChallengeGridItem'
 import { ChallengeListItem } from './ChallengeListItem'
-import type { ChallengeViewProps } from '../types'
+import type { ChallengeViewProps } from '@/types'
 
 export function ChallengeView({
   challenges,

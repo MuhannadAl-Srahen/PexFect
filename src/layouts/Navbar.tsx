@@ -11,16 +11,17 @@ export default function Navbar() {
     pathname,
     theme,
     isLoggedIn,
+    user,
     isMobileMenuOpen,
-    navbarClasses,
     toggleTheme,
     closeMobileMenu,
     handleLogout,
     toggleMobileMenu,
+    signInWithGitHub,
   } = useNavbarLogic()
 
   return (
-    <nav className={navbarClasses}>
+    <nav className='sticky top-0 w-full z-50 transition-all duration-300 ease-out bg-background/80 backdrop-blur-lg border-b border-border/60 shadow-2xs'>
       <div className='mx-auto relative'>
         <div className='flex items-center justify-between h-16 sm:h-20 px-4 max-w-7xl mx-auto'>
           {/* Logo */}
@@ -35,7 +36,12 @@ export default function Navbar() {
             <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
 
             {/* User Actions */}
-            <UserActions isLoggedIn={isLoggedIn} onLogout={handleLogout} />
+            <UserActions
+              isLoggedIn={isLoggedIn}
+              user={user}
+              onLogout={handleLogout}
+              onLogin={signInWithGitHub}
+            />
 
             {/* Mobile Menu Toggle */}
             <MobileMenuToggle

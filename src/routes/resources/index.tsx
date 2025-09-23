@@ -1,16 +1,31 @@
-import { createFileRoute } from '@tanstack/react-router'
+﻿import { createFileRoute } from '@tanstack/react-router'
+import { useState } from 'react'
 import { PageLayout } from '@/layouts/PageLayout'
+import { ResourceControls, ResourcesSection } from '@/services/Resources'
+import { PageHeader } from '@/layouts'
 
 export const Route = createFileRoute('/resources/')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
+  const [searchTerm, setSearchTerm] = useState('')
+
   return (
     <PageLayout>
-      <h3 className='text-2xl font-semibold text-foreground'>
-        Hello "/resources/"!
-      </h3>
+      <PageHeader
+        title='Learning Resources'
+        description='Created tools, documentation, and videos to accelerate your learning'
+      />
+
+      <ResourceControls
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+      />
+      <ResourcesSection
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+      />
     </PageLayout>
   )
 }

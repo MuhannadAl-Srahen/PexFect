@@ -1,16 +1,14 @@
 import { useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { PageLayout } from '@/layouts/PageLayout'
+import { PageLayout } from '@/layouts'
 import {
-  challenges,
-  useChallengeFilters,
   ChallengePageHeader,
   ChallengeControls,
-  ViewModeToggle,
-  ChallengeCount,
   ChallengeView,
-  EmptyState,
+  challenges,
+  useChallengeFilters,
 } from '@/services/challenges'
+import { EmptyState } from '@/layouts'
 
 export const Route = createFileRoute('/challenges/')({
   component: RouteComponent,
@@ -50,16 +48,19 @@ function RouteComponent() {
         onSearchChange={setSearchTerm}
         onDifficultyChange={setSelectedDifficulty}
         onLanguageChange={setSelectedLanguage}
-      />
-
-      <ViewModeToggle viewMode={viewMode} onViewModeChange={setViewMode} />
-      <ChallengeCount
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
         filteredCount={filteredChallenges.length}
         totalCount={challenges.length}
       />
 
       {filteredChallenges.length === 0 ? (
-        <EmptyState onClearFilters={clearFilters} />
+        <EmptyState
+          title='No challenges found'
+          message='Try adjusting your filters to see more challenges.'
+          buttonText='Clear Filters'
+          onAction={clearFilters}
+        />
       ) : (
         <ChallengeView
           challenges={filteredChallenges}
