@@ -21,9 +21,16 @@ export const TracingBeam = ({
   const [svgHeight, setSvgHeight] = useState(0)
 
   useEffect(() => {
-    if (contentRef.current) {
-      setSvgHeight(contentRef.current.offsetHeight)
+    const updateHeight = () => {
+      if (contentRef.current) {
+        setSvgHeight(contentRef.current.offsetHeight)
+      }
     }
+
+    updateHeight()
+    window.addEventListener('resize', updateHeight)
+
+    return () => window.removeEventListener('resize', updateHeight)
   }, [])
 
   const y1 = useSpring(
@@ -57,7 +64,7 @@ export const TracingBeam = ({
               backgroundColor: scrollYProgress.get() > 0 ? 'white' : '#3b82f6',
               borderColor: scrollYProgress.get() > 0 ? 'white' : '#2563eb',
             }}
-            className='h-2 w-2 rounded-full border border-blue-600 bg-blue-500'
+            className='h-2 w-2 rounded-full border border-blue-500 bg-blue-500'
           />
         </motion.div>
 
@@ -73,13 +80,13 @@ export const TracingBeam = ({
             fill='none'
             stroke='#2563eb'
             strokeOpacity='0.16'
-            strokeWidth='2'
+            strokeWidth='1'
           />
           <motion.path
             d={`M 10 0 L 10 ${svgHeight}`}
             fill='none'
             stroke='url(#gradient)'
-            strokeWidth='3'
+            strokeWidth='1.5'
             className='motion-reduce:hidden'
           />
           <defs>

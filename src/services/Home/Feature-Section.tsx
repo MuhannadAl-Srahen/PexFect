@@ -1,8 +1,7 @@
 import { Brain, Swords, BookOpen, BookKey } from 'lucide-react'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Link } from '@tanstack/react-router'
+import { Card, CardHeader, CardContent } from '@/components/ui/card'
 import {
-  AnimateOnScroll,
   StaggerContainer,
   StaggerItem,
 } from '@/components/ui/animate-on-scroll'
@@ -14,6 +13,11 @@ const features = [
       'Practice with real-world coding problems across different difficulty levels and programming languages',
     icon: Swords,
     link: '/challenges',
+    color: 'text-orange-500',
+    bgColor: 'bg-orange-100',
+    hoverBgColor: 'group-hover:bg-orange-200',
+    hoverTextColor: 'group-hover:text-orange-500',
+    hoverBorderColor: 'group-hover:border-orange-500',
   },
   {
     name: 'Structured Roadmaps',
@@ -21,6 +25,11 @@ const features = [
       'Follow a clear learning path from HTML/CSS basics to advanced full-stack development',
     icon: BookOpen,
     link: '/roadmap',
+    color: 'text-blue-500',
+    bgColor: 'bg-blue-100',
+    hoverBgColor: 'group-hover:bg-blue-200',
+    hoverTextColor: 'group-hover:text-blue-500',
+    hoverBorderColor: 'group-hover:border-blue-500',
   },
   {
     name: 'AI-Powered Feedback',
@@ -28,6 +37,11 @@ const features = [
       'Get instant, personalized feedback on your code with actionable suggestions for improvement',
     icon: Brain,
     link: '/feedback',
+    color: 'text-purple-500',
+    bgColor: 'bg-purple-100',
+    hoverBgColor: 'group-hover:bg-purple-200',
+    hoverTextColor: 'group-hover:text-purple-500',
+    hoverBorderColor: 'group-hover:border-purple-500',
   },
   {
     name: 'Curated Resources',
@@ -35,6 +49,11 @@ const features = [
       'Access hand-picked tutorials, documentation, and videos to accelerate your learning journey',
     icon: BookKey,
     link: '/resources',
+    color: 'text-green-500',
+    bgColor: 'bg-green-100',
+    hoverBgColor: 'group-hover:bg-green-200',
+    hoverTextColor: 'group-hover:text-green-500',
+    hoverBorderColor: 'group-hover:border-green-500',
   },
 ]
 
@@ -42,52 +61,48 @@ export function FeatureSection() {
   return (
     <section className='bg-background py-16 sm:py-24 lg:py-32'>
       <div className='mx-auto max-w-7xl px-6 lg:px-8'>
-        <AnimateOnScroll animation='slideUp'>
-          <div className='mx-auto max-w-7xl text-center'>
-            <h2 className='text-3xl font-semibold tracking-tight text-primary sm:text-4xl lg:text-6xl'>
-              Everything you need to succeed
-            </h2>
-            <p className='mt-6 text-xl leading-8 text-muted-foreground'>
-              PexFect combines real-world challenges, structured learning paths,
-              and AI-powered feedback so you can become a confident developer.
-            </p>
-          </div>
-        </AnimateOnScroll>
-        <div className='mx-auto mt-16 sm:mt-20 lg:mt-24 max-w-7xl'>
-          <StaggerContainer>
-            <div className='grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-2'>
-              {features.map((feature) => (
-                <StaggerItem key={feature.name}>
-                  <div className='group h-full'>
-                    <Link to={feature.link} className='block h-full'>
-                      <Card className='flex h-full flex-col overflow-hidden rounded-xl border border-foreground bg-card shadow-lg transition-all duration-300 hover:shadow-xl hover:border-primary/40 hover:scale-[1.06] p-2'>
-                        <CardHeader className='pb-2 text-center pt-2'>
-                          <div className='mx-auto mb-3 flex size-20 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary/20'>
-                            <feature.icon
-                              aria-hidden='true'
-                              className='size-10 text-primary transition-transform group-hover:scale-110'
-                            />
-                          </div>
-                          <h3 className='text-xl sm:text-2xl lg:text-3xl font-bold text-card-foreground group-hover:text-primary transition-colors leading-tight'>
-                            {feature.name}
-                          </h3>
-                        </CardHeader>
-                        <CardContent className='flex-1 text-center px-2 pb-3'>
-                          <p className='text-base sm:text-lg lg:text-xl text-muted-foreground leading-relaxed'>
-                            {feature.description}
-                          </p>
-                        </CardContent>
-                      </Card>
-                    </Link>
-                  </div>
-                </StaggerItem>
-              ))}
+        <StaggerContainer staggerDelay={0.2}>
+          <StaggerItem animation='slideUp'>
+            <div className='mx-auto max-w-7xl text-center'>
+              <h2 className='text-3xl font-semibold tracking-tight text-primary sm:text-4xl lg:text-5xl'>
+                Everything you need to succeed
+              </h2>
+              <p className='mt-6 text-base leading-8 text-muted-foreground'>
+                PexFect combines real-world challenges, structured learning paths,
+                and AI-powered feedback so you can become a confident developer.
+              </p>
             </div>
-          </StaggerContainer>
+          </StaggerItem>
+          <div className='mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none'>
+            <div className='grid max-w-xl grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 lg:max-w-none lg:grid-cols-2 xl:grid-cols-4'>
+              {features.map((feature) => (
+                <StaggerItem key={feature.name} animation='scale'>
+                  <Link to={feature.link} className='group'>
+                <Card className={`h-full hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] cursor-pointer border ${feature.hoverBorderColor}`}>
+                  <CardHeader className='text-center pb-4'>
+                    <div className='flex items-center justify-center mb-4'>
+                      <div className={`h-14 w-14 ${feature.bgColor} ${feature.hoverBgColor} rounded-full flex items-center justify-center transition-colors`}>
+                        <feature.icon className={`!h-7 !w-7 ${feature.color}`} aria-hidden='true' />
+                      </div>
+                    </div>
+                    <h3 className={`text-xl font-semibold text-foreground ${feature.hoverTextColor} transition-colors`}>
+                      {feature.name}
+                    </h3>
+                  </CardHeader>
+                  <CardContent className='text-center pt-0'>
+                    <p className='text-muted-foreground leading-relaxed'>
+                      {feature.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              </Link>
+              </StaggerItem>
+            ))}
+          </div>
         </div>
+        </StaggerContainer>
       </div>
     </section>
   )
 }
-
-export default FeatureSection
+              

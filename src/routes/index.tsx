@@ -13,9 +13,9 @@ export const Route = createFileRoute('/')({
 function Index() {
   return (
     <PageLayout>
-      <div>
+    <div>
         <HeroSection />
-      </div>
+     </div>
       <div>
         <FeatureSection />
       </div>
