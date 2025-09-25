@@ -8,7 +8,7 @@ export const Route = createFileRoute('/')({
 function Index() {
   return (
     <PageLayout>
-      <h3 className='text-2xl font-semibold text-foreground'>Welcome Home!</h3>
+      <h3 className='text-2xl font-semibold text-foreground'>This is a change on the landing page</h3>
     </PageLayout>
   )
 }
