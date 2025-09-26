@@ -1,9 +1,11 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router';
+import { PageLayout } from '@/layouts/PageLayout';
+import PathDetails from '@/services/roadmap/components/PathDetails';
 
 export const Route = createFileRoute('/roadmap/advanced')({
-  component: RouteComponent,
-})
-
-function RouteComponent() {
-  return <div>Hello "/roadmap/advanced"!</div>
-}
+  component: () => (
+    <PageLayout>
+      <PathDetails pathId="advanced" />
+    </PageLayout>
+  ),
+});
