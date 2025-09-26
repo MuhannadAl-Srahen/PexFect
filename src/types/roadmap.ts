@@ -8,5 +8,10 @@ export interface LearningPath {
 	progressPercentage: number;
 	technologies: string[];
 	estimatedWeeks: number;
-	milestones: any[]; // To be replaced with a proper type later
+	milestones: Array<{
+		id: string;
+		title: string;
+		description?: string;
+		completed?: boolean;
+	}>;
 }

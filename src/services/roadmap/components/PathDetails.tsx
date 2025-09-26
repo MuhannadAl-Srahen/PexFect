@@ -53,9 +53,9 @@ const TimelineChallengeCard: React.FC<{
         </div>
         {/* Lock icon (mobile only, top-right) */}
         {!unlocked && (
-          <div className="absolute top-3 right-3 md:hidden bg-white/80 p-2 rounded-full shadow">
-            <Lock size={18} className="text-gray-400" />
-          </div>
+          <div className="absolute top-3 right-3 md:hidden bg-white/80 dark:bg-gray-800/80 p-2 rounded-full shadow">
+              <Lock size={18} className="text-gray-400" />
+            </div>
         )}
       </div>
 
@@ -124,11 +124,11 @@ const TimelineChallengeCard: React.FC<{
     <div className="relative flex w-full">
       {/* Timeline column (hidden on mobile) */}
       <div className="hidden md:flex flex-col items-center mr-4 min-w-[44px]">
-        <div className={`w-1 h-5 bg-gray-200 ${index === 0 ? 'invisible' : ''}`} />
-        <div className={`rounded-full bg-white border-2 ${unlocked ? 'border-emerald-400' : 'border-gray-300'} flex items-center justify-center w-9 h-9 z-10`}>
+        <div className={`w-1 h-5 bg-gray-200 dark:bg-gray-700 ${index === 0 ? 'invisible' : ''}`} />
+        <div className={`rounded-full bg-white dark:bg-gray-800 border-2 ${unlocked ? 'border-emerald-400' : 'border-gray-300 dark:border-gray-600'} flex items-center justify-center w-9 h-9 z-10`}>
           {unlocked ? <PlayCircle size={20} className="text-emerald-400" /> : <Lock size={16} className="text-gray-400" />}
         </div>
-        <div className={`w-1 flex-1 bg-gray-200 ${isLast ? 'invisible' : ''}`} />
+        <div className={`w-1 flex-1 bg-gray-200 dark:bg-gray-700 ${isLast ? 'invisible' : ''}`} />
       </div>
 
       {unlocked ? (
@@ -166,9 +166,9 @@ const SOLID_BG = {
 }
 
 const GRADIENT_BG = {
-  beginner: 'bg-gradient-to-br from-green-50 via-green-100 to-white',
-  intermediate: 'bg-gradient-to-br from-yellow-50 via-yellow-100 to-white',
-  advanced: 'bg-gradient-to-br from-red-50 via-red-100 to-white',
+  beginner: 'bg-gradient-to-br from-green-50 via-green-100 to-white dark:from-emerald-900/40 dark:via-emerald-900/30 dark:to-gray-900',
+  intermediate: 'bg-gradient-to-br from-yellow-50 via-yellow-100 to-white dark:from-amber-900/40 dark:via-amber-900/30 dark:to-gray-900',
+  advanced: 'bg-gradient-to-br from-red-50 via-red-100 to-white dark:from-rose-900/40 dark:via-rose-900/30 dark:to-gray-900',
 }
 
 const TITLE_COLORS = {
@@ -213,7 +213,8 @@ const PathDetails: React.FC<PathDetailsProps> = ({ pathId }) => {
       <div className="w-full max-w-5xl mx-auto mb-4 mt-2">
         <Link
           to="/roadmap"
-          className="inline-flex items-center gap-2 text-gray-500 hover:text-blue-600 font-medium text-md px-3 py-2 rounded transition-colors"
+          className="inline-flex items-center gap-2 text-gray-700 dark:text-gray-200 font-medium text-md px-3 py-2 rounded-md transition-colors bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 hover:shadow-sm hover:text-gray-900 dark:hover:text-gray-100 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500"
+          aria-label="Back to Roadmap"
         >
           <ArrowLeft size={18} />
           Back to Roadmap
@@ -222,7 +223,7 @@ const PathDetails: React.FC<PathDetailsProps> = ({ pathId }) => {
 
       {/* Header */}
       <div
-        className={`w-full max-w-5xl rounded-3xl shadow-md px-6 md:px-14 pt-8 pb-10 mb-10 border border-transparent relative ${GRADIENT_BG[pathId]}`}
+        className={`w-full max-w-5xl rounded-3xl shadow-md px-6 md:px-14 pt-8 pb-10 mb-10 border border-transparent relative ${GRADIENT_BG[pathId]} dark:shadow-none`}
         style={{ boxShadow: '0 2px 16px 0 rgba(0,0,0,0.06)' }}
       >
         <div className="flex flex-col md:flex-row md:items-center md:gap-5 mb-6 text-center md:text-left">
@@ -235,11 +236,11 @@ const PathDetails: React.FC<PathDetailsProps> = ({ pathId }) => {
           </div>
           <div className="flex flex-col items-center md:items-start">
             <h1
-              className={`text-3xl font-extrabold mb-1 tracking-tight ${TITLE_COLORS[pathId]}`}
+              className={`text-3xl font-extrabold mb-1 tracking-tight ${TITLE_COLORS[pathId]} dark:text-gray-100`}
             >
               {path.title}
             </h1>
-            <div className={`text-base font-semibold ${SUBTITLE_COLORS[pathId]}`}>
+            <div className={`text-base font-semibold ${SUBTITLE_COLORS[pathId]} dark:text-gray-300`}>
               {pathId === 'beginner' && <span>Start from Zero</span>}
               {pathId === 'intermediate' && <span>Level Up Your Skills</span>}
               {pathId === 'advanced' && <span>Master Professional Development</span>}
@@ -247,72 +248,72 @@ const PathDetails: React.FC<PathDetailsProps> = ({ pathId }) => {
           </div>
         </div>
 
-        <p className="text-gray-600 text-base font-normal leading-snug mb-7 max-w-2xl md:text-left text-center mx-auto break-words whitespace-pre-line">
+        <p className="text-gray-600 dark:text-gray-300 text-base font-normal leading-snug mb-7 max-w-2xl md:text-left text-center mx-auto break-words whitespace-pre-line">
           {path.description}
         </p>
 
         {/* Stats */}
         <div className="mt-6">
-          <div className="hidden md:grid grid-cols-4 gap-6 w-full max-w-3xl mx-auto">
-            <div className="bg-[#f6fcfa] rounded-2xl py-4 px-4 flex flex-col justify-center items-center text-center border border-[#eaf6f1]">
-              <span className="text-xl font-extrabold text-gray-900 leading-none mb-1">
+            <div className="hidden md:grid grid-cols-4 gap-6 w-full max-w-3xl mx-auto">
+            <div className="bg-[#f6fcfa] dark:bg-gray-800 rounded-2xl py-4 px-4 flex flex-col justify-center items-center text-center border border-[#eaf6f1] dark:border-gray-700">
+              <span className="text-xl font-extrabold text-gray-900 dark:text-gray-100 leading-none mb-1">
                 {totalChallenges}
               </span>
-              <span className="text-sm text-gray-500 font-medium">
+              <span className="text-sm text-gray-500 dark:text-gray-300 font-medium">
                 Total Challenges
               </span>
             </div>
-            <div className="bg-[#f6fcfa] rounded-2xl py-4 px-4 flex flex-col justify-center items-center text-center border border-[#eaf6f1]">
-              <span className="text-xl font-extrabold text-gray-900 leading-none mb-1">
+            <div className="bg-[#f6fcfa] dark:bg-gray-800 rounded-2xl py-4 px-4 flex flex-col justify-center items-center text-center border border-[#eaf6f1] dark:border-gray-700">
+              <span className="text-xl font-extrabold text-gray-900 dark:text-gray-100 leading-none mb-1">
                 {completedChallenges}
               </span>
-              <span className="text-sm text-gray-500 font-medium">Completed</span>
+              <span className="text-sm text-gray-500 dark:text-gray-300 font-medium">Completed</span>
             </div>
-            <div className="bg-[#f6fcfa] rounded-2xl py-4 px-4 flex flex-col justify-center items-center text-center border border-[#eaf6f1]">
+            <div className="bg-[#f6fcfa] dark:bg-gray-800 rounded-2xl py-4 px-4 flex flex-col justify-center items-center text-center border border-[#eaf6f1] dark:border-gray-700">
               <span
-                className={`text-xl font-extrabold leading-none mb-1 ${PROGRESS_COLORS[pathId]}`}
+                className={`text-xl font-extrabold leading-none mb-1 ${PROGRESS_COLORS[pathId]} dark:text-gray-100`}
               >
                 {progress}%
               </span>
-              <span className="text-sm text-gray-500 font-medium">Progress</span>
+              <span className="text-sm text-gray-500 dark:text-gray-300 font-medium">Progress</span>
             </div>
-            <div className="bg-[#f6fcfa] rounded-2xl py-4 px-4 flex flex-col justify-center items-center text-center border border-[#eaf6f1]">
-              <span className="text-xl font-extrabold text-gray-900 leading-none mb-1">
+            <div className="bg-[#f6fcfa] dark:bg-gray-800 rounded-2xl py-4 px-4 flex flex-col justify-center items-center text-center border border-[#eaf6f1] dark:border-gray-700">
+              <span className="text-xl font-extrabold text-gray-900 dark:text-gray-100 leading-none mb-1">
                 {path.duration}
               </span>
-              <span className="text-sm text-gray-500 font-medium">Duration</span>
+              <span className="text-sm text-gray-500 dark:text-gray-300 font-medium">Duration</span>
             </div>
           </div>
 
           {/* Mobile Stats */}
           <div className="flex flex-col gap-5 w-full max-w-xs mx-auto md:hidden">
-            <div className="bg-white rounded-3xl py-7 px-8 flex flex-col items-center shadow-md">
-              <span className="text-2xl font-extrabold text-gray-900 leading-none mb-1">
+            <div className="bg-white dark:bg-gray-800 rounded-3xl py-7 px-8 flex flex-col items-center shadow-md">
+              <span className="text-2xl font-extrabold text-gray-900 dark:text-gray-100 leading-none mb-1">
                 {totalChallenges}
               </span>
-              <span className="text-base text-gray-500 font-medium">
+              <span className="text-base text-gray-500 dark:text-gray-300 font-medium">
                 Total Challenges
               </span>
             </div>
-            <div className="bg-white rounded-3xl py-7 px-8 flex flex-col items-center shadow-md">
-              <span className="text-2xl font-extrabold text-gray-900 leading-none mb-1">
+            <div className="bg-white dark:bg-gray-800 rounded-3xl py-7 px-8 flex flex-col items-center shadow-md">
+              <span className="text-2xl font-extrabold text-gray-900 dark:text-gray-100 leading-none mb-1">
                 {completedChallenges}
               </span>
-              <span className="text-base text-gray-500 font-medium">Completed</span>
+              <span className="text-base text-gray-500 dark:text-gray-300 font-medium">Completed</span>
             </div>
-            <div className="bg-white rounded-3xl py-7 px-8 flex flex-col items-center shadow-md">
+            <div className="bg-white dark:bg-gray-800 rounded-3xl py-7 px-8 flex flex-col items-center shadow-md">
               <span
-                className={`text-2xl font-extrabold leading-none mb-1 ${PROGRESS_COLORS[pathId]}`}
+                className={`text-2xl font-extrabold leading-none mb-1 ${PROGRESS_COLORS[pathId]} dark:text-gray-100`}
               >
                 {progress}%
               </span>
-              <span className="text-base text-gray-500 font-medium">Progress</span>
+              <span className="text-base text-gray-500 dark:text-gray-300 font-medium">Progress</span>
             </div>
-            <div className="bg-white rounded-3xl py-7 px-8 flex flex-col items-center shadow-md">
-              <span className="text-2xl font-extrabold text-gray-900 leading-none mb-1">
+            <div className="bg-white dark:bg-gray-800 rounded-3xl py-7 px-8 flex flex-col items-center shadow-md">
+              <span className="text-2xl font-extrabold text-gray-900 dark:text-gray-100 leading-none mb-1">
                 {path.duration}
               </span>
-              <span className="text-base text-gray-500 font-medium">Duration</span>
+              <span className="text-base text-gray-500 dark:text-gray-300 font-medium">Duration</span>
             </div>
           </div>
         </div>

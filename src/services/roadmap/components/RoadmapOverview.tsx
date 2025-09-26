@@ -26,29 +26,28 @@ const WhyFollowCard: React.FC<WhyFollowCardProps> = ({ icon, iconBg, title, desc
 const WhyFollowSection = () => (
 	<section className="w-full flex justify-center mt-2 px-2">
 		<div
-			className="rounded-3xl bg-white shadow-sm px-4 py-7 md:py-8 md:px-10 w-full max-w-7xl"
-			style={{ background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)' }}
+			className="rounded-3xl bg-white dark:bg-gray-900 shadow-sm px-4 py-7 md:py-8 md:px-10 w-full max-w-7xl"
 		>
-			<h2 className="text-3xl md:text-4xl font-extrabold text-center mb-3">Why Follow Our Roadmap?</h2>
-			<p className="text-md md:text-lg text-gray-500 text-center mb-12">
+			<h2 className="text-3xl md:text-4xl font-extrabold text-center mb-3 text-gray-900 dark:text-gray-100">Why Follow Our Roadmap?</h2>
+			<p className="text-md md:text-lg text-gray-500 dark:text-gray-300 text-center mb-12">
 				Unlock your potential with a proven, step-by-step learning journey
 			</p>
 			<div className="flex flex-col md:flex-row items-stretch justify-center gap-10 md:gap-16">
 				<WhyFollowCard
 					icon={<Target className="w-12 h-12 text-blue-500" />}
-					iconBg="bg-blue-100"
+					iconBg="bg-blue-100 dark:bg-blue-900"
 					title="Progressive Learning"
 					desc="Each challenge builds on the previous one, ensuring you develop a solid foundation before advancing"
 				/>
 				<WhyFollowCard
 					icon={<Code2 className="w-12 h-12 text-green-500" />}
-					iconBg="bg-green-100"
+					iconBg="bg-green-100 dark:bg-green-900"
 					title="Real Projects"
 					desc="Build actual projects you can showcase in your portfolio, not just theoretical exercises"
 				/>
 				<WhyFollowCard
 					icon={<BadgeCheck className="w-12 h-12 text-purple-500" />}
-					iconBg="bg-purple-100"
+					iconBg="bg-purple-100 dark:bg-purple-900"
 					title="AI Feedback"
 					desc="Get instant, detailed feedback on your code quality, design, and best practices"
 				/>
