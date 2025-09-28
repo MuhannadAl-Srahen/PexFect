@@ -1,0 +1,265 @@
+:root {
+  /* Learning Path Colors */
+  --profile-emerald-50: #ecfdf5;
+  --profile-emerald-100: #d1fae5;
+  --profile-emerald-500: #10b981;
+  --profile-emerald-700: #047857;
+
+  --profile-blue-50: #eff6ff;
+  --profile-blue-100: #dbeafe;
+  --profile-blue-300: #93c5fd;
+  --profile-blue-400: #60a5fa;
+  --profile-blue-500: #3b82f6;
+  --profile-blue-600: #2563eb;
+  --profile-blue-700: #1d4ed8;
+
+  --profile-purple-50: #f5f3ff;
+  --profile-purple-100: #ede9fe;
+  --profile-purple-500: #8b5cf6;
+  --profile-purple-700: #6d28d9;
+
+  /* Yellow colors */
+  --profile-yellow-50: #fefce8;
+  --profile-yellow-100: #fef3c7;
+  --profile-yellow-300: #fde047;
+  --profile-yellow-400: #facc15;
+  --profile-yellow-500: #eab308;
+  --profile-yellow-600: #ca8a04;
+  --profile-yellow-700: #b45309;
+
+  /* Green colors */
+  --profile-green-50: #f0fdf4;
+  --profile-green-100: #dcfce7;
+  --profile-green-300: #86efac;
+  --profile-green-400: #4ade80;
+  --profile-green-500: #22c55e;
+  --profile-green-600: #16a34a;
+  --profile-green-700: #15803d;
+
+  /* Technology Colors */
+  --profile-orange-500: #f97316; /* HTML */
+  --profile-cyan-500: #06b6d4;   /* CSS/React */
+  --profile-indigo-600: #4f46e5; /* TypeScript */
+  --profile-amber-500: #f59e0b;  /* Intermediate */
+  --profile-rose-500: #f43f5e;   /* Advanced */
+}
+
+.dark {
+  /* Dark mode overrides */
+  --profile-emerald-50: #064e3b;
+  --profile-emerald-100: #065f46;
+  --profile-emerald-700: #34d399;
+
+  --profile-blue-50: #1e293b;
+  --profile-blue-100: #334155;
+  --profile-blue-600: #60a5fa;
+  --profile-blue-700: #93c5fd;
+
+  --profile-purple-50: #581c87;
+  --profile-purple-100: #6b21a8;
+  --profile-purple-700: #a78bfa;
+
+ 
+  --profile-yellow-50: #292524;
+  --profile-yellow-100: #44403c;
+  --profile-yellow-600: #fbbf24;
+  --profile-yellow-700: #fde047;
+
+ 
+  --profile-green-50: #1f2937;
+  --profile-green-100: #374151;
+  --profile-green-600: #6ee7b7;
+  --profile-green-700: #a7f3d0;
+}
+
+/* Learning Path Cards */
+.profile-card-beginner {
+  background: linear-gradient(135deg, var(--profile-emerald-50), var(--profile-emerald-100));
+}
+
+.profile-card-intermediate {
+  background: linear-gradient(135deg, var(--profile-blue-50), var(--profile-blue-100));
+}
+
+.profile-card-advanced {
+  background: linear-gradient(135deg, var(--profile-purple-50), var(--profile-purple-100));
+}
+
+/* Old cards for backward compatibility */
+.profile-card-blue {
+  background: linear-gradient(
+    135deg,
+    var(--profile-blue-50),
+    var(--profile-blue-100)
+  );
+}
+
+.profile-card-yellow {
+  background: linear-gradient(
+    135deg,
+    var(--profile-yellow-50),
+    var(--profile-yellow-100)
+  );
+}
+
+.profile-card-green {
+  background: linear-gradient(
+    135deg,
+    var(--profile-green-50),
+    var(--profile-green-100)
+  );
+}
+
+.profile-header-bg {
+  background: linear-gradient(
+    90deg,
+    var(--profile-blue-50) 0%,
+    rgba(147, 197, 253, 0.1) 100%
+  );
+}
+
+/* Text Colors */
+.profile-text-beginner {
+  color: var(--profile-emerald-700);
+}
+
+.profile-text-intermediate {
+  color: var(--profile-blue-700);
+}
+
+.profile-text-advanced {
+  color: var(--profile-purple-700);
+}
+
+.profile-icon-blue {
+  background-color: var(--profile-blue-500);
+}
+
+.profile-icon-yellow {
+  background-color: var(--profile-yellow-400);
+}
+
+.profile-icon-green {
+  background-color: var(--profile-green-500);
+}
+
+.profile-text-blue {
+  color: var(--profile-blue-700);
+}
+
+.profile-text-yellow {
+  color: var(--profile-yellow-600);
+}
+
+.profile-text-green {
+  color: var(--profile-green-700);
+}
+
+.profile-text-blue-muted {
+  color: var(--profile-blue-600);
+}
+
+.profile-text-yellow-muted {
+  color: var(--profile-yellow-600);
+}
+
+.profile-text-green-muted {
+  color: var(--profile-green-600);
+}
+
+.profile-check-icon {
+  color: var(--profile-green-500);
+}
+
+.profile-score-text {
+  color: var(--profile-blue-600);
+}
+
+/* Progress Bar Colors */
+.profile-progress-html {
+  background-color: var(--profile-orange-500);
+}
+
+.profile-progress-css {
+  background-color: var(--profile-cyan-500);
+}
+
+.profile-progress-javascript {
+  background-color: var(--profile-yellow-500);
+}
+
+.profile-progress-react {
+  background-color: var(--profile-cyan-500);
+}
+
+.profile-progress-typescript {
+  background-color: var(--profile-indigo-600);
+}
+
+.profile-progress-nodejs {
+  background-color: var(--profile-green-600);
+}
+
+/* Difficulty Progress */
+.profile-progress-beginner {
+  background-color: var(--profile-emerald-500);
+}
+
+.profile-progress-intermediate {
+  background-color: var(--profile-amber-500);
+}
+
+.profile-progress-advanced {
+  background-color: var(--profile-rose-500);
+}
+
+/* Difficulty Indicators */
+.profile-indicator-beginner {
+  background-color: var(--profile-emerald-500);
+}
+
+.profile-indicator-intermediate {
+  background-color: var(--profile-amber-500);
+}
+
+.profile-indicator-advanced {
+  background-color: var(--profile-rose-500);
+}
+
+/* Badge styles */
+.profile-badge-beginner {
+  background-color: var(--profile-green-100);
+  color: var(--profile-green-700);
+  border: 1px solid var(--profile-green-300);
+}
+
+.profile-badge-intermediate {
+  background-color: var(--profile-yellow-100);
+  color: var(--profile-yellow-700);
+  border: 1px solid var(--profile-yellow-300);
+}
+
+.profile-badge-advanced {
+  background-color: #fecaca;
+  color: #b91c1c;
+  border: 1px solid #f87171;
+}
+
+/* Dark mode badge adjustments*/
+.dark .profile-badge-beginner {
+  background-color: var(--profile-green-100);
+  color: var(--profile-green-700);
+  border: 1px solid var(--profile-green-600);
+}
+
+.dark .profile-badge-intermediate {
+  background-color: var(--profile-yellow-100);
+  color: var(--profile-yellow-700);
+  border: 1px solid var(--profile-yellow-600);
+}
+
+.dark .profile-badge-advanced {
+  background-color: rgba(248, 113, 113, 0.1);
+  color: #fca5a5;
+  border: 1px solid rgba(248, 113, 113, 0.2);
+}
