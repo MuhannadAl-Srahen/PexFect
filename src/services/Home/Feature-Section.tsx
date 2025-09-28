@@ -59,50 +59,55 @@ const features = [
 
 export function FeatureSection() {
   return (
-    <section className='bg-background py-16 sm:py-24 lg:py-32'>
-      <div className='mx-auto max-w-7xl px-6 lg:px-8'>
-        <StaggerContainer staggerDelay={0.2}>
-          <StaggerItem animation='slideUp'>
-            <div className='mx-auto max-w-7xl text-center'>
-              <h2 className='text-3xl font-semibold tracking-tight text-primary sm:text-4xl lg:text-5xl'>
-                Everything you need to succeed
-              </h2>
-              <p className='mt-6 text-base leading-8 text-muted-foreground'>
-                PexFect combines real-world challenges, structured learning paths,
-                and AI-powered feedback so you can become a confident developer.
-              </p>
-            </div>
-          </StaggerItem>
-          <div className='mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none'>
-            <div className='grid max-w-xl grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 lg:max-w-none lg:grid-cols-2 xl:grid-cols-4'>
-              {features.map((feature) => (
-                <StaggerItem key={feature.name} animation='scale'>
-                  <Link to={feature.link} className='group'>
-                <Card className={`h-full hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] cursor-pointer border ${feature.hoverBorderColor}`}>
-                  <CardHeader className='text-center pb-4'>
-                    <div className='flex items-center justify-center mb-4'>
-                      <div className={`h-14 w-14 ${feature.bgColor} ${feature.hoverBgColor} rounded-full flex items-center justify-center transition-colors`}>
-                        <feature.icon className={`!h-7 !w-7 ${feature.color}`} aria-hidden='true' />
+    <>
+    
+      <section className='py-16 sm:py-24 lg:py-24 '>
+        <div className='mx-auto max-w-7xl px-6 lg:px-10'>
+          <StaggerContainer staggerDelay={0.2}>
+            <StaggerItem animation='slideUp'>
+              <div className='mx-auto max-w-7xl text-center'>
+                <h2 className='text-3xl font-semibold tracking-tight text-primary sm:text-4xl lg:text-5xl'>
+                  Everything you need to succeed
+                </h2>
+                <p className='mt-6 text-base leading-8 text-muted-foreground'>
+                  PexFect combines real-world challenges, structured learning paths,
+                  and AI-powered feedback so you can become a confident developer.
+                </p>
+              </div>
+            </StaggerItem>
+            <div className='mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none'>
+              <div className='grid max-w-xl grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 lg:max-w-none lg:grid-cols-2 xl:grid-cols-4'>
+                {features.map((feature) => (
+                  <StaggerItem key={feature.name} animation='scale'>
+                    <Link to={feature.link} className='group'>
+                  <Card className={`h-full hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] cursor-pointer border ${feature.hoverBorderColor}`}>
+                    <CardHeader className='text-center pb-4'>
+                      <div className='flex items-center justify-center mb-4'>
+                        <div className={`h-14 w-14 ${feature.bgColor} ${feature.hoverBgColor} rounded-full flex items-center justify-center transition-colors`}>
+                          <feature.icon className={`!h-7 !w-7 ${feature.color}`} aria-hidden='true' />
+                        </div>
                       </div>
-                    </div>
-                    <h3 className={`text-xl font-semibold text-foreground ${feature.hoverTextColor} transition-colors`}>
-                      {feature.name}
-                    </h3>
-                  </CardHeader>
-                  <CardContent className='text-center pt-0'>
-                    <p className='text-muted-foreground leading-relaxed'>
-                      {feature.description}
-                    </p>
-                  </CardContent>
-                </Card>
-              </Link>
-              </StaggerItem>
-            ))}
+                      <h3 className={`text-xl font-semibold text-foreground ${feature.hoverTextColor} transition-colors`}>
+                        {feature.name}
+                      </h3>
+                    </CardHeader>
+                    <CardContent className='text-center pt-0'>
+                      <p className='text-muted-foreground leading-relaxed'>
+                        {feature.description}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </Link>
+                </StaggerItem>
+              ))}
+            </div>
           </div>
+          </StaggerContainer>
         </div>
-        </StaggerContainer>
-      </div>
-    </section>
+        
+      </section>
+      <hr className='border-t border-primary/20 my-10 mx-auto max-w-7xl shadow-inner shadow-primary/20' />
+    </>
   )
 }
               

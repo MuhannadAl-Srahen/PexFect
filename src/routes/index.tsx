@@ -1,5 +1,4 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { PageLayout } from '@/layouts/PageLayout'
 import { HeroSection } from '@/services/Home/Hero-Section'
 import { FeatureSection } from '@/services/Home/Feature-Section'
 import { HowWorkSection } from '@/services/Home/How-Work-Section'
@@ -12,8 +11,8 @@ export const Route = createFileRoute('/')({
 
 function Index() {
   return (
-    <PageLayout>
-    <div>
+    <>
+      <div >
         <HeroSection />
      </div>
       <div>
@@ -26,8 +25,8 @@ function Index() {
         <ChallengeSection />
       </div>
       <div>
-        <CIASection />
+        <CIASection /> 
       </div>
-    </PageLayout>
+    </>
   )
 }
