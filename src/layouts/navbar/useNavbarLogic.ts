@@ -21,10 +21,13 @@ const throttle = <T extends (...args: unknown[]) => unknown>(
       lastExecTime = currentTime
     } else {
       clearTimeout(timeoutId)
-      timeoutId = setTimeout(() => {
-        func(...args)
-        lastExecTime = Date.now()
-      }, delay - (currentTime - lastExecTime))
+      timeoutId = setTimeout(
+        () => {
+          func(...args)
+          lastExecTime = Date.now()
+        },
+        delay - (currentTime - lastExecTime)
+      )
     }
   }
 }
@@ -99,7 +102,6 @@ export const useNavbarLogic = () => {
   // sign out
   const handleLogout = useCallback(async () => {
     await supabase.auth.signOut()
-    setUser(null)
   }, [])
 
   const toggleMobileMenu = useCallback(() => {

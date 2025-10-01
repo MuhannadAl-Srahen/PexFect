@@ -1,4 +1,3 @@
-// src/components/Navbar.tsx
 import { useNavbarLogic } from './navbar/useNavbarLogic'
 import { NavbarLogo } from './navbar/NavbarLogo'
 import { DesktopNav } from './navbar/DesktopNav'
@@ -22,9 +21,9 @@ export default function Navbar() {
   } = useNavbarLogic()
 
   return (
-    <nav className="sticky top-0 w-full z-50 transition-all duration-300 ease-out bg-background/80 backdrop-blur-lg border-b border-border/60 shadow-2xs">
-      <div className="mx-auto relative">
-        <div className="flex items-center justify-between h-16 sm:h-20 px-4 max-w-7xl mx-auto">
+    <nav className='sticky top-0 w-full z-50 transition-all duration-300 ease-out bg-background/80 backdrop-blur-lg border-b border-border/60 shadow-2xs'>
+      <div className='mx-auto relative'>
+        <div className='flex items-center justify-between h-16 sm:h-20 px-4 max-w-7xl mx-auto'>
           {/* Logo */}
           <NavbarLogo />
 
@@ -32,7 +31,7 @@ export default function Navbar() {
           <DesktopNav pathname={pathname} />
 
           {/* Actions */}
-          <div className="flex items-center gap-3">
+          <div className='flex items-center gap-3'>
             {/* Theme Toggle */}
             <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
 

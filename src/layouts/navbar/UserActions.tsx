@@ -1,4 +1,3 @@
-// src/navbar/UserActions.tsx
 import { Link } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -10,14 +9,27 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { User, LogOut, Github } from 'lucide-react'
 
+interface UserData {
+  email?: string
+  user_metadata?: {
+    avatar_url?: string
+    name?: string
+  }
+}
+
 interface UserActionsProps {
   isLoggedIn: boolean
-  user?: any | null
+  user?: UserData | null
   onLogout: () => void
   onLogin: () => void
 }
 
-export const UserActions = ({ isLoggedIn, user, onLogout, onLogin }: UserActionsProps) => {
+export const UserActions = ({
+  isLoggedIn,
+  user,
+  onLogout,
+  onLogin,
+}: UserActionsProps) => {
   // not logged in -> use the GitHub login function (no page navigation)
   if (!isLoggedIn) {
     return (
@@ -59,7 +71,7 @@ export const UserActions = ({ isLoggedIn, user, onLogout, onLogin }: UserActions
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
-        className='w-60 bg-background border border-border shadow-2xl rounded-2xl p-0 animate-in slide-in-from-top-2 fade-in-0 duration-300 overflow-hidden'
+        className='w-72 bg-background border border-border shadow-2xl rounded-2xl p-0 animate-in slide-in-from-top-2 fade-in-0 duration-300 overflow-hidden'
         align='end'
         sideOffset={12}
       >
@@ -75,7 +87,7 @@ export const UserActions = ({ isLoggedIn, user, onLogout, onLogin }: UserActions
               <p className='text-sm font-semibold text-foreground truncate'>
                 {fullName}
               </p>
-              <p className='text-xs text-muted-foreground'>
+              <p className='text-xs text-muted-foreground truncate'>
                 {user?.email}
               </p>
             </div>
