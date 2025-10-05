@@ -38,7 +38,7 @@ const TimelineChallengeCard: React.FC<{
     <>
       {/* Image Section */}
       {/* mobile: fixed height so image fills the top of the card; md: let it size by content */}
-      <div className="relative w-full md:w-48 h-44 md:h-auto md:aspect-auto flex-shrink-0 overflow-hidden">
+      <div className="relative w-full md:w-48 h-44 md:h-auto md:aspect-auto -my-6 flex-shrink-0 overflow-hidden">
         <img
           src={challenge.image || '/src/assets/images/girl.jpg'}
           alt={challenge.title}
@@ -60,9 +60,9 @@ const TimelineChallengeCard: React.FC<{
       </div>
 
       {/* Content Section */}
-      <CardContent className="flex flex-1 flex-col px-4 justify-between">
+      <CardContent className="flex flex-1  flex-col px-4 justify-between">
         <div className="flex items-start justify-between mb-2">
-          <h3 className="text-lg md:text-xl font-semibold text-card-foreground line-clamp-1 hover:text-primary transition-colors">
+          <h3 className="text-lg md:text-xl font-semibold text-card-foreground line-clamp-1 hover:text-primary transition-colors mt-3 md:mt-0">
             {challenge.title}
           </h3>
         </div>
@@ -166,9 +166,15 @@ const SOLID_BG = {
 }
 
 const GRADIENT_BG = {
-  beginner: 'bg-gradient-to-br from-green-50 via-green-100 to-white dark:from-emerald-900/40 dark:via-emerald-900/30 dark:to-gray-900',
-  intermediate: 'bg-gradient-to-br from-yellow-50 via-yellow-100 to-white dark:from-amber-900/40 dark:via-amber-900/30 dark:to-gray-900',
-  advanced: 'bg-gradient-to-br from-red-50 via-red-100 to-white dark:from-rose-900/40 dark:via-rose-900/30 dark:to-gray-900',
+  beginner: 'bg-gradient-to-br from-green-50 via-green-100 to-white dark:from-emerald-900/20 dark:via-emerald-900/12 dark:to-emerald-900/6',
+  intermediate: 'bg-gradient-to-br from-yellow-50 via-yellow-100 to-white dark:from-amber-900/20 dark:via-amber-900/12 dark:to-amber-900/6',
+  advanced: 'bg-gradient-to-br from-red-50 via-red-100 to-white dark:from-rose-900/20 dark:via-rose-900/12 dark:to-rose-900/6',
+}
+
+const DARK_LEVEL_TINT = {
+  beginner: 'dark:bg-emerald-900/6',
+  intermediate: 'dark:bg-amber-900/6',
+  advanced: 'dark:bg-rose-900/6',
 }
 
 const TITLE_COLORS = {
@@ -223,7 +229,7 @@ const PathDetails: React.FC<PathDetailsProps> = ({ pathId }) => {
 
       {/* Header */}
       <div
-        className={`w-full max-w-5xl rounded-3xl shadow-md px-6 md:px-14 pt-8 pb-10 mb-10 border border-transparent relative ${GRADIENT_BG[pathId]} dark:shadow-none`}
+        className={`w-full max-w-5xl rounded-3xl shadow-md px-6 md:px-14 pt-8 pb-10 mb-10 border border-transparent relative ${GRADIENT_BG[pathId]} ${DARK_LEVEL_TINT[pathId]} dark:shadow-none`}
         style={{ boxShadow: '0 2px 16px 0 rgba(0,0,0,0.06)' }}
       >
         <div className="flex flex-col md:flex-row md:items-center md:gap-5 mb-6 text-center md:text-left">
@@ -255,65 +261,61 @@ const PathDetails: React.FC<PathDetailsProps> = ({ pathId }) => {
         {/* Stats */}
         <div className="mt-6">
             <div className="hidden md:grid grid-cols-4 gap-6 w-full max-w-3xl mx-auto">
-            <div className="bg-[#f6fcfa] dark:bg-gray-800 rounded-2xl py-4 px-4 flex flex-col justify-center items-center text-center border border-[#eaf6f1] dark:border-gray-700">
-              <span className="text-xl font-extrabold text-gray-900 dark:text-gray-100 leading-none mb-1">
+            <div className="bg-card dark:bg-card rounded-2xl py-4 px-4 flex flex-col justify-center items-center text-center border border-border/50 shadow-sm">
+              <span className="text-xl font-extrabold text-card-foreground leading-none mb-1">
                 {totalChallenges}
               </span>
-              <span className="text-sm text-gray-500 dark:text-gray-300 font-medium">
+              <span className="text-sm text-muted-foreground font-medium">
                 Total Challenges
               </span>
             </div>
-            <div className="bg-[#f6fcfa] dark:bg-gray-800 rounded-2xl py-4 px-4 flex flex-col justify-center items-center text-center border border-[#eaf6f1] dark:border-gray-700">
-              <span className="text-xl font-extrabold text-gray-900 dark:text-gray-100 leading-none mb-1">
+            <div className="bg-card dark:bg-card rounded-2xl py-4 px-4 flex flex-col justify-center items-center text-center border border-border/50 shadow-sm">
+              <span className="text-xl font-extrabold text-card-foreground leading-none mb-1">
                 {completedChallenges}
               </span>
-              <span className="text-sm text-gray-500 dark:text-gray-300 font-medium">Completed</span>
+              <span className="text-sm text-muted-foreground font-medium">Completed</span>
             </div>
-            <div className="bg-[#f6fcfa] dark:bg-gray-800 rounded-2xl py-4 px-4 flex flex-col justify-center items-center text-center border border-[#eaf6f1] dark:border-gray-700">
+            <div className="bg-card dark:bg-card rounded-2xl py-4 px-4 flex flex-col justify-center items-center text-center border border-border/50 shadow-sm">
               <span
-                className={`text-xl font-extrabold leading-none mb-1 ${PROGRESS_COLORS[pathId]} dark:text-gray-100`}
+                className={`text-xl font-extrabold leading-none mb-1 ${PROGRESS_COLORS[pathId]} text-card-foreground`}
               >
                 {progress}%
               </span>
-              <span className="text-sm text-gray-500 dark:text-gray-300 font-medium">Progress</span>
+              <span className="text-sm text-muted-foreground font-medium">Progress</span>
             </div>
-            <div className="bg-[#f6fcfa] dark:bg-gray-800 rounded-2xl py-4 px-4 flex flex-col justify-center items-center text-center border border-[#eaf6f1] dark:border-gray-700">
-              <span className="text-xl font-extrabold text-gray-900 dark:text-gray-100 leading-none mb-1">
+            <div className="bg-card dark:bg-card rounded-2xl py-4 px-4 flex flex-col justify-center items-center text-center border border-border/50 shadow-sm">
+              <span className="text-xl font-extrabold text-card-foreground leading-none mb-1">
                 {path.duration}
               </span>
-              <span className="text-sm text-gray-500 dark:text-gray-300 font-medium">Duration</span>
+              <span className="text-sm text-muted-foreground font-medium">Duration</span>
             </div>
           </div>
 
-          {/* Mobile Stats */}
-          <div className="flex flex-col gap-5 w-full max-w-xs mx-auto md:hidden">
-            <div className="bg-white dark:bg-gray-800 rounded-3xl py-7 px-8 flex flex-col items-center shadow-md">
-              <span className="text-2xl font-extrabold text-gray-900 dark:text-gray-100 leading-none mb-1">
+          {/* Mobile Stats - compact 2-up grid */}
+          <div className="grid grid-cols-2 gap-3 w-full max-w-xs mx-auto md:hidden">
+            <div className="bg-card dark:bg-card rounded-2xl py-3 px-3 flex flex-col items-center border border-border/50 shadow-sm">
+              <span className="text-lg font-bold text-card-foreground leading-none mb-0.5">
                 {totalChallenges}
               </span>
-              <span className="text-base text-gray-500 dark:text-gray-300 font-medium">
-                Total Challenges
-              </span>
+              <span className="text-[11px] text-muted-foreground font-medium">Total Challenges</span>
             </div>
-            <div className="bg-white dark:bg-gray-800 rounded-3xl py-7 px-8 flex flex-col items-center shadow-md">
-              <span className="text-2xl font-extrabold text-gray-900 dark:text-gray-100 leading-none mb-1">
+            <div className="bg-card dark:bg-card rounded-2xl py-3 px-3 flex flex-col items-center border border-border/50 shadow-sm">
+              <span className="text-lg font-bold text-card-foreground leading-none mb-0.5">
                 {completedChallenges}
               </span>
-              <span className="text-base text-gray-500 dark:text-gray-300 font-medium">Completed</span>
+              <span className="text-[11px] text-muted-foreground font-medium">Completed</span>
             </div>
-            <div className="bg-white dark:bg-gray-800 rounded-3xl py-7 px-8 flex flex-col items-center shadow-md">
-              <span
-                className={`text-2xl font-extrabold leading-none mb-1 ${PROGRESS_COLORS[pathId]} dark:text-gray-100`}
-              >
+            <div className="bg-card dark:bg-card rounded-2xl py-3 px-3 flex flex-col items-center border border-border/50 shadow-sm">
+              <span className={`text-lg font-bold leading-none mb-0.5 ${PROGRESS_COLORS[pathId]} text-card-foreground`}>
                 {progress}%
               </span>
-              <span className="text-base text-gray-500 dark:text-gray-300 font-medium">Progress</span>
+              <span className="text-[11px] text-muted-foreground font-medium">Progress</span>
             </div>
-            <div className="bg-white dark:bg-gray-800 rounded-3xl py-7 px-8 flex flex-col items-center shadow-md">
-              <span className="text-2xl font-extrabold text-gray-900 dark:text-gray-100 leading-none mb-1">
+            <div className="bg-card dark:bg-card rounded-2xl py-3 px-3 flex flex-col items-center border border-border/50 shadow-sm">
+              <span className="text-lg font-bold text-card-foreground leading-none mb-0.5">
                 {path.duration}
               </span>
-              <span className="text-base text-gray-500 dark:text-gray-300 font-medium">Duration</span>
+              <span className="text-[11px] text-muted-foreground font-medium">Duration</span>
             </div>
           </div>
         </div>

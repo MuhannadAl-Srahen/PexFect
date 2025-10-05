@@ -15,9 +15,9 @@ const ICON_GRADIENTS_DARK = {
   advanced: 'dark:from-rose-900/30 dark:to-rose-900/10',
 };
 const ICONS = {
-  beginner: <BookOpen className="w-7 h-7 text-green-500" />,
-  intermediate: <Zap className="w-7 h-7 text-yellow-500" />,
-  advanced: <Trophy className="w-7 h-7 text-red-500" />,
+  beginner: <BookOpen className="w-5 h-5 text-green-500" />,
+  intermediate: <Zap className="w-5 h-5 text-yellow-500" />,
+  advanced: <Trophy className="w-5 h-5 text-red-500" />,
 };
 const CTA_COLORS = {
   beginner: 'bg-green-500 hover:bg-green-600 focus:ring-green-200',
@@ -72,58 +72,47 @@ const LearningPathCard: React.FC<LearningPathCardProps> = ({ path, totalChalleng
   
   return (
     <Link to={CTA_LINKS[key]} className="w-full h-full">
-      {/* outer ring: 1px padding shows as a thin outline using level color (light opacity, dark variants) */}
-      <div className={`rounded-3xl p-[1px] h-full w-full ${
-        key === 'beginner'
-          ? 'bg-emerald-500/12 dark:bg-emerald-400/20'
-          : key === 'intermediate'
-          ? 'bg-amber-500/12 dark:bg-amber-400/20'
-          : 'bg-rose-500/12 dark:bg-rose-400/20'
-      }`}
-      >
-    <div
-      className={`rounded-3xl border border-border/50 bg-card shadow-md hover:shadow-lg transition-all duration-200 flex flex-col h-full w-full max-w-full px-6 md:px-8 pt-7 pb-8 relative group hover:-translate-y-1 active:scale-[0.98]`}
-      tabIndex={0}
-    >
-      {/* Top Row: Icon, Badge, Challenge Count */}
-  <div className="flex items-center justify-between mb-7">
-        <div className={`rounded-xl p-2 bg-gradient-to-br ${ICON_GRADIENTS[key]} ${ICON_GRADIENTS_DARK[key]} flex items-center justify-center shadow-sm`}> 
-          {ICONS[key]}
+      {/* outer wrapper: subtle level border; elevation on hover */}
+      <div className="rounded-3xl h-full w-full transition-shadow duration-200 group group-hover:shadow-lg">
+        <div
+          className={`rounded-3xl border border-border/50 bg-card shadow-sm transition-transform duration-200 flex flex-col h-full w-full max-w-full px-6 md:px-8 pt-7 pb-8 relative group-hover:-translate-y-1 active:scale-[0.98]`}
+          tabIndex={0}
+        >
+      {/* Top Row: Icon, Title, Badge/Challenge Count */}
+  <div className="flex items-center justify-between gap-4 mb-5">
+        <div className="flex items-center gap-4">
+          <div className={`rounded-xl w-12 h-12 p-2 bg-gradient-to-br ${ICON_GRADIENTS[key]} ${ICON_GRADIENTS_DARK[key]} flex items-center justify-center shadow-sm`}> 
+            {ICONS[key]}
+          </div>
+          <h2 className={`text-xl font-extrabold text-left tracking-tight leading-tight ${TITLE_COLORS[key]}`}>{path.title}</h2>
         </div>
         <div className="flex flex-col items-end gap-1">
-          <span className="flex items-center gap-1 text-xs font-semibold text-gray-500 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded px-2 py-0.5">
+          <span className="flex items-center gap-1 text-xs font-semibold text-muted-foreground bg-muted/50 dark:bg-card rounded px-2 py-0.5">
             {totalChallenges} Challenges
           </span>
         </div>
       </div>
-      {/* Title and Subtitle */}
-      <h2 className={`text-2xl font-extrabold mb-5 text-left tracking-tight leading-tight ${TITLE_COLORS[key]}`}>{path.title}</h2>
-      <div className={`text-sm font-semibold mb-5 text-left ${SUBTITLE_COLORS[key]}`}
-        style={{ marginBottom: 2 }}>
+      {/* Subtitle */}
+      <div className={`text-sm font-semibold mb-5 text-left ${SUBTITLE_COLORS[key]}`} style={{ marginBottom: 2 }}>
         {key === 'beginner' && <span>Start from Zero</span>}
         {key === 'intermediate' && <span>Level Up Your Skills</span>}
         {key === 'advanced' && <span>Master Professional Development</span>}
       </div>
-      {/* Description */}
-  <p className="mb-7 text-gray-600 dark:text-gray-300 text-left text-[15px] font-normal leading-snug">{path.description}</p>
+    {/* Description */}
+  <p
+    className="mb-7 text-muted-foreground dark:text-gray-300 text-left text-[15px] font-normal leading-snug overflow-hidden text-ellipsis"
+    style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' }}
+  >
+    {path.description}
+  </p>
       {/* Feature List with colored dots */}
-  <ul className="mb-8 ml-4 text-[13px] text-gray-700 dark:text-gray-200 space-y-1.5">
+  <ul className="mb-8 ml-4 text-[13px] text-muted-foreground dark:text-card-foreground space-y-1.5">
         {FEATURE_LIST[key].map((item) => (
-          <li key={item} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <li key={item} className="flex items-center gap-3">
             <span
-              style={{
-                display: 'inline-block',
-                width: 7,
-                height: 7,
-                borderRadius: '50%',
-                marginRight: 8,
-                background:
-                  key === 'beginner'
-                    ? '#22c55e'
-                    : key === 'intermediate'
-                    ? '#eab308'
-                    : '#ef4444',
-              }}
+              className={`inline-block w-2.5 h-2.5 rounded-full ${
+                key === 'beginner' ? 'bg-emerald-500' : key === 'intermediate' ? 'bg-amber-500' : 'bg-rose-500'
+              }`}
             />
             {item}
           </li>
@@ -131,14 +120,14 @@ const LearningPathCard: React.FC<LearningPathCardProps> = ({ path, totalChalleng
       </ul>
       {/* Stat Cards Row */}
   <div className="flex items-center gap-3 mb-10">
-        <div className="flex-1 bg-gray-50 dark:bg-card rounded-xl py-2 flex flex-col items-center justify-center border border-border/50">
-          <span className="text-lg font-bold text-gray-700 dark:text-card-foreground leading-none">
+        <div className="flex-1 bg-card dark:bg-card rounded-xl py-2 flex flex-col items-center justify-center border border-border/50 shadow-sm">
+          <span className="text-lg font-bold text-card-foreground leading-none">
             {key === 'beginner' ? '1-2 weeks' : '2-3 weeks'}
           </span>
           <span className="text-xs text-muted-foreground font-semibold mt-0.5">Duration</span>
         </div>
-        <div className="flex-1 bg-gray-50 dark:bg-card rounded-xl py-2 flex flex-col items-center justify-center border border-border/50">
-          <span className="text-lg font-bold text-gray-700 dark:text-card-foreground leading-none">0%</span>
+        <div className="flex-1 bg-card dark:bg-card rounded-xl py-2 flex flex-col items-center justify-center border border-border/50 shadow-sm">
+          <span className="text-lg font-bold text-card-foreground leading-none">0%</span>
           <span className="text-xs text-muted-foreground font-semibold mt-0.5">Complete</span>
         </div>
       </div>
