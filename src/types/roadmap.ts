@@ -1,8 +1,10 @@
+export type DifficultyLevel = 'beginner' | 'intermediate' | 'advanced';
+
 export interface LearningPath {
-	id: 'beginner' | 'intermediate' | 'advanced';
+	id: DifficultyLevel;
 	title: string;
 	description: string;
-	difficulty: 'beginner' | 'intermediate' | 'advanced';
+	difficulty: DifficultyLevel;
 	duration: string;
 	completedChallenges: number;
 	progressPercentage: number;
