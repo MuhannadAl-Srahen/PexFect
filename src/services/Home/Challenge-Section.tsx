@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { MoveRight } from 'lucide-react'
 import { motion } from 'motion/react'
 
-// Use the first 3 challenges from the actual challenges data
+// Use the first 3 challenges
 const featuredChallenges = challenges.slice(0, 3)
 
 export function ChallengeSection() {
@@ -24,8 +24,14 @@ export function ChallengeSection() {
     })
   }
   return (
-    <section className='bg-background py-16 sm:py-24 lg:py-34'>
-      <div className='mx-auto max-w-7xl px-6 lg:px-10'>
+    <section className='relative py-20 sm:py-24 lg:py-24 overflow-hidden'>
+      {/* Background Layers */}
+      <div className='absolute inset-0 bg-background'></div>
+      <div className='absolute inset-0 bg-gradient-to-r from-gray-400/5 via-gray-400/10 to-background opacity-50'></div>
+      <div className='absolute inset-0 bg-gradient-to-b from-gray-400/2 via-gray-400/5 to-background'></div>
+      <div className='absolute inset-0 bg-gradient-to-t from-gray-400/5 via-gray-400/10 to-background opacity-50'></div>
+
+      <div className='relative z-10 mx-auto max-w-7xl px-6 lg:px-10'>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -33,7 +39,7 @@ export function ChallengeSection() {
           viewport={{ once: true, margin: '-100px' }}
         >
           <div className='mx-auto max-w-4xl text-center'>
-            <h2 className='text-3xl font-semibold tracking-tight text-primary sm:text-4xl lg:text-5xl'>
+            <h2 className='text-3xl font-semibold tracking-tight text-primary sm:text-5xl lg:text-5xl'>
               Featured Challenges
             </h2>
             <p className='mt-6 text-xl leading-8 text-muted-foreground'>
@@ -43,7 +49,7 @@ export function ChallengeSection() {
         </motion.div>
 
         {/* Challenge Grid */}
-        <div className='mx-auto mt-12 sm:mt-16 lg:mt-35 max-w-none'>
+        <div className='mx-auto mt-16 sm:mt-10 lg:mt-20 max-w-none'>
           {/* Mobile Layout - Single Column */}
           <div className='block md:hidden space-y-6 max-w-md mx-auto'>
             {featuredChallenges.map((challenge, index) => (
@@ -89,7 +95,7 @@ export function ChallengeSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
                 viewport={{ once: true, margin: '-100px' }}
-                className='w-w-[320px] h-[420px] max-w-xs lg:max-w-xs xl:max-w-sm transform lg:mt-2 lg:shadow-2xl lg:z-10 relative rounded-3xl flex flex-col'
+                className='w-w-[320px] h-[420px] max-w-xs lg:max-w-xs xl:max-w-sm transform lg:mt-6 lg:shadow-2xl lg:z-10 relative rounded-3xl flex flex-col'
               >
                 <ChallengeGridItem
                   challenge={featuredChallenges[1]}
@@ -122,7 +128,7 @@ export function ChallengeSection() {
           transition={{ duration: 0.6, delay: 0.1 }}
           viewport={{ once: true, margin: '-100px' }}
         >
-          <div className='flex justify-center mt-24 sm:mt-24'>
+          <div className='flex justify-center mt-24 sm:mt-20'>
             <Button
               asChild
               size='lg'

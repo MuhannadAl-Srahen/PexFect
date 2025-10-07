@@ -8,24 +8,21 @@ import {
 } from '@/components/ui/animate-on-scroll'
 
 export function HeroSection() {
-
   return (
-    <div className="relative w-full min-h-screen overflow-hidden">
+    <section className='relative w-full min-h-screen flex flex-col justify-center items-center text-center overflow-hidden px-5 pt-12 pb-24 sm:pt-16 sm:pb-28 lg:pt-20 lg:pb-32'>
+      {/* Background Layers */}
+      <div className='absolute inset-0 bg-background'></div>
+      <div className='absolute inset-0 bg-gradient-to-r from-primary/5 via-primary/10 to-background opacity-50'></div>
+      <div className='absolute inset-0 bg-gradient-to-b from-primary/2 via-primary/5 to-background'></div>
+      <div className='absolute inset-0 bg-gradient-to-t from-primary/2 via-primary/5 to-background opacity-50'></div>
 
-      {/* Background gradient overlay */}
-      <div className="absolute inset-0 bg-background"></div>
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-primary/10 to-background opacity-50"></div>
-      <div className="absolute inset-0 bg-gradient-to-b from-primary/2 via-primary/5 to-background"></div>
-      <section className="relative min-h-screen px-5 transition-all duration-300 overflow-hidden z-10">
+      {/* Content */}
+      <div className='relative z-10 flex flex-col items-center justify-center w-full max-w-6xl mx-auto '>
+        <StaggerContainer>
+          {/* Badge */}
 
-        <div className="flex flex-col items-center justify-start min-h-screen text-center relative z-10 pt-6 sm:pt-32 lg:pt-20">
-
-
-          <StaggerContainer>
-            {/* Badge */}
-            
-            <StaggerItem animation='slideUp'>
-              <div className='flex justify-center mb-8'>
+          <StaggerItem animation='slideUp'>
+            <div className='flex justify-center mb-10'>
               <Badge
                 variant='secondary'
                 className='bg-primary/10 text-primary border-primary/60 px-2 py-1 sm:px-4 sm:py-1 text-md sm:text-md font-medium rounded-full hover:bg-primary/20 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105'
@@ -35,7 +32,6 @@ export function HeroSection() {
               </Badge>
             </div>
           </StaggerItem>
-          
 
           {/* Main heading */}
           <StaggerItem animation='slideUp'>
@@ -81,11 +77,9 @@ export function HeroSection() {
             </div>
           </StaggerItem>
         </StaggerContainer>
-        </div>
-      </section>
-    </div>
+      </div>
+    </section>
   )
 }
 
 export default HeroSection
-
