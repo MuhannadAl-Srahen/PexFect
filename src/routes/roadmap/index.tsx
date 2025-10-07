@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { PageLayout } from '@/layouts/PageLayout'
+import RoadmapOverview from '@/services/roadmap/components/RoadmapOverview'
 
 export const Route = createFileRoute('/roadmap/')({
   component: RouteComponent,
@@ -7,10 +8,8 @@ export const Route = createFileRoute('/roadmap/')({
 
 function RouteComponent() {
   return (
-    <PageLayout>
-      <h3 className='text-2xl font-semibold text-foreground'>
-        Hello "/roadmap/"!
-      </h3>
+    <PageLayout maxWidth='7xl'>
+      <RoadmapOverview />
     </PageLayout>
   )
 }
