@@ -118,7 +118,7 @@ const LearningPathCard: React.FC<LearningPathCardProps> = ({ path }) => {
           <div className='flex items-center gap-3 md:gap-4 mb-6 md:mb-8 relative z-10'>
             <div className='flex-1 bg-card rounded-xl py-2 md:py-3 px-3 md:px-4 flex flex-col items-center justify-center border border-border/50 shadow-sm transition-all duration-300 hover:shadow-md'>
               <span className='text-base md:text-lg font-bold text-foreground leading-none'>
-                {key === 'beginner' ? '1-2 weeks' : '2-3 weeks'}
+                {path.duration}
               </span>
               <span className='text-xs text-muted-foreground font-medium mt-0.5 md:mt-1'>
                 Duration
