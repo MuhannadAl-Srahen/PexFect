@@ -6,20 +6,18 @@ import { SavedChallenges } from '@/components/profile/savedChallenges'
 import { ProfileProgress } from '@/components/profile/ProfileProgress'
 import { CheckCircle, Trophy, Heart } from 'lucide-react'
 import { useState } from 'react'
+import '@/types/profile.css'
 
 interface TabItem {
   key: string
   label: string
   icon: React.ComponentType<{ className?: string }>
-  shortLabel: string
-  firstWord: string
-  secondWord?: string
 }
 
 const tabs: TabItem[] = [
-  { key: 'recent', label: 'Recent Activity', shortLabel: 'Recent', firstWord: 'Recent', secondWord: 'Activity', icon: CheckCircle },
-  { key: 'progress', label: 'Progress', shortLabel: 'Progress', firstWord: 'Progress', icon: Trophy },
-  { key: 'saved', label: 'Saved Challenges', shortLabel: 'Saved', firstWord: 'Saved', secondWord: 'Challenges', icon: Heart },
+  { key: 'recent', label: 'Recent Activity', icon: CheckCircle },
+  { key: 'progress', label: 'Progress', icon: Trophy },
+  { key: 'saved', label: 'Saved Challenges', icon: Heart },
 ]
 
 // Mock data
@@ -136,66 +134,31 @@ function RouteComponent() {
               animation: `slideInRight 0.6s ease-out 0.2s both`,
             }}
           >
-            {/* Custom Tabs */}
+            {/* Custom Tabs - Unified Responsive Design */}
             <div className='w-full'>
               <div 
-                className='grid grid-cols-3 mb-6 md:mb-8 bg-card border shadow-sm h-12 md:h-16 rounded-lg overflow-hidden relative cursor-pointer group transition-all duration-300 hover:shadow-md hover:scale-[1.01]'
+                className='grid grid-cols-3 mb-6 md:mb-8 bg-card border shadow-sm h-16 md:h-18 rounded-lg overflow-hidden'
                 style={{
                   animation: `slideInUp 0.5s ease-out 0.4s both`,
                 }}
               >
-                {/* Tab hover overlay */}
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-lg" />
-                
-                {tabs.map((tab, index) => {
+                {tabs.map((tab) => {
                   const Icon = tab.icon
                   return (
                     <button
                       key={tab.key}
                       onClick={() => setActiveTab(tab.key)}
-                      className={`h-full transition-all duration-300 relative px-1 group/tab overflow-hidden ${
+                      className={`h-full transition-all duration-200 px-2 sm:px-3 md:px-4 ${
                         activeTab === tab.key
-                          ? 'bg-primary/10 text-primary scale-100'
-                          : 'hover:bg-muted text-muted-foreground hover:text-foreground hover:scale-[1.02] hover:-translate-y-0.5'
+                          ? 'bg-primary/10 text-primary border-b-2 border-primary'
+                          : 'hover:bg-muted text-muted-foreground hover:text-foreground'
                       }`}
-                      style={{
-                        animation: `slideInUp 0.4s ease-out ${0.5 + index * 0.1}s both`,
-                      }}
                     >
-                      {/* Tab button hover overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover/tab:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                      
-                      {/* Desktop Layout - Horizontal */}
-                      <div className='hidden md:flex items-center justify-center gap-2 h-full'>
-                        <Icon className={`h-4 w-4 flex-shrink-0 relative z-10 transition-all duration-300 ${
-                          activeTab === tab.key 
-                            ? 'scale-110 drop-shadow-sm' 
-                            : 'group-hover/tab:scale-110 group-hover/tab:rotate-12 group-hover/tab:drop-shadow-sm'
-                        }`} />
-                        
-                        <span className='text-sm lg:text-base relative z-10 transition-all duration-300 group-hover/tab:drop-shadow-sm whitespace-nowrap'>
+                      <div className='flex items-center justify-center gap-1 sm:gap-2 h-full'>
+                        <Icon className='h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 flex-shrink-0' />
+                        <span className='text-[10px] xs:text-xs sm:text-sm md:text-base font-medium whitespace-nowrap'>
                           {tab.label}
                         </span>
-                      </div>
-
-                      {/* Mobile Layout - Vertical */}
-                      <div className='flex md:hidden flex-col items-center justify-center gap-1 h-full py-1'>
-                        <Icon className={`h-3 w-3 flex-shrink-0 relative z-10 transition-all duration-300 ${
-                          activeTab === tab.key 
-                            ? 'scale-110 drop-shadow-sm' 
-                            : 'group-hover/tab:scale-110 group-hover/tab:rotate-12 group-hover/tab:drop-shadow-sm'
-                        }`} />
-                        
-                        <div className='text-center relative z-10 transition-all duration-300 group-hover/tab:drop-shadow-sm leading-tight'>
-                          <div className='text-xs font-medium'>
-                            {tab.firstWord}
-                          </div>
-                          {tab.secondWord && (
-                            <div className='text-xs font-medium'>
-                              {tab.secondWord}
-                            </div>
-                          )}
-                        </div>
                       </div>
                     </button>
                   )
@@ -204,7 +167,7 @@ function RouteComponent() {
 
               {/* Tab Contents */}
               <div 
-                className='space-y-4 md:space-y-6 relative overflow-hidden'
+                className='space-y-4 md:space-y-6'
                 style={{
                   animation: `fadeInUp 0.6s ease-out 0.6s both`,
                 }}
