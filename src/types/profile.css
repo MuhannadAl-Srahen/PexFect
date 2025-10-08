@@ -38,10 +38,10 @@
 
   /* Technology Colors */
   --profile-orange-500: #f97316; /* HTML */
-  --profile-cyan-500: #06b6d4;   /* CSS/React */
+  --profile-cyan-500: #06b6d4; /* CSS/React */
   --profile-indigo-600: #4f46e5; /* TypeScript */
-  --profile-amber-500: #f59e0b;  /* Intermediate */
-  --profile-rose-500: #f43f5e;   /* Advanced */
+  --profile-amber-500: #f59e0b; /* Intermediate */
+  --profile-rose-500: #f43f5e; /* Advanced */
 }
 
 .dark {
@@ -59,13 +59,11 @@
   --profile-purple-100: #6b21a8;
   --profile-purple-700: #a78bfa;
 
- 
   --profile-yellow-50: #292524;
   --profile-yellow-100: #44403c;
   --profile-yellow-600: #fbbf24;
   --profile-yellow-700: #fde047;
 
- 
   --profile-green-50: #1f2937;
   --profile-green-100: #374151;
   --profile-green-600: #6ee7b7;
@@ -74,15 +72,27 @@
 
 /* Learning Path Cards */
 .profile-card-beginner {
-  background: linear-gradient(135deg, var(--profile-emerald-50), var(--profile-emerald-100));
+  background: linear-gradient(
+    135deg,
+    var(--profile-emerald-50),
+    var(--profile-emerald-100)
+  );
 }
 
 .profile-card-intermediate {
-  background: linear-gradient(135deg, var(--profile-blue-50), var(--profile-blue-100));
+  background: linear-gradient(
+    135deg,
+    var(--profile-blue-50),
+    var(--profile-blue-100)
+  );
 }
 
 .profile-card-advanced {
-  background: linear-gradient(135deg, var(--profile-purple-50), var(--profile-purple-100));
+  background: linear-gradient(
+    135deg,
+    var(--profile-purple-50),
+    var(--profile-purple-100)
+  );
 }
 
 /* Old cards for backward compatibility */
@@ -175,42 +185,108 @@
   color: var(--profile-blue-600);
 }
 
-/* Progress Bar Colors */
+/* Progress Bar Colors with gradients and shadows */
 .profile-progress-html {
-  background-color: var(--profile-orange-500);
+  background: linear-gradient(
+    90deg,
+    var(--profile-orange-500),
+    #fb923c,
+    #ea580c
+  );
+  box-shadow:
+    0 2px 8px rgba(249, 115, 22, 0.4),
+    inset 0 1px 2px rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(249, 115, 22, 0.6);
 }
 
 .profile-progress-css {
-  background-color: var(--profile-cyan-500);
+  background: linear-gradient(90deg, var(--profile-cyan-500), #22d3ee, #0891b2);
+  box-shadow:
+    0 2px 8px rgba(6, 182, 212, 0.4),
+    inset 0 1px 2px rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(6, 182, 212, 0.6);
 }
 
 .profile-progress-javascript {
-  background-color: var(--profile-yellow-500);
+  background: linear-gradient(
+    90deg,
+    var(--profile-yellow-500),
+    #fbbf24,
+    #d97706
+  );
+  box-shadow:
+    0 2px 8px rgba(234, 179, 8, 0.4),
+    inset 0 1px 2px rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(234, 179, 8, 0.6);
 }
 
 .profile-progress-react {
-  background-color: var(--profile-cyan-500);
+  background: linear-gradient(90deg, var(--profile-cyan-500), #22d3ee, #0891b2);
+  box-shadow:
+    0 2px 8px rgba(6, 182, 212, 0.4),
+    inset 0 1px 2px rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(6, 182, 212, 0.6);
 }
 
 .profile-progress-typescript {
-  background-color: var(--profile-indigo-600);
+  background: linear-gradient(
+    90deg,
+    var(--profile-indigo-600),
+    #6366f1,
+    #4338ca
+  );
+  box-shadow:
+    0 2px 8px rgba(79, 70, 229, 0.4),
+    inset 0 1px 2px rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(79, 70, 229, 0.6);
 }
 
 .profile-progress-nodejs {
-  background-color: var(--profile-green-600);
+  background: linear-gradient(
+    90deg,
+    var(--profile-green-600),
+    #4ade80,
+    #16a34a
+  );
+  box-shadow:
+    0 2px 8px rgba(22, 163, 74, 0.4),
+    inset 0 1px 2px rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(22, 163, 74, 0.6);
 }
 
-/* Difficulty Progress */
+/* Difficulty Progress with gradients and shadows */
 .profile-progress-beginner {
-  background-color: var(--profile-emerald-500);
+  background: linear-gradient(
+    90deg,
+    var(--profile-emerald-500),
+    #34d399,
+    #059669
+  );
+  box-shadow:
+    0 2px 8px rgba(16, 185, 129, 0.4),
+    inset 0 1px 2px rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(16, 185, 129, 0.6);
 }
 
 .profile-progress-intermediate {
-  background-color: var(--profile-amber-500);
+  background: linear-gradient(
+    90deg,
+    var(--profile-amber-500),
+    #fbbf24,
+    #d97706
+  );
+  box-shadow:
+    0 2px 8px rgba(245, 158, 11, 0.4),
+    inset 0 1px 2px rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(245, 158, 11, 0.6);
 }
 
 .profile-progress-advanced {
-  background-color: var(--profile-rose-500);
+  background: linear-gradient(90deg, var(--profile-rose-500), #fb7185, #e11d48);
+  box-shadow:
+    0 2px 8px rgba(244, 63, 94, 0.4),
+    inset 0 1px 2px rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(244, 63, 94, 0.6);
 }
 
 /* Difficulty Indicators */

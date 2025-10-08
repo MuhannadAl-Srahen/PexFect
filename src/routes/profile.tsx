@@ -1,11 +1,14 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { PageLayout } from '@/layouts/PageLayout'
-import { RecentActivityTab } from '@/components/profile/RecentActivityTab'
-import { ProfileCard } from '@/components/profile/ProfileCard'
-import { SavedChallenges } from '@/components/profile/savedChallenges'
-import { ProfileProgress } from '@/components/profile/ProfileProgress'
+import { PageHeader } from '@/layouts/PageHeader'
+import {
+  RecentActivityTab,
+  SavedChallenges,
+  ProfileProgress,
+  ProfileCard,
+} from '@/services/profile'
 import { CheckCircle, Trophy, Heart } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import '@/types/profile.css'
 
 interface TabItem {
@@ -20,90 +23,30 @@ const tabs: TabItem[] = [
   { key: 'saved', label: 'Saved Challenges', icon: Heart },
 ]
 
-// Mock data
-const mockUser = {
-  id: '1',
-  username: 'johndoe',
-  fullName: 'John Doe',
-  email: 'john.doe@example.com',
-  avatar: '',
-  bio: 'Frontend developer passionate about building intuitive and performant web applications. Always learning new technologies and contributing to open source projects.',
-  joinedAt: '2024-01-01',
-  githubUrl: 'https://github.com/johndoe',
-  linkedinUrl: 'https://linkedin.com/in/john-doe-profile',
-  website: 'https://johndoe.dev',
-  skills: [],
-  experience: 'Intermediate',
-  stats: {
-    challengesCompleted: 18,
-    totalSubmissions: 18,
-    averageRating: 82,
-    currentStreak: 2,
-    longestStreak: 2,
-    totalPoints: 0,
-  },
-}
-
-const mockStats = {
-  challengesCompleted: 18,
-  averageRating: 82,
-  currentStreak: 2,
-}
-
-const mockSubmissions = [
-  {
-    id: '1',
-    name: 'Interactive Dashboard Widget',
-    level: 'Intermediate' as const,
-    technologies: ['React', 'JavaScript'],
-    date: '20/01/2024',
-    score: 85,
-  },
-  {
-    id: '2',
-    name: 'E-commerce Product Card',
-    level: 'Beginner' as const,
-    technologies: ['HTML', 'CSS'],
-    date: '18/01/2024',
-    score: 92,
-  },
-  {
-    id: '3',
-    name: 'Todo App with Filters',
-    level: 'Intermediate' as const,
-    technologies: ['React', 'JavaScript'],
-    date: '15/01/2024',
-    score: 78,
-  },
-  {
-    id: '4',
-    name: 'Landing Page Hero',
-    level: 'Beginner' as const,
-    technologies: ['HTML', 'CSS'],
-    date: '12/01/2024',
-    score: 95,
-  },
-  {
-    id: '5',
-    name: 'Weather App Widget',
-    level: 'Intermediate' as const,
-    technologies: ['JavaScript', 'API'],
-    date: '10/01/2024',
-    score: 81,
-  },
-]
+// Data is now handled by the service layer
 
 export const Route = createFileRoute('/profile')({
+  validateSearch: (search: Record<string, unknown>) => {
+    return {
+      tab: (search.tab as string) || 'recent',
+    }
+  },
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const [activeTab, setActiveTab] = useState('recent')
+  const { tab } = Route.useSearch()
+  const [activeTab, setActiveTab] = useState(tab || 'recent')
+
+  // Update tab when search param changes
+  useEffect(() => {
+    setActiveTab(tab || 'recent')
+  }, [tab])
 
   const renderTabContent = () => {
     switch (activeTab) {
       case 'recent':
-        return <RecentActivityTab stats={mockStats} submissions={mockSubmissions} />
+        return <RecentActivityTab />
       case 'progress':
         return <ProfileProgress />
       case 'saved':
@@ -115,115 +58,70 @@ function RouteComponent() {
 
   return (
     <PageLayout maxWidth='6xl'>
-      <div className='container mx-auto px-4 py-4 md:py-6'>
+      {/* Page Header */}
+      <PageHeader
+        title='Profile Dashboard'
+        description='Track your progress, manage saved challenges, and view your learning journey'
+      />
+
+      <div className='space-y-6'>
         <div className='grid grid-cols-1 lg:grid-cols-12 gap-6'>
           {/* Profile Card */}
-          <div 
-            className='lg:col-span-4'
-            style={{
-              animation: `slideInLeft 0.6s ease-out 0s both`,
-            }}
-          >
-            <ProfileCard user={mockUser} />
+          <div className='lg:col-span-4 lg:sticky lg:top-6 lg:self-start'>
+            <ProfileCard />
           </div>
 
           {/* Main Content */}
-          <div 
-            className='lg:col-span-8'
-            style={{
-              animation: `slideInRight 0.6s ease-out 0.2s both`,
-            }}
-          >
-            {/* Custom Tabs - Unified Responsive Design */}
+          <div className='lg:col-span-8'>
+            {/* Tab Navigation */}
             <div className='w-full'>
-              <div 
-                className='grid grid-cols-3 mb-6 md:mb-8 bg-card border shadow-sm h-16 md:h-18 rounded-lg overflow-hidden'
-                style={{
-                  animation: `slideInUp 0.5s ease-out 0.4s both`,
-                }}
-              >
+              <div className='relative inline-flex items-center w-full rounded-xl bg-muted/50 p-1 shadow-sm border border-border/30 mb-6'>
+                {/* Animated sliding background */}
+                <div
+                  className='absolute top-1 bottom-1 bg-primary rounded-lg shadow-md transition-all duration-300 ease-out'
+                  style={{
+                    left:
+                      activeTab === 'recent'
+                        ? '4px'
+                        : activeTab === 'progress'
+                          ? 'calc(33.333% + 2px)'
+                          : 'calc(66.666% + 2px)',
+                    width: 'calc(33.333% - 8px)',
+                  }}
+                />
+
                 {tabs.map((tab) => {
                   const Icon = tab.icon
+                  const isActive = activeTab === tab.key
                   return (
                     <button
                       key={tab.key}
                       onClick={() => setActiveTab(tab.key)}
-                      className={`h-full transition-all duration-200 px-2 sm:px-3 md:px-4 ${
-                        activeTab === tab.key
-                          ? 'bg-primary/10 text-primary border-b-2 border-primary'
-                          : 'hover:bg-muted text-muted-foreground hover:text-foreground'
+                      className={`relative z-10 inline-flex items-center justify-center gap-2 rounded-lg px-3 py-3 text-sm font-medium transition-all duration-300 ease-out flex-1 ${
+                        isActive
+                          ? 'text-primary-foreground'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                       }`}
                     >
-                      <div className='flex items-center justify-center gap-1 sm:gap-2 h-full'>
-                        <Icon className='h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 flex-shrink-0' />
-                        <span className='text-[10px] xs:text-xs sm:text-sm md:text-base font-medium whitespace-nowrap'>
-                          {tab.label}
-                        </span>
-                      </div>
+                      <Icon
+                        className={`h-4 w-4 transition-all duration-300 ${
+                          isActive ? 'scale-110' : 'scale-100'
+                        }`}
+                      />
+                      <span className='hidden sm:inline whitespace-nowrap font-medium'>
+                        {tab.label}
+                      </span>
                     </button>
                   )
                 })}
               </div>
 
               {/* Tab Contents */}
-              <div 
-                className='space-y-4 md:space-y-6'
-                style={{
-                  animation: `fadeInUp 0.6s ease-out 0.6s both`,
-                }}
-              >
-                {renderTabContent()}
-              </div>
+              <div className='space-y-4 md:space-y-6'>{renderTabContent()}</div>
             </div>
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes slideInLeft {
-          from {
-            opacity: 0;
-            transform: translateX(-50px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-
-        @keyframes slideInRight {
-          from {
-            opacity: 0;
-            transform: translateX(50px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-
-        @keyframes slideInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </PageLayout>
   )
 }

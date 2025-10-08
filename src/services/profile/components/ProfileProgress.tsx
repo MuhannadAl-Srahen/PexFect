@@ -1,5 +1,5 @@
 import { Target, Code, BarChart3 } from 'lucide-react'
-import '../../types/profile.css'
+import '../../../types/profile.css'
 
 const mockProgressData = {
   learningPaths: [

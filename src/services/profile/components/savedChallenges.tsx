@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 import { ChallengeGridItem } from '@/services/challenges/components/ChallengeGridItem'
@@ -92,6 +92,22 @@ export function SavedChallenges() {
   const currentChallenges = savedChallenges.slice(startIndex, endIndex)
   const totalPages = Math.ceil(savedChallenges.length / ITEMS_PER_PAGE)
 
+  // Safety check: if current page is empty but there are challenges, go to last page
+  useEffect(() => {
+    if (
+      savedChallenges.length > 0 &&
+      currentChallenges.length === 0 &&
+      currentPage > 1
+    ) {
+      setCurrentPage(Math.max(1, totalPages))
+    }
+  }, [
+    savedChallenges.length,
+    currentChallenges.length,
+    currentPage,
+    totalPages,
+  ])
+
   const goToNextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1)
@@ -110,9 +126,25 @@ export function SavedChallenges() {
       if (newSet.has(challengeId)) {
         newSet.delete(challengeId)
         setTimeout(() => {
-          setSavedChallenges((current) =>
-            current.filter((challenge) => challenge.id !== challengeId)
-          )
+          setSavedChallenges((current) => {
+            const updatedChallenges = current.filter(
+              (challenge) => challenge.id !== challengeId
+            )
+
+            // Check if current page will be empty after removal
+            const newTotalPages = Math.ceil(
+              updatedChallenges.length / ITEMS_PER_PAGE
+            )
+            if (currentPage > newTotalPages && newTotalPages > 0) {
+              // Move to the last available page
+              setCurrentPage(newTotalPages)
+            } else if (updatedChallenges.length === 0) {
+              // Reset to first page if no challenges left
+              setCurrentPage(1)
+            }
+
+            return updatedChallenges
+          })
         }, 300)
       } else {
         newSet.add(challengeId)
@@ -182,16 +214,12 @@ export function SavedChallenges() {
       {/* Challenges Grid */}
       <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
         {currentChallenges.map((challenge) => (
-          <div
+          <ChallengeGridItem
             key={challenge.id}
-            className='transition-all duration-300 hover:scale-[1.02]'
-          >
-            <ChallengeGridItem
-              challenge={challenge}
-              isSaved={savedIds.has(challenge.id)}
-              onToggleSave={handleToggleSave}
-            />
-          </div>
+            challenge={challenge}
+            isSaved={savedIds.has(challenge.id)}
+            onToggleSave={handleToggleSave}
+          />
         ))}
       </div>
 

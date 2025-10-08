@@ -43,7 +43,7 @@ export function ProfileCard() {
         linkedinUrl: editData.linkedinUrl,
         website: editData.website,
       })
-
+      
       setUser(updatedProfile)
       setIsEditing(false)
       console.log('Profile updated successfully!')
@@ -68,19 +68,15 @@ export function ProfileCard() {
   }
 
   return (
-    <div className='space-y-6'>
+    <div className="space-y-6">
       {/* Main Profile Card */}
       <Card className='p-6 shadow-sm border bg-card rounded-xl w-full transition-all duration-300 hover:shadow-xl hover:scale-[1.01]'>
         <div className='flex flex-col items-center text-center space-y-6'>
           {/* Avatar */}
-          <div className='relative group'>
-            <div className='absolute -inset-1 bg-gradient-to-r from-primary/20 to-primary/10 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-300'></div>
+          <div className="relative group">
+            <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-primary/10 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
             <Avatar className='relative w-24 md:w-28 h-24 md:h-28 ring-4 ring-primary/20 transition-all duration-300 group-hover:ring-primary/40 group-hover:scale-105'>
-              <AvatarImage
-                src={user.avatar}
-                alt={isEditing ? editData.fullName : user.fullName}
-                className='object-cover'
-              />
+              <AvatarImage src={user.avatar} alt={isEditing ? editData.fullName : user.fullName} className="object-cover" />
               <AvatarFallback className='bg-gradient-to-br from-primary/20 to-primary/10 text-primary text-xl md:text-2xl font-bold'>
                 {getInitials(isEditing ? editData.fullName : user.fullName)}
               </AvatarFallback>
@@ -91,38 +87,21 @@ export function ProfileCard() {
           {isEditing ? (
             <div className='w-full space-y-4'>
               <div className='space-y-2'>
-                <Label
-                  htmlFor='fullName'
-                  className='text-xs font-medium text-muted-foreground'
-                >
-                  Full Name
-                </Label>
+                <Label htmlFor="fullName" className='text-xs font-medium text-muted-foreground'>Full Name</Label>
                 <Input
-                  id='fullName'
+                  id="fullName"
                   value={editData.fullName}
-                  onChange={(e) =>
-                    setEditData((prev) => ({
-                      ...prev,
-                      fullName: e.target.value,
-                    }))
-                  }
+                  onChange={(e) => setEditData(prev => ({ ...prev, fullName: e.target.value }))}
                   className='text-center text-lg font-semibold'
                 />
               </div>
               <div className='space-y-2'>
-                <Label
-                  htmlFor='email'
-                  className='text-xs font-medium text-muted-foreground'
-                >
-                  Email
-                </Label>
+                <Label htmlFor="email" className='text-xs font-medium text-muted-foreground'>Email</Label>
                 <Input
-                  id='email'
-                  type='email'
+                  id="email"
+                  type="email"
                   value={editData.email}
-                  onChange={(e) =>
-                    setEditData((prev) => ({ ...prev, email: e.target.value }))
-                  }
+                  onChange={(e) => setEditData(prev => ({ ...prev, email: e.target.value }))}
                   className='text-center text-sm'
                 />
               </div>
@@ -132,8 +111,10 @@ export function ProfileCard() {
               <h2 className='text-xl md:text-2xl font-bold text-foreground'>
                 {user.fullName}
               </h2>
-              <p className='text-sm text-muted-foreground'>{user.email}</p>
-              <div className='inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium'>
+              <p className='text-sm text-muted-foreground'>
+                {user.email}
+              </p>
+              <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">
                 {user.experience} Level
               </div>
             </div>
@@ -142,18 +123,16 @@ export function ProfileCard() {
           {/* Bio */}
           <div className='w-full text-left space-y-3'>
             <h3 className='text-sm font-semibold text-foreground flex items-center gap-2'>
-              <div className='w-2 h-2 bg-primary rounded-full'></div>
+              <div className="w-2 h-2 bg-primary rounded-full"></div>
               About
             </h3>
             {isEditing ? (
               <div className='space-y-2'>
                 <textarea
                   value={editData.bio}
-                  onChange={(e) =>
-                    setEditData((prev) => ({ ...prev, bio: e.target.value }))
-                  }
+                  onChange={(e) => setEditData(prev => ({ ...prev, bio: e.target.value }))}
                   className='w-full p-3 text-sm text-muted-foreground leading-relaxed border border-border rounded-lg bg-background resize-none min-h-[80px] focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent'
-                  placeholder='Tell us about yourself...'
+                  placeholder="Tell us about yourself..."
                 />
               </div>
             ) : (
@@ -163,17 +142,19 @@ export function ProfileCard() {
             )}
           </div>
 
+
+
           {/* Action Buttons */}
           {isEditing ? (
             <div className='flex gap-2 w-full'>
-              <Button
+              <Button 
                 onClick={handleSave}
                 disabled={isLoading}
                 className='flex-1 bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm transition-all duration-300 hover:scale-[1.02] disabled:opacity-50'
               >
                 {isLoading ? (
                   <>
-                    <div className='w-4 h-4 mr-2 animate-spin rounded-full border-2 border-current border-t-transparent' />
+                    <div className="w-4 h-4 mr-2 animate-spin rounded-full border-2 border-current border-t-transparent" />
                     <span>Saving...</span>
                   </>
                 ) : (
@@ -183,10 +164,10 @@ export function ProfileCard() {
                   </>
                 )}
               </Button>
-              <Button
+              <Button 
                 onClick={handleCancel}
                 disabled={isLoading}
-                variant='outline'
+                variant="outline"
                 className='flex-1 border-border hover:bg-muted transition-all duration-300 hover:scale-[1.02] disabled:opacity-50'
               >
                 <X className='w-4 h-4 mr-2' />
@@ -194,7 +175,7 @@ export function ProfileCard() {
               </Button>
             </div>
           ) : (
-            <Button
+            <Button 
               onClick={() => setIsEditing(true)}
               className='w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-md'
             >
@@ -207,74 +188,52 @@ export function ProfileCard() {
 
       {/* Social Links Card */}
       <Card className='p-4 shadow-sm border bg-card rounded-xl w-full transition-all duration-300 hover:shadow-xl hover:scale-[1.01]'>
-        <div className='space-y-4'>
+        <div className="space-y-4">
           <div className='flex items-center gap-2 mb-3'>
-            <div className='w-2 h-2 bg-primary rounded-full'></div>
-            <h3 className='text-sm font-semibold text-foreground'>Connect</h3>
+            <div className="w-2 h-2 bg-primary rounded-full"></div>
+            <h3 className='text-sm font-semibold text-foreground'>
+              Connect
+            </h3>
           </div>
-
+          
           {isEditing ? (
             <div className='space-y-3'>
               <div className='space-y-1'>
-                <Label
-                  htmlFor='githubUrl'
-                  className='text-xs font-medium text-muted-foreground flex items-center gap-1'
-                >
+                <Label htmlFor="githubUrl" className='text-xs font-medium text-muted-foreground flex items-center gap-1'>
                   <Github className='w-3 h-3' />
                   GitHub
                 </Label>
                 <Input
-                  id='githubUrl'
-                  placeholder='https://github.com/username'
+                  id="githubUrl"
+                  placeholder="https://github.com/username"
                   value={editData.githubUrl}
-                  onChange={(e) =>
-                    setEditData((prev) => ({
-                      ...prev,
-                      githubUrl: e.target.value,
-                    }))
-                  }
+                  onChange={(e) => setEditData(prev => ({ ...prev, githubUrl: e.target.value }))}
                   className='text-sm'
                 />
               </div>
               <div className='space-y-1'>
-                <Label
-                  htmlFor='linkedinUrl'
-                  className='text-xs font-medium text-muted-foreground flex items-center gap-1'
-                >
+                <Label htmlFor="linkedinUrl" className='text-xs font-medium text-muted-foreground flex items-center gap-1'>
                   <Linkedin className='w-3 h-3' />
                   LinkedIn
                 </Label>
                 <Input
-                  id='linkedinUrl'
-                  placeholder='https://linkedin.com/in/username'
+                  id="linkedinUrl"
+                  placeholder="https://linkedin.com/in/username"
                   value={editData.linkedinUrl}
-                  onChange={(e) =>
-                    setEditData((prev) => ({
-                      ...prev,
-                      linkedinUrl: e.target.value,
-                    }))
-                  }
+                  onChange={(e) => setEditData(prev => ({ ...prev, linkedinUrl: e.target.value }))}
                   className='text-sm'
                 />
               </div>
               <div className='space-y-1'>
-                <Label
-                  htmlFor='website'
-                  className='text-xs font-medium text-muted-foreground flex items-center gap-1'
-                >
+                <Label htmlFor="website" className='text-xs font-medium text-muted-foreground flex items-center gap-1'>
                   <Globe className='w-3 h-3' />
                   Website
                 </Label>
                 <Input
-                  id='website'
-                  placeholder='https://yourwebsite.com'
+                  id="website"
+                  placeholder="https://yourwebsite.com"
                   value={editData.website}
-                  onChange={(e) =>
-                    setEditData((prev) => ({
-                      ...prev,
-                      website: e.target.value,
-                    }))
-                  }
+                  onChange={(e) => setEditData(prev => ({ ...prev, website: e.target.value }))}
                   className='text-sm'
                 />
               </div>
@@ -292,7 +251,7 @@ export function ProfileCard() {
                     href={editData.githubUrl || user.githubUrl}
                     target='_blank'
                     rel='noopener noreferrer'
-                    className='flex items-center'
+                    className="flex items-center"
                   >
                     <Github className='w-4 h-4 mr-3' />
                     <span>@{user.username}</span>
@@ -310,7 +269,7 @@ export function ProfileCard() {
                     href={editData.linkedinUrl || user.linkedinUrl}
                     target='_blank'
                     rel='noopener noreferrer'
-                    className='flex items-center'
+                    className="flex items-center"
                   >
                     <Linkedin className='w-4 h-4 mr-3' />
                     <span>LinkedIn</span>
@@ -328,15 +287,10 @@ export function ProfileCard() {
                     href={editData.website || user.website}
                     target='_blank'
                     rel='noopener noreferrer'
-                    className='flex items-center'
+                    className="flex items-center"
                   >
                     <Globe className='w-4 h-4 mr-3' />
-                    <span>
-                      {(editData.website || user.website || '').replace(
-                        'https://',
-                        ''
-                      )}
-                    </span>
+                    <span>{(editData.website || user.website || '').replace('https://', '')}</span>
                   </a>
                 </Button>
               )}
@@ -348,11 +302,11 @@ export function ProfileCard() {
       {/* Join Date Card */}
       <Card className='p-4 shadow-sm border bg-card rounded-xl w-full transition-all duration-300 hover:shadow-xl hover:scale-[1.01]'>
         <div className='flex items-center gap-3 text-sm text-muted-foreground'>
-          <div className='p-2 bg-primary/10 rounded-lg'>
+          <div className="p-2 bg-primary/10 rounded-lg">
             <Calendar className='w-4 h-4 text-primary' />
           </div>
           <div>
-            <div className='font-medium text-foreground'>Member since</div>
+            <div className="font-medium text-foreground">Member since</div>
             <div>
               {new Date(user.joinedAt).toLocaleDateString('en-US', {
                 month: 'long',
