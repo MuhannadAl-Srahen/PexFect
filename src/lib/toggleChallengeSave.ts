@@ -66,7 +66,7 @@ export async function getChallengeSavedState(
       .from('challenges')
       .select('issaved')
       .eq('id', challengeId)
-      .single<Pick<ChallengeRow, 'issaved'>>();
+      .single();
 
     if (error) {
       console.error('[getChallengeSavedState] Error:', error);
@@ -80,7 +80,8 @@ export async function getChallengeSavedState(
       return null;
     }
 
-    return data.issaved;
+    const result = data as unknown as ChallengeRow;
+    return result.issaved;
   } catch (err) {
     console.error('[getChallengeSavedState] Unexpected error:', err);
     return null;
@@ -107,7 +108,8 @@ export async function getSavedChallenges(): Promise<string[]> {
       return [];
     }
 
-    const savedIds = data.map((row: Pick<ChallengeRow, 'id'>) => row.id);
+    const results = data as unknown as Array<Pick<ChallengeRow, 'id'>>;
+    const savedIds = results.map((row) => row.id);
     console.log(
       `✅ [getSavedChallenges] Found ${savedIds.length} saved challenges`
     );
