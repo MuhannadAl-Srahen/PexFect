@@ -22,6 +22,7 @@ const mapRowToListItem = (row: unknown): ChallengeListItem => {
     // Database uses lowercase 'estimatedtime', frontend expects 'estimatedTime'
     estimatedTime: toStr(r.estimatedtime) || toStr(r.estimated_time) || toStr(r.estimatedTime) || '',
     submissions: Number(toId(r.submissions) || 0),
+    isSaved: Boolean(r.issaved),
   }
 }
 
