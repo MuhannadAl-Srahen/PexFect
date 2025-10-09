@@ -21,6 +21,7 @@ export async function toggleChallengeSave(
       `[toggleChallengeSave] Toggling save for challenge: ${challengeId} from ${currentSavedState} to ${!currentSavedState}`
     );
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data, error } = await supabase
       .from('challenges')
       .update({ issaved: !currentSavedState } as any)
