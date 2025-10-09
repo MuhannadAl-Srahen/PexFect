@@ -10,12 +10,15 @@
 -- 3. Click "Run" or press Ctrl+Enter
 -- ============================================================================
 
--- Drop existing policy if it exists (optional - only if you want to recreate it)
--- DROP POLICY IF EXISTS "Allow public read access to challenges" ON public.challenges;
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Allow public read access to challenges" ON public.challenges;
+DROP POLICY IF EXISTS "Allow public read and save challenges" ON public.challenges;
+DROP POLICY IF EXISTS "Allow public read challenges" ON public.challenges;
+DROP POLICY IF EXISTS "Allow public update challenge saved state" ON public.challenges;
 
--- Create or replace RLS policy to allow both SELECT and UPDATE
+-- Create RLS policy to allow both SELECT and UPDATE
 -- Note: This allows PUBLIC access. Adjust to authenticated users if needed.
-CREATE POLICY IF NOT EXISTS "Allow public read and save challenges"
+CREATE POLICY "Allow public read and save challenges"
 ON public.challenges
 FOR ALL
 TO public
@@ -25,15 +28,18 @@ WITH CHECK (true);
 -- Alternative: If you want to keep separate policies for SELECT and UPDATE
 -- Uncomment the following and comment out the policy above:
 
+-- Drop the combined policy first:
+-- DROP POLICY IF EXISTS "Allow public read and save challenges" ON public.challenges;
+
 -- Allow SELECT (read) access
--- CREATE POLICY IF NOT EXISTS "Allow public read challenges"
+-- CREATE POLICY "Allow public read challenges"
 -- ON public.challenges
 -- FOR SELECT
 -- TO public
 -- USING (true);
 
 -- Allow UPDATE access (for saving/unsaving)
--- CREATE POLICY IF NOT EXISTS "Allow public update challenge saved state"
+-- CREATE POLICY "Allow public update challenge saved state"
 -- ON public.challenges
 -- FOR UPDATE
 -- TO public
