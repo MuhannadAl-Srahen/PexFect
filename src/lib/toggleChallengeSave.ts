@@ -21,13 +21,15 @@ export async function toggleChallengeSave(
       `[toggleChallengeSave] Toggling save for challenge: ${challengeId} from ${currentSavedState} to ${!currentSavedState}`
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data, error } = await supabase
+    const updateQuery = supabase
       .from('challenges')
-      .update({ issaved: !currentSavedState } as any)
+      // @ts-expect-error - Supabase client type inference issue with unknown database schema
+      .update({ issaved: !currentSavedState })
       .eq('id', challengeId)
       .select('issaved')
       .single();
+
+    const { data, error } = await updateQuery;
 
     if (error) {
       console.error('[toggleChallengeSave] Error:', error);
