@@ -1,5 +1,11 @@
 import { supabase } from './supabaseClient';
 
+// Database row types
+interface ChallengeRow {
+  id: string;
+  issaved: boolean;
+}
+
 /**
  * Toggles the isSaved status of a challenge in the database
  * @param challengeId - The UUID of the challenge
@@ -20,7 +26,7 @@ export async function toggleChallengeSave(
       .update({ issaved: !currentSavedState })
       .eq('id', challengeId)
       .select('issaved')
-      .single();
+      .single<Pick<ChallengeRow, 'issaved'>>();
 
     if (error) {
       console.error('[toggleChallengeSave] Error:', error);
@@ -34,7 +40,7 @@ export async function toggleChallengeSave(
       return null;
     }
 
-    const newSavedState = data.issaved as boolean;
+    const newSavedState = data.issaved;
     console.log(
       `✅ [toggleChallengeSave] Successfully updated challenge saved state to: ${newSavedState}`
     );
@@ -58,7 +64,7 @@ export async function getChallengeSavedState(
       .from('challenges')
       .select('issaved')
       .eq('id', challengeId)
-      .single();
+      .single<Pick<ChallengeRow, 'issaved'>>();
 
     if (error) {
       console.error('[getChallengeSavedState] Error:', error);
@@ -72,7 +78,7 @@ export async function getChallengeSavedState(
       return null;
     }
 
-    return data.issaved as boolean;
+    return data.issaved;
   } catch (err) {
     console.error('[getChallengeSavedState] Unexpected error:', err);
     return null;
@@ -99,7 +105,7 @@ export async function getSavedChallenges(): Promise<string[]> {
       return [];
     }
 
-    const savedIds = data.map((row) => row.id);
+    const savedIds = data.map((row: Pick<ChallengeRow, 'id'>) => row.id);
     console.log(
       `✅ [getSavedChallenges] Found ${savedIds.length} saved challenges`
     );
