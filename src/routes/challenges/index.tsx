@@ -67,10 +67,8 @@ function RouteComponent() {
       
       // Check if user is authenticated
       if (!isAuthenticated) {
-        console.warn('[handleToggleSave] ⚠️ User not authenticated - redirecting to login')
-        alert('Please sign in to save challenges')
-        // Redirect to login page
-        window.location.href = '/login'
+        console.warn('[handleToggleSave] ⚠️ User not authenticated - showing auth dialog')
+        setShowAuthDialog(true)
         return
       }
       
