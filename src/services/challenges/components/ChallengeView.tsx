@@ -15,7 +15,7 @@ export function ChallengeView({
           <ChallengeGridItem
             key={challenge.id}
             challenge={challenge}
-            isSaved={savedChallenges.includes(challenge.id)}
+            isSaved={challenge.isSaved ?? savedChallenges.includes(challenge.id)}
             onToggleSave={onToggleSave}
           />
         ))}
@@ -30,7 +30,7 @@ export function ChallengeView({
         <ChallengeListItem
           key={challenge.id}
           challenge={challenge}
-          isSaved={savedChallenges.includes(challenge.id)}
+          isSaved={challenge.isSaved ?? savedChallenges.includes(challenge.id)}
           onToggleSave={onToggleSave}
         />
       ))}
