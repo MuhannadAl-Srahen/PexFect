@@ -31,6 +31,7 @@ export interface ChallengeListItem {
   image?: string
   estimatedTime: string
   submissions: number
+  isSaved?: boolean
 }
 
 export interface ChallengeImage {
