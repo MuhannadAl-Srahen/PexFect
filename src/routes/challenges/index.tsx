@@ -8,6 +8,7 @@ import {
   useChallengeFilters,
 } from '@/services/challenges'
 import { getChallenges } from '@/lib/getChallenges'
+import { toggleChallengeSave } from '@/lib/toggleChallengeSave'
 import type { ChallengeListItem } from '@/types'
 import { EmptyState } from '@/layouts'
 
@@ -26,6 +27,9 @@ function RouteComponent() {
     getChallenges().then((list) => {
       if (!mounted) return
       setAllChallenges(list)
+      // Extract saved challenges from the list
+      const saved = list.filter((c) => c.isSaved).map((c) => c.id)
+      setSavedChallenges(saved)
     })
     return () => {
       mounted = false
@@ -43,10 +47,30 @@ function RouteComponent() {
     clearFilters,
   } = useChallengeFilters(allChallenges)
 
-  const toggleSaveChallenge = (challengeId: string) => {
-    setSavedChallenges((prev) =>
-      prev.includes(challengeId) ? prev.filter((id) => id !== challengeId) : [...prev, challengeId]
-    )
+  const handleToggleSave = async (challengeId: string) => {
+    // Optimistic update
+    const currentSavedState = savedChallenges.includes(challengeId)
+    const newSavedChallenges = currentSavedState
+      ? savedChallenges.filter((id) => id !== challengeId)
+      : [...savedChallenges, challengeId]
+    
+    setSavedChallenges(newSavedChallenges)
+
+    // Update in database
+    const newState = await toggleChallengeSave(challengeId, currentSavedState)
+    
+    // If database update failed, revert optimistic update
+    if (newState === null) {
+      console.error('Failed to update saved state in database')
+      setSavedChallenges(savedChallenges) // Revert
+    } else {
+      // Also update the challenge in allChallenges
+      setAllChallenges((prev) =>
+        prev.map((c) =>
+          c.id === challengeId ? { ...c, isSaved: newState } : c
+        )
+      )
+    }
   }
 
   return (
@@ -77,7 +101,7 @@ function RouteComponent() {
         <ChallengeView
           challenges={filteredChallenges}
           savedChallenges={savedChallenges}
-          onToggleSave={toggleSaveChallenge}
+          onToggleSave={handleToggleSave}
           viewMode={viewMode}
         />
       )}
