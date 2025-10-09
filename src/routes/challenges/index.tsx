@@ -62,6 +62,15 @@ function RouteComponent() {
     try {
       console.log('[handleToggleSave] Starting toggle for:', challengeId)
       
+      // Check if user is authenticated
+      if (!isAuthenticated) {
+        console.warn('[handleToggleSave] ⚠️ User not authenticated - redirecting to login')
+        alert('Please sign in to save challenges')
+        // Redirect to login page
+        window.location.href = '/login'
+        return
+      }
+      
       // Optimistic update
       const currentSavedState = savedChallenges.includes(challengeId)
       console.log('[handleToggleSave] Current saved state:', currentSavedState)
@@ -90,6 +99,7 @@ function RouteComponent() {
             c.id === challengeId ? { ...c, isSaved: newState } : c
           )
         )
+      }
       }
     } catch (error) {
       console.error('[handleToggleSave] ❌❌❌ CAUGHT ERROR:', error)
