@@ -100,7 +100,6 @@ function RouteComponent() {
           )
         )
       }
-      }
     } catch (error) {
       console.error('[handleToggleSave] ❌❌❌ CAUGHT ERROR:', error)
       console.error('[handleToggleSave] Error details:', {
