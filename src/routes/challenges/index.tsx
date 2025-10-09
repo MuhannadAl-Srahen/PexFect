@@ -9,6 +9,7 @@ import {
 } from '@/services/challenges'
 import { getChallenges } from '@/lib/getChallenges'
 import { toggleChallengeSave } from '@/lib/toggleChallengeSave'
+import { supabase } from '@/lib/supabaseClient'
 import type { ChallengeListItem } from '@/types'
 import { EmptyState } from '@/layouts'
 
@@ -19,11 +20,20 @@ export const Route = createFileRoute('/challenges/')({
 function RouteComponent() {
   const [savedChallenges, setSavedChallenges] = useState<string[]>([])
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
-
   const [allChallenges, setAllChallenges] = useState<ChallengeListItem[]>([])
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   useEffect(() => {
     let mounted = true
+    
+    // Check authentication status
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (mounted) {
+        setIsAuthenticated(!!session)
+      }
+    })
+    
+    // Load challenges
     getChallenges().then((list) => {
       if (!mounted) return
       setAllChallenges(list)
@@ -31,6 +41,7 @@ function RouteComponent() {
       const saved = list.filter((c) => c.isSaved).map((c) => c.id)
       setSavedChallenges(saved)
     })
+    
     return () => {
       mounted = false
     }
