@@ -1,6 +1,7 @@
 import {
   AlertDialog,
   AlertDialogAction,
+  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
@@ -38,17 +39,14 @@ export function AuthPromptDialog({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className='gap-2 sm:gap-0'>
+          <AlertDialogCancel onClick={() => onOpenChange(false)}>
+            Maybe Later
+          </AlertDialogCancel>
           <AlertDialogAction
             onClick={onSignIn}
             className='bg-primary hover:bg-primary/90'
           >
             Sign In
-          </AlertDialogAction>
-          <AlertDialogAction
-            variant='outline'
-            onClick={() => onOpenChange(false)}
-          >
-            Maybe Later
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
