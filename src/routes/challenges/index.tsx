@@ -145,6 +145,12 @@ function RouteComponent() {
           viewMode={viewMode}
         />
       )}
+
+      <AuthPromptDialog
+        open={showAuthDialog}
+        onOpenChange={setShowAuthDialog}
+        onSignIn={() => navigate({ to: '/login' })}
+      />
     </PageLayout>
   )
 }
