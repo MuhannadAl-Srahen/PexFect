@@ -23,10 +23,10 @@ export async function toggleChallengeSave(
 
     const { data, error } = await supabase
       .from('challenges')
-      .update({ issaved: !currentSavedState })
+      .update({ issaved: !currentSavedState } as any)
       .eq('id', challengeId)
       .select('issaved')
-      .single<Pick<ChallengeRow, 'issaved'>>();
+      .single();
 
     if (error) {
       console.error('[toggleChallengeSave] Error:', error);
@@ -40,7 +40,8 @@ export async function toggleChallengeSave(
       return null;
     }
 
-    const newSavedState = data.issaved;
+    const result = data as unknown as ChallengeRow;
+    const newSavedState = result.issaved;
     console.log(
       `✅ [toggleChallengeSave] Successfully updated challenge saved state to: ${newSavedState}`
     );
