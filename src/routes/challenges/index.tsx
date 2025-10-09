@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { PageLayout } from '@/layouts'
 import {
   ChallengePageHeader,
@@ -12,16 +12,19 @@ import { toggleChallengeSave } from '@/lib/toggleChallengeSave'
 import { supabase } from '@/lib/supabaseClient'
 import type { ChallengeListItem } from '@/types'
 import { EmptyState } from '@/layouts'
+import { AuthPromptDialog } from '@/components/ui/auth-prompt-dialog'
 
 export const Route = createFileRoute('/challenges/')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
+  const navigate = useNavigate()
   const [savedChallenges, setSavedChallenges] = useState<string[]>([])
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [allChallenges, setAllChallenges] = useState<ChallengeListItem[]>([])
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [showAuthDialog, setShowAuthDialog] = useState(false)
 
   useEffect(() => {
     let mounted = true
