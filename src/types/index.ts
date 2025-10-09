@@ -3,7 +3,7 @@
 // ============================================================================
 
 export interface Challenge {
-  id: number
+  id: string
   title: string
   difficulty: 'Beginner' | 'Intermediate' | 'Advanced'
   tags: string[]
@@ -23,7 +23,7 @@ export interface Challenge {
 
 // Simplified challenge for list views
 export interface ChallengeListItem {
-  id: number
+  id: string
   title: string
   difficulty: 'Beginner' | 'Intermediate' | 'Advanced'
   tags: string[]
@@ -103,7 +103,7 @@ export interface ChallengeSubmission {
 export interface ChallengeItemProps {
   challenge: ChallengeListItem
   isSaved: boolean
-  onToggleSave: (challengeId: number) => void
+  onToggleSave: (challengeId: string) => void
 }
 
 export interface ChallengeControlsProps {
@@ -121,8 +121,8 @@ export interface ChallengeControlsProps {
 
 export interface ChallengeViewProps {
   challenges: ChallengeListItem[]
-  savedChallenges: number[]
-  onToggleSave: (challengeId: number) => void
+  savedChallenges: string[]
+  onToggleSave: (challengeId: string) => void
   viewMode: 'grid' | 'list'
 }
 

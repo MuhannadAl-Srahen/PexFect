@@ -1,13 +1,14 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { PageLayout } from '@/layouts'
 import {
   ChallengePageHeader,
   ChallengeControls,
   ChallengeView,
-  challenges,
   useChallengeFilters,
 } from '@/services/challenges'
+import { getChallenges } from '@/lib/getChallenges'
+import type { ChallengeListItem } from '@/types'
 import { EmptyState } from '@/layouts'
 
 export const Route = createFileRoute('/challenges/')({
@@ -15,8 +16,21 @@ export const Route = createFileRoute('/challenges/')({
 })
 
 function RouteComponent() {
-  const [savedChallenges, setSavedChallenges] = useState<number[]>([])
+  const [savedChallenges, setSavedChallenges] = useState<string[]>([])
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+
+  const [allChallenges, setAllChallenges] = useState<ChallengeListItem[]>([])
+
+  useEffect(() => {
+    let mounted = true
+    getChallenges().then((list) => {
+      if (!mounted) return
+      setAllChallenges(list)
+    })
+    return () => {
+      mounted = false
+    }
+  }, [])
 
   const {
     searchTerm,
@@ -27,13 +41,11 @@ function RouteComponent() {
     setSelectedDifficulty,
     setSelectedLanguage,
     clearFilters,
-  } = useChallengeFilters(challenges)
+  } = useChallengeFilters(allChallenges)
 
-  const toggleSaveChallenge = (challengeId: number) => {
+  const toggleSaveChallenge = (challengeId: string) => {
     setSavedChallenges((prev) =>
-      prev.includes(challengeId)
-        ? prev.filter((id) => id !== challengeId)
-        : [...prev, challengeId]
+      prev.includes(challengeId) ? prev.filter((id) => id !== challengeId) : [...prev, challengeId]
     )
   }
 
@@ -41,7 +53,7 @@ function RouteComponent() {
     <PageLayout maxWidth='6xl'>
       <ChallengePageHeader />
 
-      <ChallengeControls
+        <ChallengeControls
         searchTerm={searchTerm}
         selectedDifficulty={selectedDifficulty}
         selectedLanguage={selectedLanguage}
@@ -50,8 +62,8 @@ function RouteComponent() {
         onLanguageChange={setSelectedLanguage}
         viewMode={viewMode}
         onViewModeChange={setViewMode}
-        filteredCount={filteredChallenges.length}
-        totalCount={challenges.length}
+          filteredCount={filteredChallenges.length}
+          totalCount={allChallenges.length}
       />
 
       {filteredChallenges.length === 0 ? (

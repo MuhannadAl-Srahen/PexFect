@@ -7,8 +7,7 @@ export { ResourceControls } from './components/ResourceControls'
 // Utils
 export { getBadgeColors } from './utils/badgeColors'
 
-// Data
-export { allResources } from './data'
+// Data (removed local fallback - resources are fetched from DB)
 
 // Hooks
 export { useResourceManagement } from './hooks/useResourceManagement'

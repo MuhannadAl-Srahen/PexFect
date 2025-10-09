@@ -6,12 +6,14 @@ export interface ResourceGridProps {
   items: ResourceItem[]
   searchTerm?: string
   onClearSearch?: () => void
+  onRefresh?: () => void
 }
 
 export function ResourceGrid({
   items,
   searchTerm,
   onClearSearch,
+  onRefresh,
 }: ResourceGridProps) {
   // Show EmptyState when no items are found and there's a search term
   if (items.length === 0 && searchTerm && searchTerm.trim() !== '') {
@@ -35,6 +37,16 @@ export function ResourceGrid({
         <p className='text-sm text-muted-foreground'>
           Check back later for new resources
         </p>
+        {onRefresh ? (
+          <div className='mt-4'>
+            <button
+              className='btn btn-sm'
+              onClick={() => onRefresh && onRefresh()}
+            >
+              Retry
+            </button>
+          </div>
+        ) : null}
       </div>
     )
   }

@@ -1,2 +1,5 @@
 export { cn } from './utils'
 export { queryClient } from './queryClient'
+export { getChallenges } from './getChallenges'
+export { fetchResources } from './getResources'
+export { getChallengeDetails } from './getChallengeDetails'

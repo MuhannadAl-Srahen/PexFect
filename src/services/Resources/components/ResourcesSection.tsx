@@ -24,7 +24,7 @@ export function ResourcesSection({
   searchTerm = '',
   onSearchChange,
 }: ResourcesSectionProps) {
-  const { activeTab, setActiveTab, filteredData } =
+  const { activeTab, setActiveTab, filteredData, reload } =
     useResourceManagement(searchTerm)
 
   return (
@@ -64,6 +64,7 @@ export function ResourcesSection({
             onClearSearch={
               onSearchChange ? () => onSearchChange('') : undefined
             }
+            onRefresh={reload}
           />
         </div>
       </div>
