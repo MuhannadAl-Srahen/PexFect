@@ -106,4 +106,8 @@ ORDER BY created_at DESC;
 -- RETURNING id, issaved;
 -- ============================================================================
 
-RAISE NOTICE '✅ RLS policies have been reset. Try your application now!';
+-- Final success message
+DO $$
+BEGIN
+    RAISE NOTICE '✅ RLS policies have been reset. Try your application now!';
+END $$;
