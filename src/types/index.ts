@@ -104,6 +104,7 @@ export interface ChallengeSubmission {
 export interface ChallengeItemProps {
   challenge: ChallengeListItem
   isSaved: boolean
+  isSaving?: boolean
   isAuthenticated?: boolean
   onToggleSave: (challengeId: string) => void
 }
@@ -124,6 +125,7 @@ export interface ChallengeControlsProps {
 export interface ChallengeViewProps {
   challenges: ChallengeListItem[]
   savedChallenges: string[]
+  savingChallengeId?: string | null
   onToggleSave: (challengeId: string) => void
   viewMode: 'grid' | 'list'
   isAuthenticated?: boolean
