@@ -42,9 +42,9 @@ export async function ensureProfileExists() {
 
     // Create profile if it doesn't exist
     console.log('[ensureProfileExists] Creating new profile')
-    // @ts-expect-error - Supabase type generation issue with profiles table
     const { data: newProfile, error: insertError } = await supabase
       .from('profiles')
+      // @ts-expect-error - Supabase client type inference issue with unknown database schema
       .insert([
         {
           id: user.id,
