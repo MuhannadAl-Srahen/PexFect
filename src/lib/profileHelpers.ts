@@ -90,9 +90,6 @@ export async function ensureProfileExists() {
     return null
   }
 }
-    return null
-  }
-}
 
 /**
  * Gets the current user's profile
