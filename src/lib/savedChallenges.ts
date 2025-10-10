@@ -43,10 +43,14 @@ export async function isChallengeeSaved(challengeId: string): Promise<boolean> {
  */
 export async function saveChallenge(challengeId: string) {
   try {
+    console.log(`[saveChallenge] 💾 Attempting to save challenge: ${challengeId}`);
+    
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       throw new Error('User not authenticated');
     }
+
+    console.log(`[saveChallenge] 👤 User ID: ${user.id}`);
 
     const { data, error } = await supabase.rpc('save_challenge', {
       user_id: user.id,
@@ -54,13 +58,17 @@ export async function saveChallenge(challengeId: string) {
     });
 
     if (error) {
-      console.error('[saveChallenge] Error:', error);
+      console.error('[saveChallenge] ❌ Error:', error);
       throw error;
     }
 
+    console.log('[saveChallenge] ✅ Success! Response:', data);
+    console.log('[saveChallenge] 📊 New array:', data?.saved_challenges);
+    console.log('[saveChallenge] 📊 Array length:', data?.saved_challenges?.length || 0);
+
     return data;
   } catch (error) {
-    console.error('[saveChallenge] Exception:', error);
+    console.error('[saveChallenge] ❌ Exception:', error);
     throw error;
   }
 }
