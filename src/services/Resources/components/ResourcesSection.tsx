@@ -60,6 +60,7 @@ export function ResourcesSection({
         <div className='min-h-[380px]'>
           <ResourceGrid
             items={filteredData}
+            loading={loading}
             searchTerm={searchTerm}
             onClearSearch={
               onSearchChange ? () => onSearchChange('') : undefined
