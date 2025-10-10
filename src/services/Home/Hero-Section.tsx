@@ -337,7 +337,7 @@ export function HeroSection() {
 
                   {/* Gently Flying Floating Stats Cards */}
                   <motion.div
-                    className='absolute -top-18 -left-13 bg-primary text-primary-foreground rounded-xl p-4 shadow-lg z-10 hidden lg:block'
+                    className='absolute -top-10 -left-13 bg-primary text-primary-foreground rounded-xl p-4 shadow-lg z-10 hidden lg:block -rotate-9 hover:rotate-0 transition-all duration-300'
                     animate={{ y: [-4, 4, -4] }}
                     transition={{
                       duration: 6,
@@ -345,7 +345,6 @@ export function HeroSection() {
                       ease: 'easeInOut',
                     }}
                   >
-                    <div className='text-xl font-bold'>100+</div>
                     <div className='text-sm'>Challenges</div>
                     <div className='flex gap-1 mt-1'>
                       {[...Array(6)].map((_, i) => (
@@ -358,7 +357,7 @@ export function HeroSection() {
                   </motion.div>
 
                   <motion.div
-                    className='absolute -bottom-15 -right-20 bg-card border border-border/50 rounded-xl p-4 shadow-lg backdrop-blur-sm z-10 hidden lg:block'
+                    className='absolute -bottom-10 -right-20 bg-card border border-border/50 rounded-xl p-4 shadow-lg backdrop-blur-sm z-10 hidden lg:block -rotate-12 hover:rotate-0 transition-all duration-300'
                     animate={{ y: [4, -4, 4] }}
                     transition={{
                       duration: 6,

@@ -8,7 +8,7 @@ import {
 
 export function CIASection() {
   return (
-    <section className='relative py-20 lg:py-32 bg-background'>
+    <section className='relative pb-32 bg-background'>
       <div className='container mx-auto px-4 sm:px-6 lg:px-8'>
         <StaggerContainer staggerDelay={0.2}>
           <div className='max-w-5xl mx-auto'>
@@ -53,15 +53,15 @@ export function CIASection() {
                   <div className='flex items-center gap-4 sm:gap-6 py-4 border-t border-border/20'>
                     <div className='text-center'>
                       <div className='text-xl sm:text-2xl font-bold text-primary'>
-                        Soon
+                        Real-world
                       </div>
                       <div className='text-xs sm:text-sm text-muted-foreground'>
-                        Challenges
+                        Projects
                       </div>
                     </div>
                     <div className='text-center'>
                       <div className='text-xl sm:text-2xl font-bold text-primary'>
-                        AI
+                        AI-powered
                       </div>
                       <div className='text-xs sm:text-sm text-muted-foreground'>
                         Feedback
