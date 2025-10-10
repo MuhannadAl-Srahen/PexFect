@@ -1,5 +1,5 @@
 import type { Challenge } from '@/types'
-import { getChallengeDetails } from '@/lib/getChallengeDetails'
+import { getChallengeDetails } from './lib/getChallengeDetails'
 
 export const getChallengeById = async (
   id: string
