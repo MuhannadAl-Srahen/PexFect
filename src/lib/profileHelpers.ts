@@ -42,6 +42,7 @@ export async function ensureProfileExists() {
 
     // Create profile if it doesn't exist
     console.log('[ensureProfileExists] Creating new profile')
+    // @ts-ignore - Supabase type generation issue
     const { data: newProfile, error: insertError } = await supabase
       .from('profiles')
       .insert([
@@ -51,7 +52,7 @@ export async function ensureProfileExists() {
           email: user.email || null,
           joined_date: user.created_at,
           profile_image_url: user.user_metadata?.avatar_url || null,
-        } as any,
+        },
       ])
       .select()
       .single()
