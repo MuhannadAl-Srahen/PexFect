@@ -76,9 +76,9 @@ export async function toggleChallengeSave(
 
     // Return the full array of saved challenge IDs from the database response
     // This ensures we have the fresh, accurate state immediately
-    const savedChallengeIds = (data.saved_challenges || [])
-      .filter((item: any) => item.isSaved === true)
-      .map((item: any) => item.challenge_id);
+    const savedChallengeIds = ((data.saved_challenges || []) as SavedChallengeItem[])
+      .filter((item) => item.isSaved === true)
+      .map((item) => item.challenge_id);
     
     console.log(`[toggleChallengeSave] ✅ Successfully toggled - Returning ${savedChallengeIds.length} saved IDs`);
     return savedChallengeIds;
