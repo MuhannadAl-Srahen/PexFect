@@ -31,14 +31,28 @@ export async function toggleChallengeSave(
     // Call the appropriate database function
     const functionName = currentSavedState ? 'unsave_challenge' : 'save_challenge';
     console.log(`[toggleChallengeSave] 📞 Calling function: ${functionName}`);
+    console.log(`[toggleChallengeSave] 📞 With params:`, {
+      user_id: user.id,
+      challenge_id: challengeId,
+    });
     
     const { data, error } = await supabase.rpc(functionName, {
       user_id: user.id,
       challenge_id: challengeId,
     });
 
+    console.log(`[toggleChallengeSave] 📬 RPC call completed`);
+    console.log(`[toggleChallengeSave] 📦 Response data:`, data);
+    console.log(`[toggleChallengeSave] ⚠️ Response error:`, error);
+
     if (error) {
       console.error(`[toggleChallengeSave] ❌ Error calling ${functionName}:`, error);
+      console.error(`[toggleChallengeSave] ❌ Error details:`, {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+      });
       return null;
     }
 
