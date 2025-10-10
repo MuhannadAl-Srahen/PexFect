@@ -1,13 +1,8 @@
 import { supabase } from '@/lib/supabaseClient';
 
-// Database row types
-interface ChallengeRow {
-  id: string;
-  issaved: boolean;
-}
-
 /**
- * Toggles the isSaved status of a challenge in the database
+ * Toggles the saved status of a challenge for the current user
+ * Uses user's profile.saved_challenges array (per-user, not global)
  * @param challengeId - The UUID of the challenge
  * @param currentSavedState - Current saved state (true/false)
  * @returns Promise<boolean | null> - New saved state or null if error
@@ -21,32 +16,35 @@ export async function toggleChallengeSave(
       `[toggleChallengeSave] Toggling save for challenge: ${challengeId} from ${currentSavedState} to ${!currentSavedState}`
     );
 
-    const updateQuery = supabase
-      .from('challenges')
-      // @ts-expect-error - Supabase client type inference issue with unknown database schema
-      .update({ issaved: !currentSavedState })
-      .eq('id', challengeId)
-      .select('issaved')
-      .single();
+    // Get current user
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    
+    if (authError || !user) {
+      console.error('[toggleChallengeSave] Not authenticated:', authError);
+      return null;
+    }
 
-    const { data, error } = await updateQuery;
+    // Call the appropriate database function
+    const functionName = currentSavedState ? 'unsave_challenge' : 'save_challenge';
+    
+    const { data, error } = await supabase.rpc(functionName, {
+      user_id: user.id,
+      challenge_id: challengeId,
+    });
 
     if (error) {
-      console.error('[toggleChallengeSave] Error:', error);
+      console.error(`[toggleChallengeSave] Error calling ${functionName}:`, error);
       return null;
     }
 
-    if (!data) {
-      console.warn(
-        `[toggleChallengeSave] No challenge found with id: ${challengeId}`
-      );
+    if (!data || !data.success) {
+      console.warn(`[toggleChallengeSave] Function returned unsuccessful:`, data);
       return null;
     }
 
-    const result = data as unknown as ChallengeRow;
-    const newSavedState = result.issaved;
+    const newSavedState = !currentSavedState;
     console.log(
-      `✅ [toggleChallengeSave] Successfully updated challenge saved state to: ${newSavedState}`
+      `✅ [toggleChallengeSave] Successfully ${newSavedState ? 'saved' : 'unsaved'} challenge`
     );
     return newSavedState;
   } catch (err) {
