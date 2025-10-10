@@ -23,7 +23,7 @@ WHERE id = auth.uid();
 -- Step 3: Verify - Check cleaned state
 SELECT 
   id,
-  username,
+  full_name,
   saved_challenges,
   jsonb_array_length(COALESCE(saved_challenges, '[]'::jsonb)) as total_entries
 FROM public.profiles
