@@ -25,6 +25,10 @@ function RouteComponent() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
+  // DEBUG: Log every render to verify React is updating
+  console.log('[Component Render] 🎨 Rendering with savedChallenges:', savedChallenges)
+  console.log('[Component Render] 📊 Total challenges:', allChallenges.length)
+
   useEffect(() => {
     let mounted = true
     
