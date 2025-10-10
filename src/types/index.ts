@@ -104,6 +104,7 @@ export interface ChallengeSubmission {
 export interface ChallengeItemProps {
   challenge: ChallengeListItem
   isSaved: boolean
+  isAuthenticated?: boolean
   onToggleSave: (challengeId: string) => void
 }
 
