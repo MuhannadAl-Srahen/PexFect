@@ -7,6 +7,7 @@ interface ProfileUpdate {
   skills?: string[]
   social_links?: Record<string, string>
   profile_image_url?: string
+  github_url?: string
 }
 
 /**
