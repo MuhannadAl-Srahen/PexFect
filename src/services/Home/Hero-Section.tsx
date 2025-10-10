@@ -210,7 +210,7 @@ export function HeroSection() {
                         >
                           <span className='text-purple-400'>const</span>{' '}
                           <span className='text-yellow-300'>HeroComponent</span>{' '}
-                          = () =&gt; {'{'}
+                          = () => {'{'}
                         </motion.div>
                         <motion.div
                           className='text-green-400 ml-4'
