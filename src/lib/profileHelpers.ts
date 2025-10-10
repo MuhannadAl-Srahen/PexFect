@@ -52,6 +52,11 @@ export async function ensureProfileExists() {
 
     // Profile doesn't exist, create it
     console.log('[ensureProfileExists] Creating new profile...')
+    
+    // Extract GitHub username and construct GitHub URL
+    const githubUsername = user.user_metadata?.user_name
+    const githubUrl = githubUsername ? `https://github.com/${githubUsername}` : null
+    
     const { data: newProfile, error: insertError } = await supabase
       .from('profiles')
       // @ts-expect-error - Supabase client type inference issue with unknown database schema
@@ -62,6 +67,7 @@ export async function ensureProfileExists() {
           email: user.email || null,
           joined_date: user.created_at,
           profile_image_url: user.user_metadata?.avatar_url || null,
+          github_url: githubUrl,
         },
       ])
       .select()
