@@ -36,7 +36,8 @@ export async function toggleChallengeSave(
       challenge_id: challengeId,
     });
     
-    const { data, error } = await supabase.rpc(functionName, {
+    // Use type assertion to bypass TypeScript errors
+    const { data, error } = await (supabase.rpc as any)(functionName, {
       user_id: user.id,
       challenge_id: challengeId,
     });
