@@ -1,9 +1,11 @@
 import { ResourceCard } from './ResourceCards'
 import { EmptyState } from '@/layouts'
 import type { ResourceItem } from '@/types'
+import { ResourceCardSkeleton } from '@/components/ui/resource-skeleton'
 
 export interface ResourceGridProps {
   items: ResourceItem[]
+  loading?: boolean
   searchTerm?: string
   onClearSearch?: () => void
   onRefresh?: () => void
@@ -11,10 +13,22 @@ export interface ResourceGridProps {
 
 export function ResourceGrid({
   items,
+  loading = false,
   searchTerm,
   onClearSearch,
   onRefresh,
 }: ResourceGridProps) {
+  // Show skeleton loading state
+  if (loading) {
+    return (
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'>
+        {Array.from({ length: 6 }).map((_, index) => (
+          <ResourceCardSkeleton key={index} />
+        ))}
+      </div>
+    )
+  }
+  
   // Show EmptyState when no items are found and there's a search term
   if (items.length === 0 && searchTerm && searchTerm.trim() !== '') {
     return (
