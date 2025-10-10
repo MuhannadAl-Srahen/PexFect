@@ -219,7 +219,7 @@
     transition: none !important;
   }
 
-  /* Skeleton shimmer animation */
+  /* Skeleton shimmer animation - Professional style */
   @keyframes shimmer {
     0% {
       background-position: -200% 0;
@@ -229,7 +229,20 @@
     }
   }
 
+  @keyframes shimmer-slide {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
   .animate-shimmer {
     animation: shimmer 3s ease-in-out infinite;
+  }
+
+  .animate-shimmer-slide {
+    animation: shimmer-slide 2s ease-in-out infinite;
   }
 }
