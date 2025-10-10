@@ -19,10 +19,8 @@ import { Route as SettingsIndexRouteImport } from './routes/settings/index'
 import { Route as RoadmapIndexRouteImport } from './routes/roadmap/index'
 import { Route as ResourcesIndexRouteImport } from './routes/resources/index'
 import { Route as ChallengesIndexRouteImport } from './routes/challenges/index'
-import { Route as RoadmapIntermediateRouteImport } from './routes/roadmap/intermediate'
-import { Route as RoadmapBeginnerRouteImport } from './routes/roadmap/beginner'
-import { Route as RoadmapAdvancedRouteImport } from './routes/roadmap/advanced'
 import { Route as FeedbackSubmissionIdRouteImport } from './routes/feedback/$submissionId'
+import { Route as RoadmapPathIdIndexRouteImport } from './routes/roadmap/$pathId/index'
 import { Route as ChallengesIdIndexRouteImport } from './routes/challenges/$id/index'
 
 const SignupRoute = SignupRouteImport.update({
@@ -75,24 +73,14 @@ const ChallengesIndexRoute = ChallengesIndexRouteImport.update({
   path: '/challenges/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RoadmapIntermediateRoute = RoadmapIntermediateRouteImport.update({
-  id: '/roadmap/intermediate',
-  path: '/roadmap/intermediate',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RoadmapBeginnerRoute = RoadmapBeginnerRouteImport.update({
-  id: '/roadmap/beginner',
-  path: '/roadmap/beginner',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RoadmapAdvancedRoute = RoadmapAdvancedRouteImport.update({
-  id: '/roadmap/advanced',
-  path: '/roadmap/advanced',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const FeedbackSubmissionIdRoute = FeedbackSubmissionIdRouteImport.update({
   id: '/feedback/$submissionId',
   path: '/feedback/$submissionId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RoadmapPathIdIndexRoute = RoadmapPathIdIndexRouteImport.update({
+  id: '/roadmap/$pathId/',
+  path: '/roadmap/$pathId/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChallengesIdIndexRoute = ChallengesIdIndexRouteImport.update({
@@ -109,14 +97,12 @@ export interface FileRoutesByFullPath {
   '/progress': typeof ProgressRoute
   '/signup': typeof SignupRoute
   '/feedback/$submissionId': typeof FeedbackSubmissionIdRoute
-  '/roadmap/advanced': typeof RoadmapAdvancedRoute
-  '/roadmap/beginner': typeof RoadmapBeginnerRoute
-  '/roadmap/intermediate': typeof RoadmapIntermediateRoute
   '/challenges': typeof ChallengesIndexRoute
   '/resources': typeof ResourcesIndexRoute
   '/roadmap': typeof RoadmapIndexRoute
   '/settings': typeof SettingsIndexRoute
   '/challenges/$id': typeof ChallengesIdIndexRoute
+  '/roadmap/$pathId': typeof RoadmapPathIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -126,14 +112,12 @@ export interface FileRoutesByTo {
   '/progress': typeof ProgressRoute
   '/signup': typeof SignupRoute
   '/feedback/$submissionId': typeof FeedbackSubmissionIdRoute
-  '/roadmap/advanced': typeof RoadmapAdvancedRoute
-  '/roadmap/beginner': typeof RoadmapBeginnerRoute
-  '/roadmap/intermediate': typeof RoadmapIntermediateRoute
   '/challenges': typeof ChallengesIndexRoute
   '/resources': typeof ResourcesIndexRoute
   '/roadmap': typeof RoadmapIndexRoute
   '/settings': typeof SettingsIndexRoute
   '/challenges/$id': typeof ChallengesIdIndexRoute
+  '/roadmap/$pathId': typeof RoadmapPathIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -144,14 +128,12 @@ export interface FileRoutesById {
   '/progress': typeof ProgressRoute
   '/signup': typeof SignupRoute
   '/feedback/$submissionId': typeof FeedbackSubmissionIdRoute
-  '/roadmap/advanced': typeof RoadmapAdvancedRoute
-  '/roadmap/beginner': typeof RoadmapBeginnerRoute
-  '/roadmap/intermediate': typeof RoadmapIntermediateRoute
   '/challenges/': typeof ChallengesIndexRoute
   '/resources/': typeof ResourcesIndexRoute
   '/roadmap/': typeof RoadmapIndexRoute
   '/settings/': typeof SettingsIndexRoute
   '/challenges/$id/': typeof ChallengesIdIndexRoute
+  '/roadmap/$pathId/': typeof RoadmapPathIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -163,14 +145,12 @@ export interface FileRouteTypes {
     | '/progress'
     | '/signup'
     | '/feedback/$submissionId'
-    | '/roadmap/advanced'
-    | '/roadmap/beginner'
-    | '/roadmap/intermediate'
     | '/challenges'
     | '/resources'
     | '/roadmap'
     | '/settings'
     | '/challenges/$id'
+    | '/roadmap/$pathId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -180,14 +160,12 @@ export interface FileRouteTypes {
     | '/progress'
     | '/signup'
     | '/feedback/$submissionId'
-    | '/roadmap/advanced'
-    | '/roadmap/beginner'
-    | '/roadmap/intermediate'
     | '/challenges'
     | '/resources'
     | '/roadmap'
     | '/settings'
     | '/challenges/$id'
+    | '/roadmap/$pathId'
   id:
     | '__root__'
     | '/'
@@ -197,14 +175,12 @@ export interface FileRouteTypes {
     | '/progress'
     | '/signup'
     | '/feedback/$submissionId'
-    | '/roadmap/advanced'
-    | '/roadmap/beginner'
-    | '/roadmap/intermediate'
     | '/challenges/'
     | '/resources/'
     | '/roadmap/'
     | '/settings/'
     | '/challenges/$id/'
+    | '/roadmap/$pathId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -215,14 +191,12 @@ export interface RootRouteChildren {
   ProgressRoute: typeof ProgressRoute
   SignupRoute: typeof SignupRoute
   FeedbackSubmissionIdRoute: typeof FeedbackSubmissionIdRoute
-  RoadmapAdvancedRoute: typeof RoadmapAdvancedRoute
-  RoadmapBeginnerRoute: typeof RoadmapBeginnerRoute
-  RoadmapIntermediateRoute: typeof RoadmapIntermediateRoute
   ChallengesIndexRoute: typeof ChallengesIndexRoute
   ResourcesIndexRoute: typeof ResourcesIndexRoute
   RoadmapIndexRoute: typeof RoadmapIndexRoute
   SettingsIndexRoute: typeof SettingsIndexRoute
   ChallengesIdIndexRoute: typeof ChallengesIdIndexRoute
+  RoadmapPathIdIndexRoute: typeof RoadmapPathIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -297,32 +271,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChallengesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/roadmap/intermediate': {
-      id: '/roadmap/intermediate'
-      path: '/roadmap/intermediate'
-      fullPath: '/roadmap/intermediate'
-      preLoaderRoute: typeof RoadmapIntermediateRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/roadmap/beginner': {
-      id: '/roadmap/beginner'
-      path: '/roadmap/beginner'
-      fullPath: '/roadmap/beginner'
-      preLoaderRoute: typeof RoadmapBeginnerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/roadmap/advanced': {
-      id: '/roadmap/advanced'
-      path: '/roadmap/advanced'
-      fullPath: '/roadmap/advanced'
-      preLoaderRoute: typeof RoadmapAdvancedRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/feedback/$submissionId': {
       id: '/feedback/$submissionId'
       path: '/feedback/$submissionId'
       fullPath: '/feedback/$submissionId'
       preLoaderRoute: typeof FeedbackSubmissionIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/roadmap/$pathId/': {
+      id: '/roadmap/$pathId/'
+      path: '/roadmap/$pathId'
+      fullPath: '/roadmap/$pathId'
+      preLoaderRoute: typeof RoadmapPathIdIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/challenges/$id/': {
@@ -343,14 +303,12 @@ const rootRouteChildren: RootRouteChildren = {
   ProgressRoute: ProgressRoute,
   SignupRoute: SignupRoute,
   FeedbackSubmissionIdRoute: FeedbackSubmissionIdRoute,
-  RoadmapAdvancedRoute: RoadmapAdvancedRoute,
-  RoadmapBeginnerRoute: RoadmapBeginnerRoute,
-  RoadmapIntermediateRoute: RoadmapIntermediateRoute,
   ChallengesIndexRoute: ChallengesIndexRoute,
   ResourcesIndexRoute: ResourcesIndexRoute,
   RoadmapIndexRoute: RoadmapIndexRoute,
   SettingsIndexRoute: SettingsIndexRoute,
   ChallengesIdIndexRoute: ChallengesIdIndexRoute,
+  RoadmapPathIdIndexRoute: RoadmapPathIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

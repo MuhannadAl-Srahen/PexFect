@@ -1,16 +1,12 @@
-import { PageLayout } from '@/layouts'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/progress')({
-  component: RouteComponent,
+  beforeLoad: () => {
+    // Redirect to profile page with progress tab
+    throw redirect({
+      to: '/profile',
+      search: { tab: 'progress' },
+    })
+  },
+  component: () => null, // This won't render due to redirect
 })
-
-function RouteComponent() {
-  return (
-    <PageLayout>
-      <h3 className='text-2xl font-semibold text-foreground'>
-        Hello "/progress"!
-      </h3>
-    </PageLayout>
-  )
-}
