@@ -13,19 +13,24 @@ export async function toggleChallengeSave(
 ): Promise<boolean | null> {
   try {
     console.log(
-      `[toggleChallengeSave] Toggling save for challenge: ${challengeId} from ${currentSavedState} to ${!currentSavedState}`
+      `[toggleChallengeSave] 🔄 Toggling save for challenge: ${challengeId}`
     );
+    console.log(`[toggleChallengeSave] 📌 Current state: ${currentSavedState ? 'SAVED' : 'NOT SAVED'}`);
+    console.log(`[toggleChallengeSave] 🎯 Target action: ${currentSavedState ? 'UNSAVE (remove from array)' : 'SAVE (add to array)'}`);
 
     // Get current user
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     
     if (authError || !user) {
-      console.error('[toggleChallengeSave] Not authenticated:', authError);
+      console.error('[toggleChallengeSave] ❌ Not authenticated:', authError);
       return null;
     }
 
+    console.log(`[toggleChallengeSave] 👤 User ID: ${user.id}`);
+
     // Call the appropriate database function
     const functionName = currentSavedState ? 'unsave_challenge' : 'save_challenge';
+    console.log(`[toggleChallengeSave] 📞 Calling function: ${functionName}`);
     
     const { data, error } = await supabase.rpc(functionName, {
       user_id: user.id,
@@ -33,22 +38,28 @@ export async function toggleChallengeSave(
     });
 
     if (error) {
-      console.error(`[toggleChallengeSave] Error calling ${functionName}:`, error);
+      console.error(`[toggleChallengeSave] ❌ Error calling ${functionName}:`, error);
       return null;
     }
 
+    console.log(`[toggleChallengeSave] 📦 Response data:`, data);
+
     if (!data || !data.success) {
-      console.warn(`[toggleChallengeSave] Function returned unsuccessful:`, data);
+      console.warn(`[toggleChallengeSave] ⚠️ Function returned unsuccessful:`, data);
       return null;
     }
+
+    // Log the new array state
+    console.log(`[toggleChallengeSave] 📊 New saved_challenges array:`, data.saved_challenges);
+    console.log(`[toggleChallengeSave] 📊 Array length: ${data.saved_challenges?.length || 0}`);
 
     const newSavedState = !currentSavedState;
     console.log(
-      `✅ [toggleChallengeSave] Successfully ${newSavedState ? 'saved' : 'unsaved'} challenge`
+      `[toggleChallengeSave] ✅ Successfully ${newSavedState ? 'SAVED' : 'UNSAVED'} challenge - New state: ${newSavedState}`
     );
     return newSavedState;
   } catch (err) {
-    console.error('[toggleChallengeSave] Unexpected error:', err);
+    console.error('[toggleChallengeSave] ❌ Unexpected error:', err);
     return null;
   }
 }
