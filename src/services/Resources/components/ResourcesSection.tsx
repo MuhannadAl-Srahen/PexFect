@@ -24,7 +24,7 @@ export function ResourcesSection({
   searchTerm = '',
   onSearchChange,
 }: ResourcesSectionProps) {
-  const { activeTab, setActiveTab, filteredData, reload } =
+  const { activeTab, setActiveTab, filteredData, loading, reload } =
     useResourceManagement(searchTerm)
 
   return (
