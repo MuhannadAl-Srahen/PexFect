@@ -67,13 +67,6 @@ function RouteComponent() {
     try {
       console.log('[handleToggleSave] Starting toggle for:', challengeId)
       
-      // Check if user is authenticated
-      if (!isAuthenticated) {
-        console.warn('[handleToggleSave] ⚠️ User not authenticated - showing auth dialog')
-        setShowAuthDialog(true)
-        return
-      }
-      
       // Optimistic update
       const currentSavedState = savedChallenges.includes(challengeId)
       console.log('[handleToggleSave] Current saved state:', currentSavedState)
