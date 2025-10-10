@@ -122,7 +122,7 @@ function RouteComponent() {
     <PageLayout maxWidth='6xl'>
       <ChallengePageHeader />
 
-        <ChallengeControls
+      <ChallengeControls
         searchTerm={searchTerm}
         selectedDifficulty={selectedDifficulty}
         selectedLanguage={selectedLanguage}
@@ -131,11 +131,26 @@ function RouteComponent() {
         onLanguageChange={setSelectedLanguage}
         viewMode={viewMode}
         onViewModeChange={setViewMode}
-          filteredCount={filteredChallenges.length}
-          totalCount={allChallenges.length}
+        filteredCount={filteredChallenges.length}
+        totalCount={allChallenges.length}
       />
 
-      {filteredChallenges.length === 0 ? (
+      {isLoading ? (
+        // Show skeleton loading state
+        viewMode === 'grid' ? (
+          <div className='grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
+            {Array.from({ length: 6 }).map((_, index) => (
+              <ChallengeCardSkeleton key={index} />
+            ))}
+          </div>
+        ) : (
+          <div className='flex flex-col gap-4'>
+            {Array.from({ length: 4 }).map((_, index) => (
+              <ChallengeListSkeleton key={index} />
+            ))}
+          </div>
+        )
+      ) : filteredChallenges.length === 0 ? (
         <EmptyState
           title='No challenges found'
           message='Try adjusting your filters to see more challenges.'
