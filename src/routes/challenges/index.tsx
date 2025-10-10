@@ -102,37 +102,31 @@ function RouteComponent() {
       setSavedChallenges(optimisticUpdate)
       console.log('[handleToggleSave] ⚡ Optimistic UI update applied')
 
-      // Update in database
+      // Update in database - now returns the full saved array directly
       console.log('[handleToggleSave] 💾 Calling database function...')
-      const newState = await toggleChallengeSave(challengeId, currentSavedState)
-      console.log('[handleToggleSave] 📦 Database response:', newState)
+      const freshSavedIds = await toggleChallengeSave(challengeId, currentSavedState)
+      console.log('[handleToggleSave] 📦 Database response:', freshSavedIds)
       
-      if (newState === null) {
+      if (freshSavedIds === null) {
         // Database update failed - revert optimistic update
         console.error('[handleToggleSave] ❌ Database update FAILED - reverting UI')
         setSavedChallenges(savedChallenges)
       } else {
-        // Database update succeeded - reload from database to ensure sync
+        // Database update succeeded - use the returned array directly (no additional query needed!)
         console.log('[handleToggleSave] ✅ Database update SUCCESS')
-        console.log('[handleToggleSave] 🔄 Reloading saved challenges from database...')
+        console.log('[handleToggleSave] � Fresh data received:', freshSavedIds.length, 'challenges')
         
-        try {
-          const freshSavedIds = await getSavedChallenges()
-          console.log('[handleToggleSave] 📥 Fresh data loaded:', freshSavedIds.length, 'challenges')
-          setSavedChallenges(freshSavedIds)
-          
-          // Also update allChallenges to keep everything in sync
-          setAllChallenges((prev) =>
-            prev.map((c) => ({
-              ...c,
-              isSaved: freshSavedIds.includes(c.id)
-            }))
-          )
-          console.log('[handleToggleSave] ✅ All state synchronized!')
-        } catch (reloadError) {
-          console.error('[handleToggleSave] ❌ Failed to reload saved challenges:', reloadError)
-          // Keep optimistic update since database operation succeeded
-        }
+        // Update state with the fresh data from database
+        setSavedChallenges(freshSavedIds)
+        
+        // Also update allChallenges to keep everything in sync
+        setAllChallenges((prev) =>
+          prev.map((c) => ({
+            ...c,
+            isSaved: freshSavedIds.includes(c.id)
+          }))
+        )
+        console.log('[handleToggleSave] ✅ All state synchronized instantly!')
       }
     } catch (error) {
       console.error('[handleToggleSave] ❌ EXCEPTION:', error)
