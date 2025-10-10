@@ -43,7 +43,7 @@ export async function ensureProfileExists() {
           email: user.email || null,
           joined_date: user.created_at,
           profile_image_url: user.user_metadata?.avatar_url || null,
-        },
+        } as any,
       ])
       .select()
       .single()
