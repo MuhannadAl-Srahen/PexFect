@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { PageLayout } from '@/layouts'
 import {
   ChallengePageHeader,
@@ -12,7 +12,6 @@ import { toggleChallengeSave } from '@/services/challenges/lib/toggleChallengeSa
 import { supabase } from '@/lib/supabaseClient'
 import type { ChallengeListItem } from '@/types'
 import { EmptyState } from '@/layouts'
-import { AuthPromptDialog } from '@/components/ui/auth-prompt-dialog'
 import { ChallengeCardSkeleton, ChallengeListSkeleton } from '@/components/ui/challenge-skeleton'
 
 export const Route = createFileRoute('/challenges/')({
