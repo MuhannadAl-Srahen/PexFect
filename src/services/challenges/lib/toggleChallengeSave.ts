@@ -29,7 +29,7 @@ export async function toggleChallengeSave(
     // Call the appropriate database function
     const functionName = currentSavedState ? 'unsave_challenge' : 'save_challenge';
     
-    // Use type assertion to bypass TypeScript errors
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data, error } = await (supabase.rpc as any)(functionName, {
       user_id: user.id,
       challenge_id: challengeId,
