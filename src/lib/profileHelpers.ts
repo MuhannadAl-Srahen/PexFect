@@ -23,10 +23,7 @@ export async function ensureProfileExists() {
       return null
     }
 
-    // Wait a bit for the trigger to complete (if user just signed up)
-    await new Promise(resolve => setTimeout(resolve, 300))
-
-    // Check if profile already exists
+    // Check if profile already exists first (no arbitrary wait)
     const { data: existingProfile, error: fetchError } = await supabase
       .from('profiles')
       .select('id')
@@ -51,7 +48,7 @@ export async function ensureProfileExists() {
       return existingProfile
     }
 
-    // Profile doesn't exist, create it
+    // Profile doesn't exist, create it with upsert to avoid race conditions
     console.log('[ensureProfileExists] Creating new profile...')
     
     // Extract GitHub username and construct GitHub URL
@@ -61,10 +58,11 @@ export async function ensureProfileExists() {
     // Extract only the date part (YYYY-MM-DD) from created_at timestamp
     const joinedDate = user.created_at ? user.created_at.split('T')[0] : null
     
+    // Use upsert to handle race conditions (if trigger creates it simultaneously)
     const { data: newProfile, error: insertError } = await supabase
       .from('profiles')
       // @ts-expect-error - Supabase client type inference issue with unknown database schema
-      .insert([
+      .upsert(
         {
           id: user.id,
           full_name: user.user_metadata?.full_name || user.user_metadata?.name || null,
@@ -73,23 +71,16 @@ export async function ensureProfileExists() {
           profile_image_url: user.user_metadata?.avatar_url || null,
           github_url: githubUrl,
         },
-      ])
+        {
+          onConflict: 'id',
+          ignoreDuplicates: false // Update if exists
+        }
+      )
       .select()
       .maybeSingle()
 
     if (insertError) {
-      // If duplicate key error, the trigger already created it - fetch it
-      if (insertError.code === '23505') {
-        console.log('[ensureProfileExists] ✅ Profile already created by trigger')
-        const { data } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', user.id)
-          .maybeSingle()
-        return data
-      }
-      
-      console.error('[ensureProfileExists] Error creating profile:', insertError)
+      console.error('[ensureProfileExists] Error upserting profile:', insertError)
       return null
     }
 
