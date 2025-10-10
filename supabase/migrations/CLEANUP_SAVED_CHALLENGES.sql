@@ -47,10 +47,10 @@ WHERE saved_challenges IS NOT NULL;
 -- Step 5: Verify all profiles cleaned
 SELECT 
   id,
-  username,
+  full_name,
   jsonb_array_length(COALESCE(saved_challenges, '[]'::jsonb)) as num_saved,
   saved_challenges
 FROM public.profiles
 WHERE saved_challenges IS NOT NULL
   AND saved_challenges != '[]'::jsonb
-ORDER BY username;
+ORDER BY full_name;
