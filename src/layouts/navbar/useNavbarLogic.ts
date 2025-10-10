@@ -4,6 +4,7 @@ import { useLocation } from '@tanstack/react-router'
 import { useTheme } from 'next-themes'
 import { cn } from '@/lib/utils'
 import { supabase } from '@/lib/supabaseClient.js' // keep your .js path if that works in your setup
+import { ensureProfileExists } from '@/lib/profileHelpers'
 
 const SCROLL_THRESHOLD = 50
 const THROTTLE_DELAY = 16
