@@ -1,6 +1,14 @@
 // src/lib/profileHelpers.ts
 import { supabase } from './supabaseClient'
 
+interface ProfileUpdate {
+  full_name?: string
+  bio?: string
+  skills?: string[]
+  social_links?: Record<string, string>
+  profile_image_url?: string
+}
+
 /**
  * Ensures that a profile exists for the current user
  * This is a fallback in case the trigger didn't run for some reason
