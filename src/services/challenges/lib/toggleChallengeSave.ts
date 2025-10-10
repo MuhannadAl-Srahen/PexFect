@@ -119,13 +119,17 @@ export async function getChallengeSavedState(
  */
 export async function getSavedChallenges(): Promise<string[]> {
   try {
+    console.log('[getSavedChallenges] 🔍 Fetching saved challenges...')
+    
     // Get current user
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     
     if (authError || !user) {
-      console.error('[getSavedChallenges] Not authenticated:', authError);
+      console.error('[getSavedChallenges] ❌ Not authenticated:', authError);
       return [];
     }
+
+    console.log('[getSavedChallenges] 👤 User ID:', user.id)
 
     // Get user's saved_challenges from profile
     const { data: profile, error } = await supabase
@@ -134,25 +138,41 @@ export async function getSavedChallenges(): Promise<string[]> {
       .eq('id', user.id)
       .single();
 
-    if (error || !profile?.saved_challenges) {
+    console.log('[getSavedChallenges] 📦 Profile data:', profile)
+    console.log('[getSavedChallenges] ⚠️ Profile error:', error)
+
+    if (error) {
+      console.error('[getSavedChallenges] ❌ Database error:', error);
+      return [];
+    }
+
+    if (!profile) {
+      console.warn('[getSavedChallenges] ⚠️ No profile found');
+      return [];
+    }
+
+    // Use type assertion to access saved_challenges
+    const profileData = profile as any;
+    
+    if (!profileData.saved_challenges || !Array.isArray(profileData.saved_challenges)) {
+      console.log('[getSavedChallenges] ℹ️ No saved challenges found (empty or null)');
       return [];
     }
 
     // Extract challenge IDs where isSaved is true
-    const savedChallenges = profile.saved_challenges as Array<{ 
+    const savedChallenges = profileData.saved_challenges as Array<{ 
       challenge_id: string;
       isSaved: boolean;
     }>;
+    
     const savedIds = savedChallenges
       .filter(item => item.isSaved === true)
       .map(item => item.challenge_id);
     
-    console.log(
-      `✅ [getSavedChallenges] Found ${savedIds.length} saved challenges`
-    );
+    console.log('[getSavedChallenges] ✅ Found', savedIds.length, 'saved challenges:', savedIds);
     return savedIds;
   } catch (err) {
-    console.error('[getSavedChallenges] Unexpected error:', err);
+    console.error('[getSavedChallenges] ❌ Unexpected error:', err);
     return [];
   }
 }
