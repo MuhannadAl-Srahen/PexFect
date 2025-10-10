@@ -29,19 +29,26 @@ export async function ensureProfileExists() {
       .eq('id', user.id)
       .single()
 
+    // PGRST116 = no rows returned (profile doesn't exist)
     if (fetchError && fetchError.code !== 'PGRST116') {
-      console.error('[ensureProfileExists] Error checking profile:', fetchError)
+      // Check if it's a permission error (42501)
+      if (fetchError.code === '42501') {
+        console.error('[ensureProfileExists] ❌ RLS Policy Error - Please run the SQL migration!')
+        console.error('[ensureProfileExists] Run: supabase/migrations/FIX_RLS_POLICIES.sql')
+      } else {
+        console.error('[ensureProfileExists] Error checking profile:', fetchError)
+      }
       return null
     }
 
     // If profile exists, return it
     if (existingProfile) {
-      console.log('[ensureProfileExists] Profile already exists')
+      console.log('[ensureProfileExists] ✅ Profile already exists')
       return existingProfile
     }
 
     // Create profile if it doesn't exist
-    console.log('[ensureProfileExists] Creating new profile')
+    console.log('[ensureProfileExists] Creating new profile...')
     const { data: newProfile, error: insertError } = await supabase
       .from('profiles')
       // @ts-expect-error - Supabase client type inference issue with unknown database schema
@@ -62,7 +69,7 @@ export async function ensureProfileExists() {
       return null
     }
 
-    console.log('[ensureProfileExists] Profile created successfully')
+    console.log('[ensureProfileExists] ✅ Profile created successfully')
     return newProfile
   } catch (error) {
     console.error('[ensureProfileExists] Unexpected error:', error)
