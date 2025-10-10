@@ -22,19 +22,22 @@ export async function ensureProfileExists() {
       return null
     }
 
+    // Wait a bit for the trigger to complete (if user just signed up)
+    await new Promise(resolve => setTimeout(resolve, 300))
+
     // Check if profile already exists
     const { data: existingProfile, error: fetchError } = await supabase
       .from('profiles')
       .select('id')
       .eq('id', user.id)
-      .single()
+      .maybeSingle() // Use maybeSingle instead of single to handle 0 or 1 results
 
-    // PGRST116 = no rows returned (profile doesn't exist)
-    if (fetchError && fetchError.code !== 'PGRST116') {
+    // If there's an error that's not "no rows", log it
+    if (fetchError) {
       // Check if it's a permission error (42501)
       if (fetchError.code === '42501') {
         console.error('[ensureProfileExists] ❌ RLS Policy Error - Please run the SQL migration!')
-        console.error('[ensureProfileExists] Run: supabase/migrations/FIX_RLS_POLICIES.sql')
+        console.error('[ensureProfileExists] Run: supabase/migrations/AGGRESSIVE_FIX.sql')
       } else {
         console.error('[ensureProfileExists] Error checking profile:', fetchError)
       }
@@ -47,7 +50,7 @@ export async function ensureProfileExists() {
       return existingProfile
     }
 
-    // Create profile if it doesn't exist
+    // Profile doesn't exist, create it
     console.log('[ensureProfileExists] Creating new profile...')
     const { data: newProfile, error: insertError } = await supabase
       .from('profiles')
@@ -62,9 +65,20 @@ export async function ensureProfileExists() {
         },
       ])
       .select()
-      .single()
+      .maybeSingle()
 
     if (insertError) {
+      // If duplicate key error, the trigger already created it - fetch it
+      if (insertError.code === '23505') {
+        console.log('[ensureProfileExists] ✅ Profile already created by trigger')
+        const { data } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .maybeSingle()
+        return data
+      }
+      
       console.error('[ensureProfileExists] Error creating profile:', insertError)
       return null
     }
@@ -73,6 +87,9 @@ export async function ensureProfileExists() {
     return newProfile
   } catch (error) {
     console.error('[ensureProfileExists] Unexpected error:', error)
+    return null
+  }
+}
     return null
   }
 }
