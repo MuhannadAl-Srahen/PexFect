@@ -63,7 +63,7 @@ export function ChallengeCardSkeleton() {
 
 export function ChallengeListSkeleton() {
   return (
-    <div className='flex gap-6 rounded-xl border border-border/50 bg-card p-6 shadow-sm'>
+    <div className='flex gap-6 rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm p-6 shadow-sm'>
       {/* Image Skeleton */}
       <div className='relative h-40 w-64 flex-shrink-0 overflow-hidden rounded-lg'>
         <Skeleton className='h-full w-full' />
