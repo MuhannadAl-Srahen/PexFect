@@ -130,7 +130,8 @@ export async function getSavedChallenges(): Promise<SavedChallenge[]> {
       return [];
     }
 
-    const { data, error } = await supabase.rpc('get_saved_challenges', {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (supabase.rpc as any)('get_saved_challenges', {
       user_id: user.id,
     });
 
