@@ -18,29 +18,16 @@ export async function toggleChallengeSave(
   currentSavedState: boolean
 ): Promise<string[] | null> {
   try {
-    console.log(
-      `[toggleChallengeSave] 🔄 Toggling save for challenge: ${challengeId}`
-    );
-    console.log(`[toggleChallengeSave] 📌 Current state: ${currentSavedState ? 'SAVED' : 'NOT SAVED'}`);
-    console.log(`[toggleChallengeSave] 🎯 Target action: ${currentSavedState ? 'UNSAVE (remove from array)' : 'SAVE (add to array)'}`);
-
     // Get current user
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     
     if (authError || !user) {
-      console.error('[toggleChallengeSave] ❌ Not authenticated:', authError);
+      console.error('[toggleChallengeSave] Not authenticated:', authError);
       return null;
     }
 
-    console.log(`[toggleChallengeSave] 👤 User ID: ${user.id}`);
-
     // Call the appropriate database function
     const functionName = currentSavedState ? 'unsave_challenge' : 'save_challenge';
-    console.log(`[toggleChallengeSave] 📞 Calling function: ${functionName}`);
-    console.log(`[toggleChallengeSave] 📞 With params:`, {
-      user_id: user.id,
-      challenge_id: challengeId,
-    });
     
     // Use type assertion to bypass TypeScript errors
     const { data, error } = await (supabase.rpc as any)(functionName, {
@@ -48,42 +35,24 @@ export async function toggleChallengeSave(
       challenge_id: challengeId,
     });
 
-    console.log(`[toggleChallengeSave] 📬 RPC call completed`);
-    console.log(`[toggleChallengeSave] 📦 Response data:`, data);
-    console.log(`[toggleChallengeSave] ⚠️ Response error:`, error);
-
     if (error) {
-      console.error(`[toggleChallengeSave] ❌ Error calling ${functionName}:`, error);
-      console.error(`[toggleChallengeSave] ❌ Error details:`, {
-        message: error.message,
-        details: error.details,
-        hint: error.hint,
-        code: error.code,
-      });
+      console.error(`[toggleChallengeSave] Error calling ${functionName}:`, error);
       return null;
     }
-
-    console.log(`[toggleChallengeSave] 📦 Response data:`, data);
 
     if (!data || !data.success) {
-      console.warn(`[toggleChallengeSave] ⚠️ Function returned unsuccessful:`, data);
+      console.warn('[toggleChallengeSave] Function returned unsuccessful:', data);
       return null;
     }
 
-    // Log the new array state
-    console.log(`[toggleChallengeSave] 📊 New saved_challenges array:`, data.saved_challenges);
-    console.log(`[toggleChallengeSave] 📊 Array length: ${data.saved_challenges?.length || 0}`);
-
     // Return the full array of saved challenge IDs from the database response
-    // This ensures we have the fresh, accurate state immediately
     const savedChallengeIds = ((data.saved_challenges || []) as SavedChallengeItem[])
       .filter((item) => item.isSaved === true)
       .map((item) => item.challenge_id);
     
-    console.log(`[toggleChallengeSave] ✅ Successfully toggled - Returning ${savedChallengeIds.length} saved IDs`);
     return savedChallengeIds;
   } catch (err) {
-    console.error('[toggleChallengeSave] ❌ Unexpected error:', err);
+    console.error('[toggleChallengeSave] Unexpected error:', err);
     return null;
   }
 }
