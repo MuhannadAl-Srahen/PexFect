@@ -126,6 +126,7 @@ export interface ChallengeViewProps {
   savedChallenges: string[]
   onToggleSave: (challengeId: string) => void
   viewMode: 'grid' | 'list'
+  isAuthenticated?: boolean
 }
 
 export interface ChallengeFiltersProps {
