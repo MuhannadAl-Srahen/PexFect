@@ -93,12 +93,20 @@ function RouteComponent() {
   } = useChallengeFilters(allChallenges)
 
   const handleToggleSave = async (challengeId: string) => {
+    // Prevent multiple clicks while saving
+    if (savingChallengeId) {
+      console.log('[handleToggleSave] ⏳ Already saving a challenge, please wait...')
+      return
+    }
+
     try {
+      setSavingChallengeId(challengeId)
       console.log('[handleToggleSave] 🔄 Starting toggle for:', challengeId)
+      console.log('[handleToggleSave] 📌 savedChallenges array BEFORE:', savedChallenges)
       
-      // Get current state
+      // Get current state from the savedChallenges array
       const currentSavedState = savedChallenges.includes(challengeId)
-      console.log('[handleToggleSave] 📌 Current saved state:', currentSavedState)
+      console.log('[handleToggleSave] 📌 Is currently saved?', currentSavedState ? 'YES (will UNSAVE)' : 'NO (will SAVE)')
       
       // Call database directly - no optimistic update to avoid state conflicts
       console.log('[handleToggleSave] 💾 Calling database function...')
@@ -112,6 +120,7 @@ function RouteComponent() {
         // Database update succeeded - use the returned array directly
         console.log('[handleToggleSave] ✅ Database update SUCCESS')
         console.log('[handleToggleSave] 📥 Fresh data received:', freshSavedIds.length, 'challenges')
+        console.log('[handleToggleSave] 📥 Fresh IDs:', freshSavedIds)
         
         // Update state with the fresh data from database (single source of truth)
         setSavedChallenges(freshSavedIds)
@@ -124,6 +133,7 @@ function RouteComponent() {
           }))
         )
         console.log('[handleToggleSave] ✅ All state synchronized!')
+        console.log('[handleToggleSave] 📌 savedChallenges array AFTER:', freshSavedIds)
       }
     } catch (error) {
       console.error('[handleToggleSave] ❌ EXCEPTION:', error)
@@ -131,6 +141,8 @@ function RouteComponent() {
         message: error instanceof Error ? error.message : 'Unknown error',
         stack: error instanceof Error ? error.stack : undefined,
       })
+    } finally {
+      setSavingChallengeId(null)
     }
   }
 
