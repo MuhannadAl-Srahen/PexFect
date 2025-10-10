@@ -35,6 +35,7 @@ const throttle = <T extends (...args: unknown[]) => unknown>(
 
 export const useNavbarLogic = () => {
   const location = useLocation()
+  const navigate = useNavigate()
   const pathname = location.pathname
   const { theme, setTheme } = useTheme()
 
