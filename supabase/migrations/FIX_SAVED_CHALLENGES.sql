@@ -52,11 +52,11 @@ BEGIN
     RETURN jsonb_build_object('success', false, 'message', 'Challenge already saved');
   END IF;
 
-  -- Add new saved challenge
+  -- Add new saved challenge with isSaved: true
   new_saved := current_saved || jsonb_build_array(
     jsonb_build_object(
       'challenge_id', challenge_id,
-      'saved_at', now()
+      'isSaved', true
     )
   );
 
