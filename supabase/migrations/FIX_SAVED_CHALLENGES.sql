@@ -92,12 +92,17 @@ RETURNS jsonb AS $$
 DECLARE
   current_saved jsonb;
   new_saved jsonb;
+  update_count integer;
 BEGIN
   -- Get current saved challenges
   SELECT COALESCE(saved_challenges, '[]'::jsonb)
   INTO current_saved
   FROM public.profiles
   WHERE id = user_id;
+
+  -- Log current state
+  RAISE NOTICE 'Current saved challenges: %', current_saved;
+  RAISE NOTICE 'Trying to remove challenge_id: %', challenge_id;
 
   -- Remove the challenge completely from the array
   SELECT jsonb_agg(elem)
@@ -108,12 +113,30 @@ BEGIN
   -- Handle case where all items were removed
   new_saved := COALESCE(new_saved, '[]'::jsonb);
 
-  -- Update profile
+  RAISE NOTICE 'New saved challenges: %', new_saved;
+
+  -- Update profile and get count of rows updated
   UPDATE public.profiles
   SET saved_challenges = new_saved
   WHERE id = user_id;
 
-  RETURN jsonb_build_object('success', true, 'saved_challenges', new_saved);
+  GET DIAGNOSTICS update_count = ROW_COUNT;
+  
+  RAISE NOTICE 'Rows updated: %', update_count;
+
+  -- Verify the update by fetching again
+  SELECT COALESCE(saved_challenges, '[]'::jsonb)
+  INTO current_saved
+  FROM public.profiles
+  WHERE id = user_id;
+
+  RAISE NOTICE 'Verified saved challenges after update: %', current_saved;
+
+  RETURN jsonb_build_object(
+    'success', true, 
+    'saved_challenges', current_saved,
+    'rows_updated', update_count
+  );
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
