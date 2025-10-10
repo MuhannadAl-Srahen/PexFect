@@ -1,5 +1,11 @@
 import { supabase } from '@/lib/supabaseClient';
 
+// Type for saved challenge items in the database
+type SavedChallengeItem = {
+  challenge_id: string;
+  isSaved: boolean;
+};
+
 /**
  * Toggles the saved status of a challenge for the current user
  * Uses user's profile.saved_challenges array (per-user, not global)
