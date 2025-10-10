@@ -7,6 +7,7 @@ export function ChallengeView({
   savedChallenges,
   onToggleSave,
   viewMode,
+  isAuthenticated = false,
 }: ChallengeViewProps) {
   if (viewMode === 'grid') {
     return (
@@ -17,6 +18,7 @@ export function ChallengeView({
             challenge={challenge}
             isSaved={challenge.isSaved ?? savedChallenges.includes(challenge.id)}
             onToggleSave={onToggleSave}
+            isAuthenticated={isAuthenticated}
           />
         ))}
       </div>
@@ -32,6 +34,7 @@ export function ChallengeView({
           challenge={challenge}
           isSaved={challenge.isSaved ?? savedChallenges.includes(challenge.id)}
           onToggleSave={onToggleSave}
+          isAuthenticated={isAuthenticated}
         />
       ))}
     </div>
