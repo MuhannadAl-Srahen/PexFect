@@ -93,9 +93,9 @@ function RouteComponent() {
   } = useChallengeFilters(allChallenges)
 
   const handleToggleSave = async (challengeId: string) => {
-    // Prevent multiple clicks while saving
-    if (savingChallengeId) {
-      console.log('[handleToggleSave] ⏳ Already saving a challenge, please wait...')
+    // Prevent clicking the SAME challenge multiple times while it's saving
+    if (savingChallengeId === challengeId) {
+      console.log('[handleToggleSave] ⏳ This challenge is already being saved, please wait...')
       return
     }
 
@@ -142,7 +142,8 @@ function RouteComponent() {
         stack: error instanceof Error ? error.stack : undefined,
       })
     } finally {
-      setSavingChallengeId(null)
+      // Clear the saving state only for THIS challenge
+      setSavingChallengeId((prev) => prev === challengeId ? null : prev)
     }
   }
 
