@@ -24,50 +24,43 @@ function RouteComponent() {
   const [allChallenges, setAllChallenges] = useState<ChallengeListItem[]>([])
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [loadError, setLoadError] = useState<string | null>(null)
   const [savingChallengeId, setSavingChallengeId] = useState<string | null>(null)
 
-  // DEBUG: Log every render to verify React is updating
-  console.log('[Component Render] 🎨 Rendering with savedChallenges:', savedChallenges)
-  console.log('[Component Render] 📊 Total challenges:', allChallenges.length)
-  console.log('[Component Render] 🔒 Currently saving:', savingChallengeId)
-
+  // Load challenges and auth state on mount
   useEffect(() => {
     let mounted = true
     
-    setIsLoading(true)
-    
-    // Check authentication status and load data
     const loadData = async () => {
       try {
+        setIsLoading(true)
+        setLoadError(null)
+        
         // Check authentication
-        const { data: { session } } = await supabase.auth.getSession()
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+        if (sessionError) throw sessionError
         if (!mounted) return
         
         const isAuth = !!session
         setIsAuthenticated(isAuth)
         
-        // Load challenges
-        const list = await getChallenges()
+        // Load challenges in parallel with saved challenges
+        const [challengesList, savedIds] = await Promise.all([
+          getChallenges(),
+          isAuth ? getSavedChallenges() : Promise.resolve([])
+        ])
+        
         if (!mounted) return
         
-        setAllChallenges(list)
+        setAllChallenges(challengesList)
+        setSavedChallenges(savedIds)
         
-        // Load saved challenges from user's profile (not from challenges table)
-        if (isAuth) {
-          console.log('[RouteComponent] 📥 Loading saved challenges from profile...')
-          const savedIds = await getSavedChallenges()
-          console.log('[RouteComponent] 📊 Loaded saved challenges:', savedIds)
-          if (mounted) {
-            setSavedChallenges(savedIds)
-          }
-        } else {
-          console.log('[RouteComponent] ⚠️ Not authenticated - no saved challenges')
-          setSavedChallenges([])
-        }
-        
-        setIsLoading(false)
       } catch (error) {
         console.error('[RouteComponent] ❌ Error loading data:', error)
+        if (mounted) {
+          setLoadError(error instanceof Error ? error.message : 'Failed to load challenges')
+        }
+      } finally {
         if (mounted) {
           setIsLoading(false)
         }
