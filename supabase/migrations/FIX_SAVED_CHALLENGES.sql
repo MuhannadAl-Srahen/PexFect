@@ -137,7 +137,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Step 4: Grant execute permissions
+-- Step 5: Grant execute permissions
 GRANT EXECUTE ON FUNCTION public.is_challenge_saved(uuid, uuid) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.save_challenge(uuid, uuid) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.unsave_challenge(uuid, uuid) TO authenticated;
