@@ -48,9 +48,9 @@ export function ResourceCardSkeleton() {
 
 export function ResourceListSkeleton() {
   return (
-    <Card className='flex gap-5 overflow-hidden rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm p-5 shadow-sm'>
+    <Card className='flex gap-5 overflow-hidden rounded-xl border border-border/40 bg-card/60 backdrop-blur-sm p-5 shadow-sm animate-in fade-in-0 duration-300'>
       {/* Thumbnail Skeleton */}
-      <div className='relative h-32 w-48 flex-shrink-0 overflow-hidden rounded-lg'>
+      <div className='relative h-32 w-48 flex-shrink-0 overflow-hidden rounded-lg bg-muted/40'>
         <Skeleton className='h-full w-full' />
       </div>
 
