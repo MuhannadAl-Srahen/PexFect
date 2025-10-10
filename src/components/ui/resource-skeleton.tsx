@@ -3,7 +3,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 export function ResourceCardSkeleton() {
   return (
-    <Card className='flex h-full flex-col overflow-hidden rounded-xl border border-border/50 bg-card shadow-md p-0 gap-0'>
+    <Card className='flex h-full flex-col overflow-hidden rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm shadow-md p-0 gap-0'>
       {/* Thumbnail/Image Skeleton */}
       <div className='relative aspect-video overflow-hidden'>
         <Skeleton className='h-full w-full' />
