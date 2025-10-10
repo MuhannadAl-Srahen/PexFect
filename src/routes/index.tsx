@@ -11,22 +11,17 @@ export const Route = createFileRoute('/')({
 
 function Index() {
   return (
-    <>
-      <div >
-        <HeroSection />
-     </div>
-      <div>
+    <div className='relative'>
+      {/* Hero Section - Full Screen */}
+      <HeroSection />
+
+      {/* Other Sections with Proper Spacing */}
+      <div className='relative z-10 bg-background'>
         <FeatureSection />
-      </div>
-      <div>
         <HowWorkSection />
-      </div>
-      <div>
         <ChallengeSection />
+        <CIASection />
       </div>
-      <div>
-        <CIASection /> 
-      </div>
-    </>
+    </div>
   )
 }
