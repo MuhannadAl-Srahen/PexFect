@@ -23,7 +23,7 @@ BEGIN
     NEW.id,
     COALESCE(NEW.raw_user_meta_data->>'full_name', NEW.raw_user_meta_data->>'name'),
     NEW.email,
-    NEW.created_at,
+    DATE(NEW.created_at),  -- Only the date, no time
     NEW.raw_user_meta_data->>'avatar_url',
     CASE 
       WHEN github_username IS NOT NULL 
