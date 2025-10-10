@@ -1,9 +1,9 @@
 import { Brain, Swords, BookOpen, BookKey } from 'lucide-react'
-import { Card, CardHeader, CardContent } from '@/components/ui/card'
 import {
   StaggerContainer,
   StaggerItem,
 } from '@/components/ui/animate-on-scroll'
+import { motion } from 'motion/react'
 
 const features = [
   {
@@ -11,112 +11,100 @@ const features = [
     description:
       'Practice with real-world coding problems across different difficulty levels and programming languages',
     icon: Swords,
-    color: 'text-orange-500',
-    bgColor: 'bg-orange-100',
-    hoverBgColor: 'group-hover:bg-orange-200',
-    hoverTextColor: 'group-hover:text-orange-500',
-    hoverBorderColor: 'group-hover:border-orange-500',
   },
   {
     name: 'Structured Roadmaps',
     description:
       'Follow a clear learning path from HTML/CSS basics to advanced full-stack development',
     icon: BookOpen,
-    color: 'text-blue-500',
-    bgColor: 'bg-blue-100',
-    hoverBgColor: 'group-hover:bg-blue-200',
-    hoverTextColor: 'group-hover:text-blue-500',
-    hoverBorderColor: 'group-hover:border-blue-500',
   },
   {
     name: 'AI-Powered Feedback',
     description:
       'Get instant, personalized feedback on your code with actionable suggestions for improvement',
     icon: Brain,
-    color: 'text-purple-500',
-    bgColor: 'bg-purple-100',
-    hoverBgColor: 'group-hover:bg-purple-200',
-    hoverTextColor: 'group-hover:text-purple-500',
-    hoverBorderColor: 'group-hover:border-purple-500',
   },
   {
     name: 'Curated Resources',
     description:
       'Access hand-picked tutorials, documentation, and videos to accelerate your learning journey',
     icon: BookKey,
-    color: 'text-green-500',
-    bgColor: 'bg-green-100',
-    hoverBgColor: 'group-hover:bg-green-200',
-    hoverTextColor: 'group-hover:text-green-500',
-    hoverBorderColor: 'group-hover:border-green-500',
   },
 ]
 
 export function FeatureSection() {
   return (
-    <>
-      <section className='relative py-20 sm:py-24 lg:py-32 pt-10 sm:pt-16 lg:pt-24 overflow-hidden'>
-        {/* Background Layers */}
-        <div className='absolute inset-0 bg-background'></div>
-        <div className='absolute inset-0 bg-gradient-to-r from-gray-400/5 via-gray-400/10 to-background opacity-50'></div>
-        <div className='absolute inset-0 bg-gradient-to-b from-gray-400/2 via-gray-400/5 to-background'></div>
-        <div className='absolute inset-0 bg-gradient-to-t from-gray-400/5 via-gray-400/10 to-background opacity-50'></div>
+    <section className='relative py-16 sm:py-20 lg:py-24 bg-gradient-to-b from-background to-primary/5'>
+      {/* Background Pattern - matching Hero section */}
+      <div className='absolute inset-0 opacity-10 dark:opacity-5'>
+        <div
+          className='w-full h-full'
+          style={{
+            backgroundImage: `radial-gradient(circle at 2px 2px, rgba(var(--primary)/0.1) 1px, transparent 0)`,
+            backgroundSize: '40px 40px',
+          }}
+        />
+      </div>
 
-        {/* Content */}
-        <div className='relative z-10 mx-auto max-w-7xl px-6 lg:px-10'>
-          <StaggerContainer staggerDelay={0.2}>
-            <StaggerItem animation='slideUp'>
-              <div className='mx-auto max-w-7xl text-center'>
-                <h2 className='text-3xl font-semibold tracking-tight text-primary sm:text-4xl lg:text-5xl'>
-                  Everything you need to succeed
-                </h2>
-                <p className='mt-6 text-base leading-8 text-muted-foreground'>
-                  PexFect combines real-world challenges, structured learning
-                  paths, and AI-powered feedback so you can become a confident
-                  developer.
-                </p>
-              </div>
-            </StaggerItem>
-            <div className='mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none'>
-              <div className='grid max-w-xl grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 lg:max-w-none lg:grid-cols-2 xl:grid-cols-4'>
-                {features.map((feature) => (
-                  <StaggerItem key={feature.name} animation='scale'>
-                    <div className='group'>
-                      <Card
-                        className={`w-full max-w-[16rem] sm:max-w-sm md:max-w-md  h-60 sm:h-64 md:h-72 mx-auto border cursor-pointer
-                             hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] ${feature.hoverBorderColor}`}
-                      >
-                        <CardHeader className='text-center pb-2 sm:pb-4'>
-                          <div className='flex items-center justify-center mb-3 sm:mb-4'>
-                            <div
-                              className={`h-10 w-10 sm:h-14 sm:w-14 ${feature.bgColor} ${feature.hoverBgColor} rounded-full flex items-center justify-center transition-colors`}
-                            >
-                              <feature.icon
-                                className={`!h-6 !w-6 sm:!h-7 sm:!w-7 ${feature.color}`}
-                                aria-hidden='true'
-                              />
-                            </div>
-                          </div>
-                          <h3
-                            className={`text-lg sm:text-xl font-semibold text-foreground ${feature.hoverTextColor} transition-colors`}
-                          >
-                            {feature.name}
-                          </h3>
-                        </CardHeader>
-                        <CardContent className='text-center pt-0'>
-                          <p className='text-sm sm:text-base text-muted-foreground leading-relaxed'>
-                            {feature.description}
-                          </p>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </StaggerItem>
-                ))}
-              </div>
+      {/* Content */}
+      <div className='relative z-10 container mx-auto px-4 sm:px-6 lg:px-8'>
+        <StaggerContainer>
+          {/* Section Header */}
+          <StaggerItem>
+            <div className='text-center mb-16'>
+              <h2 className='text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-6'>
+                Everything you need to{' '}
+                <span className='text-primary'>succeed</span>
+              </h2>
+              <p className='text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed'>
+                PexFect combines real-world challenges, structured learning
+                paths, and AI-powered feedback so you can become a confident
+                developer.
+              </p>
             </div>
-          </StaggerContainer>
-        </div>
-      </section>
-    </>
+          </StaggerItem>
+
+          {/* Features Grid */}
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8'>
+            {features.map((feature) => (
+              <StaggerItem key={feature.name}>
+                <motion.div
+                  whileHover={{ y: -5, scale: 1.02 }}
+                  transition={{ duration: 0.3 }}
+                  className='h-full group'
+                >
+                  <div className='bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-6 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 h-full flex flex-col'>
+                    {/* Icon Container */}
+                    <div className='flex items-center justify-center mb-6'>
+                      <div className='relative'>
+                        <div className='w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/5 rounded-2xl flex items-center justify-center border border-primary/20 group-hover:from-primary/30 group-hover:to-primary/10 transition-all duration-300'>
+                          <feature.icon className='w-8 h-8 text-primary group-hover:scale-110 transition-transform duration-300' />
+                        </div>
+                        <div className='absolute -top-1 -right-1 w-6 h-6 bg-primary rounded-full flex items-center justify-center shadow-lg'>
+                          <div className='w-2 h-2 bg-primary-foreground rounded-full' />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    <div className='text-center flex-grow flex flex-col'>
+                      <h3 className='text-xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors duration-300'>
+                        {feature.name}
+                      </h3>
+                      <p className='text-muted-foreground leading-relaxed text-sm flex-grow'>
+                        {feature.description}
+                      </p>
+                    </div>
+
+                    {/* Bottom accent */}
+                    <div className='mt-6 h-1 bg-gradient-to-r from-transparent via-primary/20 to-transparent rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
+                  </div>
+                </motion.div>
+              </StaggerItem>
+            ))}
+          </div>
+        </StaggerContainer>
+      </div>
+    </section>
   )
 }
