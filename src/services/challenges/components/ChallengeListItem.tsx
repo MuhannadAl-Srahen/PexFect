@@ -17,6 +17,7 @@ type DifficultyLevel = keyof typeof DIFFICULTY_COLORS
 export function ChallengeListItem({
   challenge,
   isSaved,
+  isSaving = false,
   isAuthenticated = false,
   onToggleSave,
 }: ChallengeItemProps) {
@@ -61,7 +62,8 @@ export function ChallengeListItem({
                   <Button
                     variant='ghost'
                     size='sm'
-                    className='h-8 w-8 rounded-full bg-background/70 backdrop-blur-sm transition-all duration-300 flex-shrink-0'
+                    disabled={isSaving}
+                    className='h-8 w-8 rounded-full bg-background/70 backdrop-blur-sm transition-all duration-300 flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed'
                     onClick={(e) => {
                       e.preventDefault()
                       e.stopPropagation()
@@ -73,7 +75,7 @@ export function ChallengeListItem({
                         isSaved
                           ? 'fill-destructive text-destructive'
                           : 'text-muted-foreground group-hover:text-destructive'
-                      }`}
+                      } ${isSaving ? 'animate-pulse' : ''}`}
                     />
                   </Button>
                 )}
