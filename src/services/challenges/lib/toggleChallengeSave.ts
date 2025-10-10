@@ -74,7 +74,7 @@ export async function getChallengeSavedState(
       return false; // Not logged in = not saved
     }
 
-    // Use type assertion to bypass TypeScript errors
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data, error } = await (supabase.rpc as any)('is_challenge_saved', {
       user_id: user.id,
       challenge_id: challengeId,
