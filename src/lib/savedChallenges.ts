@@ -6,7 +6,7 @@ import { supabase } from './supabaseClient';
 
 export interface SavedChallenge {
   challenge_id: string;
-  saved_at: string;
+  isSaved: boolean;
   title?: string;
   difficulty?: string;
   thumbnail_url?: string;
