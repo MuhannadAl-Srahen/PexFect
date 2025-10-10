@@ -100,13 +100,7 @@ export async function getUserProfile() {
 /**
  * Updates the current user's profile
  */
-export async function updateUserProfile(updates: {
-  full_name?: string
-  bio?: string
-  skills?: string[]
-  social_links?: Record<string, string>
-  profile_image_url?: string
-}) {
+export async function updateUserProfile(updates: ProfileUpdate) {
   try {
     const { data: { user } } = await supabase.auth.getUser()
     
@@ -115,6 +109,7 @@ export async function updateUserProfile(updates: {
       return null
     }
 
+    // @ts-expect-error - Supabase type generation issue with profiles table
     const { data, error } = await supabase
       .from('profiles')
       .update(updates)
