@@ -88,45 +88,59 @@ function RouteComponent() {
 
   const handleToggleSave = async (challengeId: string) => {
     try {
-      console.log('[handleToggleSave] Starting toggle for:', challengeId)
+      console.log('[handleToggleSave] 🔄 Starting toggle for:', challengeId)
       
-      // Optimistic update
+      // Get current state
       const currentSavedState = savedChallenges.includes(challengeId)
-      console.log('[handleToggleSave] Current saved state:', currentSavedState)
+      console.log('[handleToggleSave] 📌 Current saved state:', currentSavedState)
       
-      const newSavedChallenges = currentSavedState
+      // Optimistic UI update (instant feedback)
+      const optimisticUpdate = currentSavedState
         ? savedChallenges.filter((id) => id !== challengeId)
         : [...savedChallenges, challengeId]
       
-      setSavedChallenges(newSavedChallenges)
-      console.log('[handleToggleSave] Optimistically updated UI to:', !currentSavedState)
+      setSavedChallenges(optimisticUpdate)
+      console.log('[handleToggleSave] ⚡ Optimistic UI update applied')
 
       // Update in database
-      console.log('[handleToggleSave] Calling toggleChallengeSave...')
+      console.log('[handleToggleSave] 💾 Calling database function...')
       const newState = await toggleChallengeSave(challengeId, currentSavedState)
-      console.log('[handleToggleSave] Database returned:', newState)
+      console.log('[handleToggleSave] 📦 Database response:', newState)
       
-      // If database update failed, revert optimistic update
       if (newState === null) {
-        console.error('[handleToggleSave] ❌ Failed to update saved state in database - reverting')
-        setSavedChallenges(savedChallenges) // Revert
+        // Database update failed - revert optimistic update
+        console.error('[handleToggleSave] ❌ Database update FAILED - reverting UI')
+        setSavedChallenges(savedChallenges)
       } else {
-        // Also update the challenge in allChallenges
-        console.log('[handleToggleSave] ✅ Success! Updating allChallenges array')
-        setAllChallenges((prev) =>
-          prev.map((c) =>
-            c.id === challengeId ? { ...c, isSaved: newState } : c
+        // Database update succeeded - reload from database to ensure sync
+        console.log('[handleToggleSave] ✅ Database update SUCCESS')
+        console.log('[handleToggleSave] 🔄 Reloading saved challenges from database...')
+        
+        try {
+          const freshSavedIds = await getSavedChallenges()
+          console.log('[handleToggleSave] 📥 Fresh data loaded:', freshSavedIds.length, 'challenges')
+          setSavedChallenges(freshSavedIds)
+          
+          // Also update allChallenges to keep everything in sync
+          setAllChallenges((prev) =>
+            prev.map((c) => ({
+              ...c,
+              isSaved: freshSavedIds.includes(c.id)
+            }))
           )
-        )
+          console.log('[handleToggleSave] ✅ All state synchronized!')
+        } catch (reloadError) {
+          console.error('[handleToggleSave] ❌ Failed to reload saved challenges:', reloadError)
+          // Keep optimistic update since database operation succeeded
+        }
       }
     } catch (error) {
-      console.error('[handleToggleSave] ❌❌❌ CAUGHT ERROR:', error)
+      console.error('[handleToggleSave] ❌ EXCEPTION:', error)
       console.error('[handleToggleSave] Error details:', {
         message: error instanceof Error ? error.message : 'Unknown error',
         stack: error instanceof Error ? error.stack : undefined,
-        error
       })
-      // Revert optimistic update
+      // Revert optimistic update on any error
       setSavedChallenges(savedChallenges)
     }
   }
