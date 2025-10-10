@@ -30,22 +30,45 @@ function RouteComponent() {
     
     setIsLoading(true)
     
-    // Check authentication status
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (mounted) {
-        setIsAuthenticated(!!session)
+    // Check authentication status and load data
+    const loadData = async () => {
+      try {
+        // Check authentication
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!mounted) return
+        
+        const isAuth = !!session
+        setIsAuthenticated(isAuth)
+        
+        // Load challenges
+        const list = await getChallenges()
+        if (!mounted) return
+        
+        setAllChallenges(list)
+        
+        // Load saved challenges from user's profile (not from challenges table)
+        if (isAuth) {
+          console.log('[RouteComponent] 📥 Loading saved challenges from profile...')
+          const savedIds = await getSavedChallenges()
+          console.log('[RouteComponent] 📊 Loaded saved challenges:', savedIds)
+          if (mounted) {
+            setSavedChallenges(savedIds)
+          }
+        } else {
+          console.log('[RouteComponent] ⚠️ Not authenticated - no saved challenges')
+          setSavedChallenges([])
+        }
+        
+        setIsLoading(false)
+      } catch (error) {
+        console.error('[RouteComponent] ❌ Error loading data:', error)
+        if (mounted) {
+          setIsLoading(false)
+        }
       }
-    })
+    }
     
-    // Load challenges
-    getChallenges().then((list) => {
-      if (!mounted) return
-      setAllChallenges(list)
-      // Extract saved challenges from the list
-      const saved = list.filter((c) => c.isSaved).map((c) => c.id)
-      setSavedChallenges(saved)
-      setIsLoading(false)
-    })
+    loadData()
     
     return () => {
       mounted = false
