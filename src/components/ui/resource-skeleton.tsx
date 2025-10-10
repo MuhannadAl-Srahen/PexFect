@@ -3,9 +3,9 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 export function ResourceCardSkeleton() {
   return (
-    <Card className='flex h-full flex-col overflow-hidden rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm shadow-md p-0 gap-0'>
+    <Card className='flex h-full flex-col overflow-hidden rounded-xl border border-border/40 bg-card/60 backdrop-blur-sm shadow-sm p-0 gap-0 animate-in fade-in-0 duration-300'>
       {/* Thumbnail/Image Skeleton */}
-      <div className='relative aspect-video overflow-hidden'>
+      <div className='relative aspect-video overflow-hidden bg-muted/40'>
         <Skeleton className='h-full w-full' />
         
         {/* Play Button Skeleton (for videos) */}
