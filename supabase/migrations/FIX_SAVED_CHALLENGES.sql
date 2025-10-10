@@ -11,7 +11,13 @@ DROP COLUMN IF EXISTS issaved;
 -- (It should already exist based on your schema)
 -- Format: [{ "challenge_id": "uuid", "isSaved": true }, { "challenge_id": "uuid2", "isSaved": true }, ...]
 
--- Step 3: Create helper functions for managing saved challenges
+-- Step 3: Drop existing functions if they exist (to avoid conflicts)
+DROP FUNCTION IF EXISTS public.get_saved_challenges(uuid);
+DROP FUNCTION IF EXISTS public.is_challenge_saved(uuid, uuid);
+DROP FUNCTION IF EXISTS public.save_challenge(uuid, uuid);
+DROP FUNCTION IF EXISTS public.unsave_challenge(uuid, uuid);
+
+-- Step 4: Create helper functions for managing saved challenges
 
 -- Function to check if a challenge is saved by a user
 CREATE OR REPLACE FUNCTION public.is_challenge_saved(
