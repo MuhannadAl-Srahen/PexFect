@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react'
-import { fetchResources } from '@/lib/getResources'
+import { fetchResources } from '../lib/getResources'
 import type { ResourceItem } from '@/types'
 
 export function useResourceManagement(externalSearchTerm?: string) {
