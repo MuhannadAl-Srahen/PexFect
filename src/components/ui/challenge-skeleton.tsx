@@ -3,7 +3,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 export function ChallengeCardSkeleton() {
   return (
-    <Card className='flex h-full flex-col overflow-hidden rounded-xl border border-border/50 bg-card shadow-md py-0 gap-0'>
+    <Card className='flex h-full flex-col overflow-hidden rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm shadow-md py-0 gap-0'>
       {/* Image Skeleton */}
       <div className='relative aspect-[16/9] overflow-hidden rounded-t-xl'>
         <Skeleton className='h-full w-full' />
