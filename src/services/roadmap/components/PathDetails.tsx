@@ -1,9 +1,9 @@
 import React from 'react'
-import { Link } from '@tanstack/react-router'
+import { Link } from '@tantml:react-router'
 import type { ChallengeListItem } from '@/types'
 import { learningPaths } from '../data'
 import { useEffect, useState } from 'react'
-import { getChallenges } from '@/lib/getChallenges'
+import { getChallenges } from '@/services/challenges/lib/getChallenges'
 import {
   ArrowLeft,
   BookOpen,
