@@ -17,6 +17,7 @@ type DifficultyLevel = keyof typeof DIFFICULTY_COLORS
 export function ChallengeGridItem({
   challenge,
   isSaved,
+  isAuthenticated = false,
   onToggleSave,
 }: ChallengeItemProps) {
   return (
@@ -42,25 +43,27 @@ export function ChallengeGridItem({
             </Badge>
           </div>
 
-          {/* Like Button */}
-          <Button
-            variant='ghost'
-            size='sm'
-            className='absolute top-4 right-4 h-10 w-10 rounded-full bg-background/70 backdrop-blur-sm transition-colors'
-            onClick={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
-              onToggleSave(challenge.id)
-            }}
-          >
-            <Heart
-              className={`h-4 w-4 transition-colors ${
-                isSaved
-                  ? 'fill-destructive text-destructive'
-                  : 'text-muted-foreground group-hover:text-destructive'
-              }`}
-            />
-          </Button>
+          {/* Like Button - Only show if authenticated */}
+          {isAuthenticated && (
+            <Button
+              variant='ghost'
+              size='sm'
+              className='absolute top-4 right-4 h-10 w-10 rounded-full bg-background/70 backdrop-blur-sm transition-colors'
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                onToggleSave(challenge.id)
+              }}
+            >
+              <Heart
+                className={`h-4 w-4 transition-colors ${
+                  isSaved
+                    ? 'fill-destructive text-destructive'
+                    : 'text-muted-foreground group-hover:text-destructive'
+                }`}
+              />
+            </Button>
+          )}
         </div>
 
         {/* Content Section */}
