@@ -5,6 +5,7 @@ import type { ChallengeViewProps } from '@/types'
 export function ChallengeView({
   challenges,
   savedChallenges,
+  savingChallengeId,
   onToggleSave,
   viewMode,
   isAuthenticated = false,
@@ -17,6 +18,7 @@ export function ChallengeView({
             key={challenge.id}
             challenge={challenge}
             isSaved={savedChallenges.includes(challenge.id)}
+            isSaving={savingChallengeId === challenge.id}
             onToggleSave={onToggleSave}
             isAuthenticated={isAuthenticated}
           />
@@ -33,6 +35,7 @@ export function ChallengeView({
           key={challenge.id}
           challenge={challenge}
           isSaved={savedChallenges.includes(challenge.id)}
+          isSaving={savingChallengeId === challenge.id}
           onToggleSave={onToggleSave}
           isAuthenticated={isAuthenticated}
         />
