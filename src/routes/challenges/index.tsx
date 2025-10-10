@@ -190,6 +190,7 @@ function RouteComponent() {
         <ChallengeView
           challenges={filteredChallenges}
           savedChallenges={savedChallenges}
+          savingChallengeId={savingChallengeId}
           onToggleSave={handleToggleSave}
           viewMode={viewMode}
           isAuthenticated={isAuthenticated}
