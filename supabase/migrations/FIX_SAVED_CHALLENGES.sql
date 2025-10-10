@@ -29,10 +29,10 @@ BEGIN
   RETURN EXISTS (
     SELECT 1 
     FROM public.profiles
+    CROSS JOIN jsonb_array_elements(COALESCE(saved_challenges, '[]'::jsonb)) elem
     WHERE id = user_id
-      AND saved_challenges @> jsonb_build_array(
-        jsonb_build_object('challenge_id', challenge_id)
-      )
+      AND elem->>'challenge_id' = challenge_id::text
+      AND (elem->>'isSaved')::boolean = true
   );
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
