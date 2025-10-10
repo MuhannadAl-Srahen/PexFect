@@ -98,29 +98,20 @@ function RouteComponent() {
       const currentSavedState = savedChallenges.includes(challengeId)
       console.log('[handleToggleSave] 📌 Current saved state:', currentSavedState)
       
-      // Optimistic UI update (instant feedback)
-      const optimisticUpdate = currentSavedState
-        ? savedChallenges.filter((id) => id !== challengeId)
-        : [...savedChallenges, challengeId]
-      
-      setSavedChallenges(optimisticUpdate)
-      console.log('[handleToggleSave] ⚡ Optimistic UI update applied')
-
-      // Update in database - now returns the full saved array directly
+      // Call database directly - no optimistic update to avoid state conflicts
       console.log('[handleToggleSave] 💾 Calling database function...')
       const freshSavedIds = await toggleChallengeSave(challengeId, currentSavedState)
       console.log('[handleToggleSave] 📦 Database response:', freshSavedIds)
       
       if (freshSavedIds === null) {
-        // Database update failed - revert optimistic update
-        console.error('[handleToggleSave] ❌ Database update FAILED - reverting UI')
-        setSavedChallenges(savedChallenges)
+        // Database update failed
+        console.error('[handleToggleSave] ❌ Database update FAILED')
       } else {
-        // Database update succeeded - use the returned array directly (no additional query needed!)
+        // Database update succeeded - use the returned array directly
         console.log('[handleToggleSave] ✅ Database update SUCCESS')
-        console.log('[handleToggleSave] � Fresh data received:', freshSavedIds.length, 'challenges')
+        console.log('[handleToggleSave] 📥 Fresh data received:', freshSavedIds.length, 'challenges')
         
-        // Update state with the fresh data from database
+        // Update state with the fresh data from database (single source of truth)
         setSavedChallenges(freshSavedIds)
         
         // Also update allChallenges to keep everything in sync
@@ -130,7 +121,7 @@ function RouteComponent() {
             isSaved: freshSavedIds.includes(c.id)
           }))
         )
-        console.log('[handleToggleSave] ✅ All state synchronized instantly!')
+        console.log('[handleToggleSave] ✅ All state synchronized!')
       }
     } catch (error) {
       console.error('[handleToggleSave] ❌ EXCEPTION:', error)
@@ -138,8 +129,6 @@ function RouteComponent() {
         message: error instanceof Error ? error.message : 'Unknown error',
         stack: error instanceof Error ? error.stack : undefined,
       })
-      // Revert optimistic update on any error
-      setSavedChallenges(savedChallenges)
     }
   }
 
