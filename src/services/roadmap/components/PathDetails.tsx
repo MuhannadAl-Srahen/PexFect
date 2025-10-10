@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from '@tantml:react-router'
+import { Link } from '@tanstack/react-router'
 import type { ChallengeListItem } from '@/types'
 import { learningPaths } from '../data'
 import { useEffect, useState } from 'react'
