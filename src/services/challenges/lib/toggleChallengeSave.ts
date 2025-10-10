@@ -112,9 +112,14 @@ export async function getSavedChallenges(): Promise<string[]> {
       return [];
     }
 
-    // Extract challenge IDs from saved_challenges array
-    const savedChallenges = profile.saved_challenges as Array<{ challenge_id: string }>;
-    const savedIds = savedChallenges.map(item => item.challenge_id);
+    // Extract challenge IDs where isSaved is true
+    const savedChallenges = profile.saved_challenges as Array<{ 
+      challenge_id: string;
+      isSaved: boolean;
+    }>;
+    const savedIds = savedChallenges
+      .filter(item => item.isSaved === true)
+      .map(item => item.challenge_id);
     
     console.log(
       `✅ [getSavedChallenges] Found ${savedIds.length} saved challenges`
