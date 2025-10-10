@@ -114,7 +114,13 @@ export const useNavbarLogic = () => {
   // sign out
   const handleLogout = useCallback(async () => {
     await supabase.auth.signOut()
-  }, [])
+    // Clear user state immediately
+    setUser(null)
+    // Redirect to home page
+    navigate({ to: '/' })
+    // Force reload to clear any cached state
+    window.location.href = '/'
+  }, [navigate])
 
   const toggleMobileMenu = useCallback(() => {
     setIsMobileMenuOpen((v) => !v)
