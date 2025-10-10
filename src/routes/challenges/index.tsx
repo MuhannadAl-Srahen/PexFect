@@ -86,57 +86,53 @@ function RouteComponent() {
   } = useChallengeFilters(allChallenges)
 
   const handleToggleSave = async (challengeId: string) => {
-    // Prevent clicking the SAME challenge multiple times while it's saving
+    // Prevent double-clicking the same challenge
     if (savingChallengeId === challengeId) {
-      console.log('[handleToggleSave] ⏳ This challenge is already being saved, please wait...')
+      console.log('[handleToggleSave] ⏳ Already processing this challenge')
+      return
+    }
+
+    // Must be authenticated to save
+    if (!isAuthenticated) {
+      console.warn('[handleToggleSave] ⚠️ User not authenticated')
       return
     }
 
     try {
       setSavingChallengeId(challengeId)
-      console.log('[handleToggleSave] 🔄 Starting toggle for:', challengeId)
-      console.log('[handleToggleSave] 📌 savedChallenges array BEFORE:', savedChallenges)
       
-      // Get current state from the savedChallenges array
+      // Get current state for optimistic update and rollback
       const currentSavedState = savedChallenges.includes(challengeId)
-      console.log('[handleToggleSave] 📌 Is currently saved?', currentSavedState ? 'YES (will UNSAVE)' : 'NO (will SAVE)')
+      const optimisticSavedChallenges = currentSavedState
+        ? savedChallenges.filter(id => id !== challengeId)
+        : [...savedChallenges, challengeId]
       
-      // Call database directly - no optimistic update to avoid state conflicts
-      console.log('[handleToggleSave] 💾 Calling database function...')
+      console.log(`[handleToggleSave] � ${currentSavedState ? 'Unsaving' : 'Saving'} challenge:`, challengeId)
+      
+      // Optimistic update - update UI immediately
+      setSavedChallenges(optimisticSavedChallenges)
+      
+      // Call database function
       const freshSavedIds = await toggleChallengeSave(challengeId, currentSavedState)
-      console.log('[handleToggleSave] 📦 Database response:', freshSavedIds)
       
       if (freshSavedIds === null) {
-        // Database update failed
-        console.error('[handleToggleSave] ❌ Database update FAILED')
+        // Database update failed - rollback optimistic update
+        console.error('[handleToggleSave] ❌ Database update failed, rolling back')
+        setSavedChallenges(savedChallenges) // Revert to original state
+        // TODO: Show error toast to user
       } else {
-        // Database update succeeded - use the returned array directly
-        console.log('[handleToggleSave] ✅ Database update SUCCESS')
-        console.log('[handleToggleSave] 📥 Fresh data received:', freshSavedIds.length, 'challenges')
-        console.log('[handleToggleSave] 📥 Fresh IDs:', freshSavedIds)
-        
-        // Update state with the fresh data from database (single source of truth)
+        // Database succeeded - use fresh data from server as source of truth
+        console.log('[handleToggleSave] ✅ Database update successful')
         setSavedChallenges(freshSavedIds)
-        
-        // Also update allChallenges to keep everything in sync
-        setAllChallenges((prev) =>
-          prev.map((c) => ({
-            ...c,
-            isSaved: freshSavedIds.includes(c.id)
-          }))
-        )
-        console.log('[handleToggleSave] ✅ All state synchronized!')
-        console.log('[handleToggleSave] 📌 savedChallenges array AFTER:', freshSavedIds)
       }
+      
     } catch (error) {
-      console.error('[handleToggleSave] ❌ EXCEPTION:', error)
-      console.error('[handleToggleSave] Error details:', {
-        message: error instanceof Error ? error.message : 'Unknown error',
-        stack: error instanceof Error ? error.stack : undefined,
-      })
+      console.error('[handleToggleSave] ❌ Exception:', error)
+      // Rollback on error
+      setSavedChallenges(savedChallenges)
+      // TODO: Show error toast to user
     } finally {
-      // Clear the saving state only for THIS challenge
-      setSavingChallengeId((prev) => prev === challengeId ? null : prev)
+      setSavingChallengeId(null)
     }
   }
 
