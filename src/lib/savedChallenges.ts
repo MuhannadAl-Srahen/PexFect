@@ -21,7 +21,8 @@ export async function isChallengeeSaved(challengeId: string): Promise<boolean> {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return false;
 
-    const { data, error } = await supabase.rpc('is_challenge_saved', {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (supabase.rpc as any)('is_challenge_saved', {
       user_id: user.id,
       challenge_id: challengeId,
     });
