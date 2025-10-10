@@ -46,6 +46,7 @@ RETURNS jsonb AS $$
 DECLARE
   current_saved jsonb;
   new_saved jsonb;
+  challenge_exists boolean;
 BEGIN
   -- Get current saved challenges
   SELECT COALESCE(saved_challenges, '[]'::jsonb)
@@ -53,18 +54,33 @@ BEGIN
   FROM public.profiles
   WHERE id = user_id;
 
-  -- Check if already saved
-  IF current_saved @> jsonb_build_array(jsonb_build_object('challenge_id', challenge_id)) THEN
-    RETURN jsonb_build_object('success', false, 'message', 'Challenge already saved');
-  END IF;
+  -- Check if challenge already exists in array
+  SELECT EXISTS (
+    SELECT 1
+    FROM jsonb_array_elements(current_saved) elem
+    WHERE elem->>'challenge_id' = challenge_id::text
+  ) INTO challenge_exists;
 
-  -- Add new saved challenge with isSaved: true
-  new_saved := current_saved || jsonb_build_array(
-    jsonb_build_object(
-      'challenge_id', challenge_id,
-      'isSaved', true
+  IF challenge_exists THEN
+    -- Challenge exists, update isSaved to true
+    SELECT jsonb_agg(
+      CASE 
+        WHEN elem->>'challenge_id' = challenge_id::text 
+        THEN jsonb_build_object('challenge_id', challenge_id, 'isSaved', true)
+        ELSE elem
+      END
     )
-  );
+    INTO new_saved
+    FROM jsonb_array_elements(current_saved) elem;
+  ELSE
+    -- Challenge doesn't exist, add new entry
+    new_saved := current_saved || jsonb_build_array(
+      jsonb_build_object(
+        'challenge_id', challenge_id,
+        'isSaved', true
+      )
+    );
+  END IF;
 
   -- Update profile
   UPDATE public.profiles
