@@ -1,6 +1,6 @@
 // src/navbar/useNavbarLogic.ts
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import { useLocation } from '@tanstack/react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import { useTheme } from 'next-themes'
 import { cn } from '@/lib/utils'
 import { supabase } from '@/lib/supabaseClient.js' // keep your .js path if that works in your setup
