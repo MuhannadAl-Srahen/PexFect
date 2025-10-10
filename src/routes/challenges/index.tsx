@@ -19,12 +19,10 @@ export const Route = createFileRoute('/challenges/')({
 })
 
 function RouteComponent() {
-  const navigate = useNavigate()
   const [savedChallenges, setSavedChallenges] = useState<string[]>([])
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [allChallenges, setAllChallenges] = useState<ChallengeListItem[]>([])
   const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [showAuthDialog, setShowAuthDialog] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
