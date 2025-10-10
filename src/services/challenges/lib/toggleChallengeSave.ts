@@ -162,7 +162,8 @@ export async function getSavedChallenges(): Promise<string[]> {
     }
 
     // Use type assertion to access saved_challenges
-    const profileData = profile as any;
+    type ProfileWithSaved = { saved_challenges?: SavedChallengeItem[] };
+    const profileData = profile as ProfileWithSaved;
     
     if (!profileData.saved_challenges || !Array.isArray(profileData.saved_challenges)) {
       console.log('[getSavedChallenges] ℹ️ No saved challenges found (empty or null)');
