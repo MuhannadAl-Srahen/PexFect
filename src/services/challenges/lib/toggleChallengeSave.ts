@@ -105,7 +105,8 @@ export async function getChallengeSavedState(
       return false; // Not logged in = not saved
     }
 
-    const { data, error } = await supabase.rpc('is_challenge_saved', {
+    // Use type assertion to bypass TypeScript errors
+    const { data, error } = await (supabase.rpc as any)('is_challenge_saved', {
       user_id: user.id,
       challenge_id: challengeId,
     });
