@@ -31,6 +31,8 @@ function RouteComponent() {
   useEffect(() => {
     let mounted = true
     
+    setIsLoading(true)
+    
     // Check authentication status
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (mounted) {
@@ -45,6 +47,7 @@ function RouteComponent() {
       // Extract saved challenges from the list
       const saved = list.filter((c) => c.isSaved).map((c) => c.id)
       setSavedChallenges(saved)
+      setIsLoading(false)
     })
     
     return () => {
