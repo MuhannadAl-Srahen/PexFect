@@ -153,14 +153,9 @@ function RouteComponent() {
           savedChallenges={savedChallenges}
           onToggleSave={handleToggleSave}
           viewMode={viewMode}
+          isAuthenticated={isAuthenticated}
         />
       )}
-
-      <AuthPromptDialog
-        open={showAuthDialog}
-        onOpenChange={setShowAuthDialog}
-        onSignIn={() => navigate({ to: '/login' })}
-      />
     </PageLayout>
   )
 }
