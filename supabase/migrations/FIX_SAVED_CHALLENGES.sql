@@ -107,18 +107,13 @@ BEGIN
   FROM public.profiles
   WHERE id = user_id;
 
-  -- Update the challenge to set isSaved: false
-  SELECT jsonb_agg(
-    CASE 
-      WHEN elem->>'challenge_id' = challenge_id::text 
-      THEN jsonb_build_object('challenge_id', challenge_id, 'isSaved', false)
-      ELSE elem
-    END
-  )
+  -- Remove the challenge completely from the array
+  SELECT jsonb_agg(elem)
   INTO new_saved
-  FROM jsonb_array_elements(current_saved) elem;
+  FROM jsonb_array_elements(current_saved) elem
+  WHERE elem->>'challenge_id' != challenge_id::text;
 
-  -- Handle case where no items exist
+  -- Handle case where all items were removed
   new_saved := COALESCE(new_saved, '[]'::jsonb);
 
   -- Update profile
