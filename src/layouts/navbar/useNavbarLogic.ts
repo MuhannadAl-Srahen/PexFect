@@ -47,13 +47,23 @@ export const useNavbarLogic = () => {
     const fetchUser = async () => {
       const { data } = await supabase.auth.getUser()
       setUser(data.user ?? null)
+      
+      // Ensure profile exists for authenticated users
+      if (data.user) {
+        await ensureProfileExists()
+      }
     }
     fetchUser()
 
     // listen to auth changes
     const { data: authListener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
+      async (_event, session) => {
         setUser(session?.user ?? null)
+        
+        // Ensure profile exists when user signs in
+        if (session?.user) {
+          await ensureProfileExists()
+        }
       }
     )
 
