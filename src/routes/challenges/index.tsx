@@ -24,10 +24,12 @@ function RouteComponent() {
   const [allChallenges, setAllChallenges] = useState<ChallengeListItem[]>([])
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [savingChallengeId, setSavingChallengeId] = useState<string | null>(null)
 
   // DEBUG: Log every render to verify React is updating
   console.log('[Component Render] 🎨 Rendering with savedChallenges:', savedChallenges)
   console.log('[Component Render] 📊 Total challenges:', allChallenges.length)
+  console.log('[Component Render] 🔒 Currently saving:', savingChallengeId)
 
   useEffect(() => {
     let mounted = true
