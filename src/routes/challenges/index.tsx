@@ -13,6 +13,7 @@ import { supabase } from '@/lib/supabaseClient'
 import type { ChallengeListItem } from '@/types'
 import { EmptyState } from '@/layouts'
 import { AuthPromptDialog } from '@/components/ui/auth-prompt-dialog'
+import { ChallengeCardSkeleton, ChallengeListSkeleton } from '@/components/ui/challenge-skeleton'
 
 export const Route = createFileRoute('/challenges/')({
   component: RouteComponent,
@@ -25,6 +26,7 @@ function RouteComponent() {
   const [allChallenges, setAllChallenges] = useState<ChallengeListItem[]>([])
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [showAuthDialog, setShowAuthDialog] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     let mounted = true
