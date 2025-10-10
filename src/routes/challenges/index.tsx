@@ -153,7 +153,15 @@ function RouteComponent() {
         totalCount={allChallenges.length}
       />
 
-      {isLoading ? (
+      {loadError ? (
+        // Show error state
+        <EmptyState
+          title='Failed to load challenges'
+          message={loadError}
+          buttonText='Retry'
+          onAction={() => window.location.reload()}
+        />
+      ) : isLoading ? (
         // Show skeleton loading state
         viewMode === 'grid' ? (
           <div className='grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
