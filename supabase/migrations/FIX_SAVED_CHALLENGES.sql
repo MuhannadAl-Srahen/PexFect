@@ -47,6 +47,7 @@ DECLARE
   current_saved jsonb;
   new_saved jsonb;
   challenge_exists boolean;
+  update_count integer;
 BEGIN
   -- Get current saved challenges
   SELECT COALESCE(saved_challenges, '[]'::jsonb)
@@ -54,12 +55,17 @@ BEGIN
   FROM public.profiles
   WHERE id = user_id;
 
+  RAISE NOTICE 'Current saved challenges: %', current_saved;
+  RAISE NOTICE 'Trying to save challenge_id: %', challenge_id;
+
   -- Check if challenge already exists in array
   SELECT EXISTS (
     SELECT 1
     FROM jsonb_array_elements(current_saved) elem
     WHERE elem->>'challenge_id' = challenge_id::text
   ) INTO challenge_exists;
+
+  RAISE NOTICE 'Challenge exists: %', challenge_exists;
 
   IF challenge_exists THEN
     -- Challenge already saved, return current array
@@ -73,12 +79,30 @@ BEGIN
       )
     );
     
+    RAISE NOTICE 'New saved challenges: %', new_saved;
+
     -- Update profile
     UPDATE public.profiles
     SET saved_challenges = new_saved
     WHERE id = user_id;
 
-    RETURN jsonb_build_object('success', true, 'saved_challenges', new_saved);
+    GET DIAGNOSTICS update_count = ROW_COUNT;
+    
+    RAISE NOTICE 'Rows updated: %', update_count;
+
+    -- Verify the update by fetching again
+    SELECT COALESCE(saved_challenges, '[]'::jsonb)
+    INTO current_saved
+    FROM public.profiles
+    WHERE id = user_id;
+
+    RAISE NOTICE 'Verified saved challenges after update: %', current_saved;
+
+    RETURN jsonb_build_object(
+      'success', true, 
+      'saved_challenges', current_saved,
+      'rows_updated', update_count
+    );
   END IF;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
