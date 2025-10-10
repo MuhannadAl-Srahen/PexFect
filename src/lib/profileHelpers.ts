@@ -109,9 +109,9 @@ export async function updateUserProfile(updates: ProfileUpdate) {
       return null
     }
 
-    // @ts-expect-error - Supabase type generation issue with profiles table
     const { data, error } = await supabase
       .from('profiles')
+      // @ts-expect-error - Supabase client type inference issue with unknown database schema
       .update(updates)
       .eq('id', user.id)
       .select()
