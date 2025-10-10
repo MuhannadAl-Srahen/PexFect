@@ -8,7 +8,7 @@ import {
   useChallengeFilters,
 } from '@/services/challenges'
 import { getChallenges } from '@/services/challenges/lib/getChallenges'
-import { toggleChallengeSave } from '@/services/challenges/lib/toggleChallengeSave'
+import { toggleChallengeSave, getSavedChallenges } from '@/services/challenges/lib/toggleChallengeSave'
 import { supabase } from '@/lib/supabaseClient'
 import type { ChallengeListItem } from '@/types'
 import { EmptyState } from '@/layouts'
