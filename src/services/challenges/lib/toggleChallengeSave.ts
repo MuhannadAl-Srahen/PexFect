@@ -5,12 +5,12 @@ import { supabase } from '@/lib/supabaseClient';
  * Uses user's profile.saved_challenges array (per-user, not global)
  * @param challengeId - The UUID of the challenge
  * @param currentSavedState - Current saved state (true/false)
- * @returns Promise<boolean | null> - New saved state or null if error
+ * @returns Promise<string[] | null> - Array of all saved challenge IDs or null if error
  */
 export async function toggleChallengeSave(
   challengeId: string,
   currentSavedState: boolean
-): Promise<boolean | null> {
+): Promise<string[] | null> {
   try {
     console.log(
       `[toggleChallengeSave] 🔄 Toggling save for challenge: ${challengeId}`
