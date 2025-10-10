@@ -9,7 +9,7 @@ DROP COLUMN IF EXISTS issaved;
 
 -- Step 2: Ensure saved_challenges column exists in profiles
 -- (It should already exist based on your schema)
--- Format: [{ "challenge_id": "uuid", "saved_at": "2025-10-10T12:00:00Z" }]
+-- Format: [{ "challenge_id": "uuid", "isSaved": true }, { "challenge_id": "uuid2", "isSaved": true }, ...]
 
 -- Step 3: Create helper functions for managing saved challenges
 
