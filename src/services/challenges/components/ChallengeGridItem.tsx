@@ -17,6 +17,7 @@ type DifficultyLevel = keyof typeof DIFFICULTY_COLORS
 export function ChallengeGridItem({
   challenge,
   isSaved,
+  isSaving = false,
   isAuthenticated = false,
   onToggleSave,
 }: ChallengeItemProps) {
@@ -48,7 +49,8 @@ export function ChallengeGridItem({
             <Button
               variant='ghost'
               size='sm'
-              className='absolute top-4 right-4 h-10 w-10 rounded-full bg-background/70 backdrop-blur-sm transition-colors'
+              disabled={isSaving}
+              className='absolute top-4 right-4 h-10 w-10 rounded-full bg-background/70 backdrop-blur-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
               onClick={(e) => {
                 e.preventDefault()
                 e.stopPropagation()
@@ -60,7 +62,7 @@ export function ChallengeGridItem({
                   isSaved
                     ? 'fill-destructive text-destructive'
                     : 'text-muted-foreground group-hover:text-destructive'
-                }`}
+                } ${isSaving ? 'animate-pulse' : ''}`}
               />
             </Button>
           )}
