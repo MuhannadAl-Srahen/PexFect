@@ -107,7 +107,7 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 CREATE OR REPLACE FUNCTION public.get_saved_challenges(user_id uuid)
 RETURNS TABLE (
   challenge_id uuid,
-  saved_at timestamp with time zone,
+  is_saved boolean,
   title text,
   difficulty text,
   thumbnail_url text,
@@ -117,7 +117,7 @@ BEGIN
   RETURN QUERY
   SELECT 
     (elem->>'challenge_id')::uuid as challenge_id,
-    (elem->>'saved_at')::timestamp with time zone as saved_at,
+    (elem->>'isSaved')::boolean as is_saved,
     c.title,
     c.difficulty,
     c.thumbnail_url,
@@ -126,7 +126,8 @@ BEGIN
   CROSS JOIN jsonb_array_elements(COALESCE(p.saved_challenges, '[]'::jsonb)) elem
   LEFT JOIN public.challenges c ON c.id = (elem->>'challenge_id')::uuid
   WHERE p.id = user_id
-  ORDER BY (elem->>'saved_at')::timestamp with time zone DESC;
+    AND (elem->>'isSaved')::boolean = true
+  ORDER BY c.title;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
