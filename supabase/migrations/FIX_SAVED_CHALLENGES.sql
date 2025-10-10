@@ -62,16 +62,8 @@ BEGIN
   ) INTO challenge_exists;
 
   IF challenge_exists THEN
-    -- Challenge exists, update isSaved to true
-    SELECT jsonb_agg(
-      CASE 
-        WHEN elem->>'challenge_id' = challenge_id::text 
-        THEN jsonb_build_object('challenge_id', challenge_id, 'isSaved', true)
-        ELSE elem
-      END
-    )
-    INTO new_saved
-    FROM jsonb_array_elements(current_saved) elem;
+    -- Challenge already saved, return current array
+    RETURN jsonb_build_object('success', true, 'message', 'Already saved', 'saved_challenges', current_saved);
   ELSE
     -- Challenge doesn't exist, add new entry
     new_saved := current_saved || jsonb_build_array(
@@ -80,14 +72,14 @@ BEGIN
         'isSaved', true
       )
     );
+    
+    -- Update profile
+    UPDATE public.profiles
+    SET saved_challenges = new_saved
+    WHERE id = user_id;
+
+    RETURN jsonb_build_object('success', true, 'saved_challenges', new_saved);
   END IF;
-
-  -- Update profile
-  UPDATE public.profiles
-  SET saved_challenges = new_saved
-  WHERE id = user_id;
-
-  RETURN jsonb_build_object('success', true, 'saved_challenges', new_saved);
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
