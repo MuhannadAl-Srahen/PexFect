@@ -6,7 +6,16 @@ function Skeleton({
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn("rounded-md bg-gradient-to-r from-muted/40 via-muted/70 to-muted/40 bg-[length:200%_100%] animate-shimmer", className)}
+      className={cn(
+        "relative overflow-hidden rounded-md bg-muted/60",
+        "before:absolute before:inset-0",
+        "before:-translate-x-full",
+        "before:animate-shimmer-slide",
+        "before:bg-gradient-to-r",
+        "before:from-transparent before:via-white/20 before:to-transparent",
+        "dark:before:via-white/10",
+        className
+      )}
       {...props}
     />
   )
