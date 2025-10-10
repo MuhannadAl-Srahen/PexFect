@@ -98,17 +98,13 @@ export async function getChallengeSavedState(
  */
 export async function getSavedChallenges(): Promise<string[]> {
   try {
-    console.log('[getSavedChallenges] 🔍 Fetching saved challenges...')
-    
     // Get current user
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     
     if (authError || !user) {
-      console.error('[getSavedChallenges] ❌ Not authenticated:', authError);
+      console.error('[getSavedChallenges] Not authenticated:', authError);
       return [];
     }
-
-    console.log('[getSavedChallenges] 👤 User ID:', user.id)
 
     // Get user's saved_challenges from profile
     const { data: profile, error } = await supabase
@@ -117,16 +113,12 @@ export async function getSavedChallenges(): Promise<string[]> {
       .eq('id', user.id)
       .single();
 
-    console.log('[getSavedChallenges] 📦 Profile data:', profile)
-    console.log('[getSavedChallenges] ⚠️ Profile error:', error)
-
     if (error) {
-      console.error('[getSavedChallenges] ❌ Database error:', error);
+      console.error('[getSavedChallenges] Database error:', error);
       return [];
     }
 
     if (!profile) {
-      console.warn('[getSavedChallenges] ⚠️ No profile found');
       return [];
     }
 
@@ -135,7 +127,6 @@ export async function getSavedChallenges(): Promise<string[]> {
     const profileData = profile as ProfileWithSaved;
     
     if (!profileData.saved_challenges || !Array.isArray(profileData.saved_challenges)) {
-      console.log('[getSavedChallenges] ℹ️ No saved challenges found (empty or null)');
       return [];
     }
 
@@ -149,10 +140,9 @@ export async function getSavedChallenges(): Promise<string[]> {
       .filter(item => item.isSaved === true)
       .map(item => item.challenge_id);
     
-    console.log('[getSavedChallenges] ✅ Found', savedIds.length, 'saved challenges:', savedIds);
     return savedIds;
   } catch (err) {
-    console.error('[getSavedChallenges] ❌ Unexpected error:', err);
+    console.error('[getSavedChallenges] Unexpected error:', err);
     return [];
   }
 }
