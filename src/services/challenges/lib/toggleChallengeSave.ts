@@ -54,7 +54,7 @@ export async function toggleChallengeSave(
 }
 
 /**
- * Gets the current saved state of a challenge
+ * Gets the current saved state of a challenge for the current user
  * @param challengeId - The UUID of the challenge
  * @returns Promise<boolean | null> - Saved state or null if error
  */
@@ -62,26 +62,25 @@ export async function getChallengeSavedState(
   challengeId: string
 ): Promise<boolean | null> {
   try {
-    const { data, error } = await supabase
-      .from('challenges')
-      .select('issaved')
-      .eq('id', challengeId)
-      .single();
+    // Get current user
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    
+    if (authError || !user) {
+      console.error('[getChallengeSavedState] Not authenticated:', authError);
+      return false; // Not logged in = not saved
+    }
+
+    const { data, error } = await supabase.rpc('is_challenge_saved', {
+      user_id: user.id,
+      challenge_id: challengeId,
+    });
 
     if (error) {
       console.error('[getChallengeSavedState] Error:', error);
       return null;
     }
 
-    if (!data) {
-      console.warn(
-        `[getChallengeSavedState] No challenge found with id: ${challengeId}`
-      );
-      return null;
-    }
-
-    const result = data as unknown as ChallengeRow;
-    return result.issaved;
+    return data === true;
   } catch (err) {
     console.error('[getChallengeSavedState] Unexpected error:', err);
     return null;
@@ -89,27 +88,34 @@ export async function getChallengeSavedState(
 }
 
 /**
- * Gets all saved challenges
+ * Gets all saved challenge IDs for the current user
  * @returns Promise<string[]> - Array of challenge IDs that are saved
  */
 export async function getSavedChallenges(): Promise<string[]> {
   try {
-    const { data, error } = await supabase
-      .from('challenges')
-      .select('id')
-      .eq('issaved', true);
-
-    if (error) {
-      console.error('[getSavedChallenges] Error:', error);
+    // Get current user
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    
+    if (authError || !user) {
+      console.error('[getSavedChallenges] Not authenticated:', authError);
       return [];
     }
 
-    if (!data) {
+    // Get user's saved_challenges from profile
+    const { data: profile, error } = await supabase
+      .from('profiles')
+      .select('saved_challenges')
+      .eq('id', user.id)
+      .single();
+
+    if (error || !profile?.saved_challenges) {
       return [];
     }
 
-    const results = data as unknown as Array<Pick<ChallengeRow, 'id'>>;
-    const savedIds = results.map((row) => row.id);
+    // Extract challenge IDs from saved_challenges array
+    const savedChallenges = profile.saved_challenges as Array<{ challenge_id: string }>;
+    const savedIds = savedChallenges.map(item => item.challenge_id);
+    
     console.log(
       `✅ [getSavedChallenges] Found ${savedIds.length} saved challenges`
     );
@@ -119,3 +125,4 @@ export async function getSavedChallenges(): Promise<string[]> {
     return [];
   }
 }
+
