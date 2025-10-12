@@ -209,8 +209,9 @@ export function HeroSection() {
                           animate={{ x: 0, opacity: 1 }}
                         >
                           <span className='text-purple-400'>const</span>{' '}
-                          <span className='text-yellow-300'>HeroComponent</span>{' '}
-                          = () => {'{'}
+                          <span className='text-yellow-300'>
+                            HeroComponent
+                          </span>{' '}
                         </motion.div>
                         <motion.div
                           className='text-green-400 ml-4'
@@ -251,7 +252,8 @@ export function HeroSection() {
                         >
                           &lt;<span className='text-red-400'>button</span>{' '}
                           <span className='text-green-300'>onClick</span>=
-                          {'{handleClick}'}&gt;Start Learning&lt;/<span className='text-red-400'>button</span>&gt;
+                          {'{handleClick}'}&gt;Start Learning&lt;/
+                          <span className='text-red-400'>button</span>&gt;
                         </motion.div>
                         <motion.div
                           className='text-blue-300 ml-8'
