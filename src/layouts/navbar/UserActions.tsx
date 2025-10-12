@@ -98,6 +98,7 @@ export const UserActions = ({
           <DropdownMenuItem asChild>
             <Link
               to='/profile'
+              search={{ tab: 'recent' }}
               className='flex items-center gap-3 px-3 py-3 text-sm rounded-xl hover:bg-accent transition-all duration-300 hover:shadow-sm hover:scale-105'
             >
               <User className='h-4 w-4 text-muted-foreground transition-colors duration-300' />

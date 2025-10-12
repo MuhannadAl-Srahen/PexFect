@@ -4,85 +4,15 @@ import { Button } from '@/components/ui/button'
 import { ChallengeGridItem } from '@/services/challenges/components/ChallengeGridItem'
 import { savedChallengesData } from '@/services/profile/data'
 import { Heart, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
-import type { ChallengeListItem } from '@/types'
 
 const ITEMS_PER_PAGE = 4
 
-const mockSavedChallenges: ChallengeListItem[] = [
-  {
-    id: 1,
-    title: 'Advanced React Patterns',
-    description:
-      'Master advanced React patterns including render props, compound components, and custom hooks to build more flexible and reusable components.',
-    difficulty: 'Advanced',
-    tags: ['React', 'TypeScript', 'Patterns', 'Hooks'],
-    estimatedTime: '8-10 hours',
-    submissions: 156,
-    image: '/src/assets/images/girl.jpg',
-  },
-  {
-    id: 2,
-    title: 'CSS Grid Mastery',
-    description:
-      'Build complex layouts using CSS Grid with responsive design principles and modern layout techniques.',
-    difficulty: 'Intermediate',
-    tags: ['CSS', 'Grid', 'Layout', 'Responsive'],
-    estimatedTime: '4-5 hours',
-    submissions: 892,
-    image: '/src/assets/images/girl.jpg',
-  },
-  {
-    id: 3,
-    title: 'Node.js REST API',
-    description:
-      'Create a full-featured REST API with authentication, validation, and database integration using modern Node.js practices.',
-    difficulty: 'Advanced',
-    tags: ['Node.js', 'API', 'Express', 'MongoDB'],
-    estimatedTime: '10-12 hours',
-    submissions: 234,
-    image: '/src/assets/images/girl.jpg',
-  },
-  {
-    id: 4,
-    title: 'Vue.js Component Library',
-    description:
-      'Build a reusable component library with proper documentation, testing, and TypeScript support.',
-    difficulty: 'Intermediate',
-    tags: ['Vue.js', 'Components', 'TypeScript', 'Testing'],
-    estimatedTime: '6-8 hours',
-    submissions: 445,
-    image: 'src/assets/images/girl.jpg',
-  },
-  {
-    id: 5,
-    title: 'MongoDB Database Design',
-    description:
-      'Learn how to design efficient MongoDB schemas and optimize queries for better performance in production applications.',
-    difficulty: 'Intermediate',
-    tags: ['MongoDB', 'Database', 'NoSQL', 'Performance'],
-    estimatedTime: '5-7 hours',
-    submissions: 312,
-    image: '/src/assets/images/girl.jpg',
-  },
-  {
-    id: 6,
-    title: 'GraphQL API Development',
-    description:
-      'Build modern APIs using GraphQL with resolvers, mutations, subscriptions, and proper error handling.',
-    difficulty: 'Advanced',
-    tags: ['GraphQL', 'API', 'Apollo', 'Subscriptions'],
-    estimatedTime: '12-15 hours',
-    submissions: 189,
-    image: '/src/assets/images/girl.jpg',
-  },
-]
-
 export function SavedChallenges() {
   const navigate = useNavigate()
-  const [savedChallenges, setSavedChallenges] = useState(savedChallengesData)
+  const [savedChallenges] = useState(savedChallengesData)
   const [currentPage, setCurrentPage] = useState(1)
 
-  const [savedIds, setSavedIds] = useState<Set<number>>(
+  const [savedIds, setSavedIds] = useState<Set<string>>(
     new Set(savedChallenges.map((c) => c.id))
   )
 
@@ -104,16 +34,11 @@ export function SavedChallenges() {
     }
   }
 
-  const handleToggleSave = (challengeId: number) => {
+  const handleToggleSave = (challengeId: string) => {
     setSavedIds((prev) => {
       const newSet = new Set(prev)
       if (newSet.has(challengeId)) {
         newSet.delete(challengeId)
-        setTimeout(() => {
-          setSavedChallenges((current) =>
-            current.filter((challenge) => challenge.id !== challengeId)
-          )
-        }, 300)
       } else {
         newSet.add(challengeId)
       }

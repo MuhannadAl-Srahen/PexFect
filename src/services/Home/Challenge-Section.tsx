@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button'
 import { Link } from '@tanstack/react-router'
 import { ChallengeGridItem } from '@/services/challenges/components/ChallengeGridItem'
-import { challenges } from '@/services/challenges/data'
-import { useState } from 'react'
+import { getChallenges } from '@/lib/getChallenges'
+import { useState, useEffect } from 'react'
 import {
   MoveRight,
   Target,
@@ -13,14 +13,34 @@ import {
   ArrowRight,
 } from 'lucide-react'
 import { motion } from 'motion/react'
-
-// Use the first 3 challenges
-const featuredChallenges = challenges.slice(0, 3)
+import type { ChallengeListItem } from '@/types'
 
 export function ChallengeSection() {
-  const [savedChallenges, setSavedChallenges] = useState<Set<number>>(new Set())
+  const [challenges, setChallenges] = useState<ChallengeListItem[]>([])
+  const [loading, setLoading] = useState(true)
+  const [savedChallenges, setSavedChallenges] = useState<Set<string>>(new Set())
 
-  const handleToggleSave = (challengeId: number) => {
+  // Load challenges from database
+  useEffect(() => {
+    const loadChallenges = async () => {
+      try {
+        setLoading(true)
+        const challengesData = await getChallenges()
+        setChallenges(challengesData)
+      } catch (error) {
+        console.error('Failed to load challenges:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadChallenges()
+  }, [])
+
+  // Use the first 3 challenges as featured
+  const featuredChallenges = challenges.slice(0, 3)
+
+  const handleToggleSave = (challengeId: string) => {
     setSavedChallenges((prev) => {
       const newSet = new Set(prev)
       if (newSet.has(challengeId)) {
@@ -201,33 +221,51 @@ export function ChallengeSection() {
             </div>
 
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-              {featuredChallenges.map((challenge, index) => (
-                <motion.div
-                  key={challenge.id}
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  viewport={{ once: true, margin: '-50px' }}
-                  className='group'
-                >
-                  <motion.div
-                    whileHover={{ y: -8, scale: 1.02 }}
-                    transition={{ duration: 0.3 }}
-                    className='h-full relative'
-                  >
-                    {index === 1 && (
-                      <div className='absolute -top-3 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold shadow-lg z-10'>
-                        Most Popular
+              {loading
+                ? // Loading skeleton
+                  Array.from({ length: 3 }).map((_, index) => (
+                    <div
+                      key={index}
+                      className='bg-card/60 rounded-xl p-6 animate-pulse'
+                    >
+                      <div className='h-48 bg-muted rounded-lg mb-4' />
+                      <div className='h-4 bg-muted rounded mb-2' />
+                      <div className='h-4 bg-muted rounded w-2/3 mb-4' />
+                      <div className='flex gap-2'>
+                        <div className='h-6 bg-muted rounded-full px-3 py-1 text-xs' />
+                        <div className='h-6 bg-muted rounded-full px-3 py-1 text-xs' />
                       </div>
-                    )}
-                    <ChallengeGridItem
-                      challenge={challenge}
-                      isSaved={savedChallenges.has(challenge.id)}
-                      onToggleSave={handleToggleSave}
-                    />
-                  </motion.div>
-                </motion.div>
-              ))}
+                    </div>
+                  ))
+                : featuredChallenges.map(
+                    (challenge: ChallengeListItem, index: number) => (
+                      <motion.div
+                        key={challenge.id}
+                        initial={{ opacity: 0, y: 40 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: index * 0.1 }}
+                        viewport={{ once: true, margin: '-50px' }}
+                        className='group'
+                      >
+                        <motion.div
+                          whileHover={{ y: -8, scale: 1.02 }}
+                          transition={{ duration: 0.3 }}
+                          className='h-full relative'
+                        >
+                          {index === 1 && (
+                            <div className='absolute -top-3 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold shadow-lg z-10'>
+                              Most Popular
+                            </div>
+                          )}
+                          <ChallengeGridItem
+                            challenge={challenge}
+                            isSaved={savedChallenges.has(challenge.id)}
+                            onToggleSave={handleToggleSave}
+                          />
+                        </motion.div>
+                      </motion.div>
+                    )
+                  )}
             </div>
           </motion.div>
         </div>
