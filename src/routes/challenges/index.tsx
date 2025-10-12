@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { PageLayout } from '@/layouts'
 import {
@@ -35,7 +35,7 @@ function RouteComponent() {
     null
   )
 
-  // Load challenges and auth state on mount
+  // Single effect to load all data on mount - no refresh effects to prevent conflicts
   useEffect(() => {
     let mounted = true
     let timeoutId: NodeJS.Timeout
@@ -55,7 +55,7 @@ function RouteComponent() {
             setIsLoading(false)
             setLoadError('Loading took too long. Please refresh the page.')
           }
-        }, 15000) // 15 second timeout
+        }, 10000) // 10 second timeout
 
         // Check authentication
         const {
@@ -72,7 +72,7 @@ function RouteComponent() {
         setIsAuthenticated(isAuth)
         console.log('[RouteComponent] 👤 Authentication status:', isAuth)
 
-        // Load challenges first
+        // Load challenges
         console.log('[RouteComponent] 📚 Loading challenges...')
         const challengesList = await getChallenges()
         if (!mounted) return
@@ -119,77 +119,7 @@ function RouteComponent() {
       mounted = false
       if (timeoutId) clearTimeout(timeoutId)
     }
-  }, [])
-
-  // Add effect to refresh data when the route becomes active again
-  useEffect(() => {
-    let refreshTimeout: NodeJS.Timeout
-
-    const handleFocus = () => {
-      if (!isLoading && allChallenges.length > 0) {
-        console.log(
-          '[RouteComponent] � Page focused, refreshing saved challenges...'
-        )
-        // Small delay to ensure navigation is complete
-        refreshTimeout = setTimeout(async () => {
-          if (isAuthenticated) {
-            try {
-              const savedIds = await getSavedChallenges()
-              setSavedChallenges(savedIds)
-              console.log(
-                '[RouteComponent] ✅ Saved challenges refreshed on focus'
-              )
-            } catch (error) {
-              console.error(
-                '[RouteComponent] Error refreshing saved challenges:',
-                error
-              )
-            }
-          }
-        }, 300)
-      }
-    }
-
-    // Listen to window focus events (more reliable than visibility change for navigation)
-    window.addEventListener('focus', handleFocus)
-
-    return () => {
-      window.removeEventListener('focus', handleFocus)
-      if (refreshTimeout) clearTimeout(refreshTimeout)
-    }
-  }, [isLoading, allChallenges.length, isAuthenticated])
-
-  // Add effect to handle route navigation - refresh data when component re-mounts from navigation
-  const hasInitialLoad = useRef(false)
-
-  useEffect(() => {
-    // This runs when the user navigates back to this route
-    // If we already have challenges but no loading state, refresh saved challenges
-    if (
-      !isLoading &&
-      allChallenges.length > 0 &&
-      isAuthenticated &&
-      !hasInitialLoad.current
-    ) {
-      hasInitialLoad.current = true
-      const refreshOnNavigation = async () => {
-        try {
-          console.log('[RouteComponent] 🔄 Refreshing on navigation...')
-          const savedIds = await getSavedChallenges()
-          setSavedChallenges(savedIds)
-        } catch (error) {
-          console.error(
-            '[RouteComponent] Error refreshing on navigation:',
-            error
-          )
-        }
-      }
-
-      // Small delay to avoid conflicts with initial load
-      const timeout = setTimeout(refreshOnNavigation, 100)
-      return () => clearTimeout(timeout)
-    }
-  }, [isLoading, allChallenges.length, isAuthenticated])
+  }, []) // Empty dependency array - only run on mount
 
   const {
     searchTerm,
@@ -225,7 +155,7 @@ function RouteComponent() {
         : [...savedChallenges, challengeId]
 
       console.log(
-        `[handleToggleSave] � ${currentSavedState ? 'Unsaving' : 'Saving'} challenge:`,
+        `[handleToggleSave] ${currentSavedState ? 'Unsaving' : 'Saving'} challenge:`,
         challengeId
       )
 
