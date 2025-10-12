@@ -30,7 +30,7 @@ function RouteComponent() {
     error,
   } = useQuery({
     queryKey: ['challenge', id],
-    queryFn: () => getChallengeById(parseInt(id)),
+    queryFn: () => getChallengeById(id),
   })
 
   // TODO: Add proper error handling and loading states

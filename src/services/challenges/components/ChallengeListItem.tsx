@@ -17,6 +17,8 @@ type DifficultyLevel = keyof typeof DIFFICULTY_COLORS
 export function ChallengeListItem({
   challenge,
   isSaved,
+  isSaving = false,
+  isAuthenticated = false,
   onToggleSave,
 }: ChallengeItemProps) {
   return (
@@ -55,24 +57,28 @@ export function ChallengeListItem({
                 <h3 className='mb-2 line-clamp-1 text-lg font-semibold text-card-foreground group-hover:text-primary transition-colors'>
                   {challenge.title}
                 </h3>
-                <Button
-                  variant='ghost'
-                  size='sm'
-                  className='h-8 w-8 rounded-full bg-background/70 backdrop-blur-sm transition-all duration-300 flex-shrink-0'
-                  onClick={(e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    onToggleSave(challenge.id)
-                  }}
-                >
-                  <Heart
-                    className={`h-4 w-4 transition-colors ${
-                      isSaved
-                        ? 'fill-destructive text-destructive'
-                        : 'text-muted-foreground group-hover:text-destructive'
-                    }`}
-                  />
-                </Button>
+                {/* Like Button - Only show if authenticated */}
+                {isAuthenticated && (
+                  <Button
+                    variant='ghost'
+                    size='sm'
+                    disabled={isSaving}
+                    className='h-8 w-8 rounded-full bg-background/70 backdrop-blur-sm transition-all duration-300 flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed'
+                    onClick={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      onToggleSave(challenge.id)
+                    }}
+                  >
+                    <Heart
+                      className={`h-4 w-4 transition-colors ${
+                        isSaved
+                          ? 'fill-destructive text-destructive'
+                          : 'text-muted-foreground group-hover:text-destructive'
+                      } ${isSaving ? 'animate-pulse' : ''}`}
+                    />
+                  </Button>
+                )}
               </div>
 
               <p className='mb-3 line-clamp-2 text-sm text-muted-foreground'>

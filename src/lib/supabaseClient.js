@@ -4,6 +4,11 @@ import { createClient } from '@supabase/supabase-js'
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
 const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
 
+// Log presence of env values (do not print the key). This helps debugging when
+// running the app to ensure vite has loaded .env values.
+console.debug('[supabaseClient] SUPABASE_URL present:', Boolean(SUPABASE_URL))
+console.debug('[supabaseClient] SUPABASE_KEY present:', Boolean(SUPABASE_KEY))
+
 if (!SUPABASE_URL || !SUPABASE_KEY) {
   throw new Error('Missing Supabase environment variables')
 }

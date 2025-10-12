@@ -2,7 +2,8 @@ import React from 'react'
 import { Link } from '@tanstack/react-router'
 import type { ChallengeListItem } from '@/types'
 import { learningPaths } from '../data'
-import { challenges } from '../../challenges/data'
+import { useEffect, useState } from 'react'
+import { getChallenges } from '@/services/challenges/lib/getChallenges'
 import {
   ArrowLeft,
   BookOpen,
@@ -20,6 +21,12 @@ const LEVEL_TAG_STYLES: Record<string, string> = {
   Beginner: 'bg-primary/10 text-primary border-primary/20',
   Intermediate: 'bg-primary/10 text-primary border-primary/20',
   Advanced: 'bg-primary/10 text-primary border-primary/20',
+}
+
+const CHALLENGE_MAP: Record<string, string> = {
+  beginner: 'Beginner',
+  intermediate: 'Intermediate',
+  advanced: 'Advanced',
 }
 
 /* ---------- TimelineChallengeCard (UI updated) ---------- */
@@ -213,14 +220,18 @@ const SOLID_BG = {
 
 const PathDetails: React.FC<PathDetailsProps> = ({ pathId }) => {
   const path = learningPaths.find((p) => p.id === pathId)
-  const challengeMap = {
-    beginner: 'Beginner',
-    intermediate: 'Intermediate',
-    advanced: 'Advanced',
-  }
-  const pathChallenges = challenges.filter(
-    (c) => c.difficulty === challengeMap[pathId]
-  )
+  const [pathChallenges, setPathChallenges] = useState<ChallengeListItem[]>([])
+
+  useEffect(() => {
+    let mounted = true
+    getChallenges().then((list) => {
+      if (!mounted) return
+      setPathChallenges(list.filter((c) => c.difficulty === CHALLENGE_MAP[pathId]))
+    })
+    return () => {
+      mounted = false
+    }
+  }, [pathId])
   const totalChallenges = pathChallenges.length
   const completedChallenges = 0
   const progress =

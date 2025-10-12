@@ -24,7 +24,7 @@ export function ResourcesSection({
   searchTerm = '',
   onSearchChange,
 }: ResourcesSectionProps) {
-  const { activeTab, setActiveTab, filteredData } =
+  const { activeTab, setActiveTab, filteredData, loading, reload } =
     useResourceManagement(searchTerm)
 
   return (
@@ -60,10 +60,12 @@ export function ResourcesSection({
         <div className='min-h-[380px]'>
           <ResourceGrid
             items={filteredData}
+            loading={loading}
             searchTerm={searchTerm}
             onClearSearch={
               onSearchChange ? () => onSearchChange('') : undefined
             }
+            onRefresh={reload}
           />
         </div>
       </div>

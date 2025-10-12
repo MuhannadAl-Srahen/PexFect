@@ -101,6 +101,7 @@ export const MobileMenu = ({
                   {/* User Header - Clickable */}
                   <Link
                     to='/profile'
+                    search={{ tab: 'recent' }}
                     onClick={onClose}
                     className='flex items-center gap-3 px-4 py-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-all duration-300 mb-3 hover:shadow-sm hover:scale-105'
                   >

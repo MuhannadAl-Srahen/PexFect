@@ -16,5 +16,10 @@ export { ChallengeSubmission } from '../challenge details/ChallengeSubmission'
 export { useChallengeFilters } from './hooks/useChallengeFilters'
 
 // Data and API
-export { challenges } from './data'
 export { getChallengeById, submitChallengeSolution } from './api'
+
+// NOTE: The static `./data` file previously exported `challenges` and
+// `challengeDetailData`. The app now reads challenges from the database via
+// `src/lib/getChallenges.ts`. If any components still need a synchronous
+// list, they should call `getChallenges()` asynchronously or use a client-side
+// hook. The static data file was intentionally removed to avoid stale data.

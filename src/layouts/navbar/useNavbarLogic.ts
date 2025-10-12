@@ -1,9 +1,10 @@
 // src/navbar/useNavbarLogic.ts
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import { useLocation } from '@tanstack/react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import { useTheme } from 'next-themes'
 import { cn } from '@/lib/utils'
 import { supabase } from '@/lib/supabaseClient.js' // keep your .js path if that works in your setup
+import { ensureProfileExists } from '@/lib/profileHelpers'
 
 const SCROLL_THRESHOLD = 50
 const THROTTLE_DELAY = 16
@@ -34,6 +35,7 @@ const throttle = <T extends (...args: unknown[]) => unknown>(
 
 export const useNavbarLogic = () => {
   const location = useLocation()
+  const navigate = useNavigate()
   const pathname = location.pathname
   const { theme, setTheme } = useTheme()
 
@@ -46,13 +48,23 @@ export const useNavbarLogic = () => {
     const fetchUser = async () => {
       const { data } = await supabase.auth.getUser()
       setUser(data.user ?? null)
+      
+      // Ensure profile exists for authenticated users
+      if (data.user) {
+        await ensureProfileExists()
+      }
     }
     fetchUser()
 
     // listen to auth changes
     const { data: authListener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
+      async (_event, session) => {
         setUser(session?.user ?? null)
+        
+        // Ensure profile exists when user signs in
+        if (session?.user) {
+          await ensureProfileExists()
+        }
       }
     )
 
@@ -102,7 +114,13 @@ export const useNavbarLogic = () => {
   // sign out
   const handleLogout = useCallback(async () => {
     await supabase.auth.signOut()
-  }, [])
+    // Clear user state immediately
+    setUser(null)
+    // Redirect to home page
+    navigate({ to: '/' })
+    // Force reload to clear any cached state
+    window.location.href = '/'
+  }, [navigate])
 
   const toggleMobileMenu = useCallback(() => {
     setIsMobileMenuOpen((v) => !v)

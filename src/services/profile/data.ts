@@ -59,7 +59,7 @@ export const recentActivity = [
 // Saved challenges data
 export const savedChallengesData = [
   {
-    id: 1,
+    id: '1',
     title: 'Responsive Navigation Bar',
     difficulty: 'Intermediate' as const,
     tags: ['HTML', 'CSS', 'JavaScript'],
@@ -71,7 +71,7 @@ export const savedChallengesData = [
     savedAt: '2024-10-08',
   },
   {
-    id: 2,
+    id: '2',
     title: 'Interactive Dashboard',
     difficulty: 'Advanced' as const,
     tags: ['React', 'Charts', 'TypeScript'],
@@ -82,7 +82,7 @@ export const savedChallengesData = [
     savedAt: '2024-10-07',
   },
   {
-    id: 3,
+    id: '3',
     title: 'Social Media Feed',
     difficulty: 'Advanced' as const,
     tags: ['React', 'API', 'Infinite Scroll'],
@@ -93,7 +93,7 @@ export const savedChallengesData = [
     savedAt: '2024-10-06',
   },
   {
-    id: 4,
+    id: '4',
     title: 'Social Media Feed',
     difficulty: 'Advanced' as const,
     tags: ['React', 'API', 'Infinite Scroll'],
@@ -104,7 +104,7 @@ export const savedChallengesData = [
     savedAt: '2024-10-06',
   },
   {
-    id: 5,
+    id: '5',
     title: 'E-commerce Shopping Cart',
     difficulty: 'Intermediate' as const,
     tags: ['React', 'Redux', 'TypeScript'],
@@ -115,7 +115,7 @@ export const savedChallengesData = [
     savedAt: '2024-10-05',
   },
   {
-    id: 6,
+    id: '6',
     title: 'Weather Dashboard App',
     difficulty: 'Beginner' as const,
     tags: ['HTML', 'CSS', 'API'],
@@ -126,7 +126,7 @@ export const savedChallengesData = [
     savedAt: '2024-10-04',
   },
   {
-    id: 7,
+    id: '7',
     title: 'Portfolio Website Builder',
     difficulty: 'Advanced' as const,
     tags: ['Next.js', 'Tailwind', 'CMS'],

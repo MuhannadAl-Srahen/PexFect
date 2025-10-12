@@ -2,7 +2,7 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react'
-import { profileStats, recentActivity } from '@/services/profile/data'
+import { profileStats } from '@/services/profile/data'
 import { useState } from 'react'
 import '@/types/profile.css'
 

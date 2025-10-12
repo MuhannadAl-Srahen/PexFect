@@ -34,22 +34,30 @@ const getDifficultyVariant = (difficulty: string) => {
 export function ChallengeHero({ challenge }: ChallengeHeroProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
+  // Check if images exist and have valid data
+  const hasImages = challenge.images && challenge.images.length > 0
+  const currentImage = hasImages ? challenge.images[currentImageIndex] : null
+
   const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % challenge.images.length)
+    if (hasImages) {
+      setCurrentImageIndex((prev) => (prev + 1) % challenge.images.length)
+    }
   }
 
   const prevImage = () => {
-    setCurrentImageIndex(
-      (prev) => (prev - 1 + challenge.images.length) % challenge.images.length
-    )
+    if (hasImages) {
+      setCurrentImageIndex(
+        (prev) => (prev - 1 + challenge.images.length) % challenge.images.length
+      )
+    }
   }
 
   return (
     <div className='bg-card rounded-lg border overflow-hidden mb-6 md:mb-8 group'>
       <div className='aspect-[4/3] sm:aspect-video relative'>
         <img
-          src={challenge.images[currentImageIndex].url || '/placeholder.svg'}
-          alt={challenge.images[currentImageIndex].alt}
+          src={currentImage?.url || '/placeholder.svg'}
+          alt={currentImage?.alt || challenge.title}
           className='w-full h-full object-cover transition-transform duration-500 group-hover:scale-105'
         />
 
@@ -57,7 +65,7 @@ export function ChallengeHero({ challenge }: ChallengeHeroProps) {
         <div className='hidden md:block absolute inset-0 bg-gradient-to-t from-black/70 to-transparent' />
 
         {/* Navigation */}
-        {challenge.images.length > 1 && (
+        {hasImages && challenge.images.length > 1 && (
           <>
             <button
               onClick={prevImage}
@@ -73,7 +81,7 @@ export function ChallengeHero({ challenge }: ChallengeHeroProps) {
             </button>
 
             <div className='absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 flex space-x-2 z-20 opacity-100 md:opacity-60 md:group-hover:opacity-100 transition-opacity duration-300'>
-              {challenge.images.map((_, index) => (
+              {hasImages && challenge.images.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => setCurrentImageIndex(index)}

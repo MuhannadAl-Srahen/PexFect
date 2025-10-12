@@ -1,96 +1,113 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 import { ChallengeGridItem } from '@/services/challenges/components/ChallengeGridItem'
-import { savedChallengesData } from '@/services/profile/data'
+import {
+  getSavedChallenges,
+  toggleChallengeSave,
+} from '@/services/challenges/lib/toggleChallengeSave'
+import { getChallenges } from '@/lib/getChallenges'
+import { supabase } from '@/lib/supabaseClient'
 import { Heart, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { ChallengeListItem } from '@/types'
 
 const ITEMS_PER_PAGE = 4
 
-const mockSavedChallenges: ChallengeListItem[] = [
-  {
-    id: 1,
-    title: 'Advanced React Patterns',
-    description:
-      'Master advanced React patterns including render props, compound components, and custom hooks to build more flexible and reusable components.',
-    difficulty: 'Advanced',
-    tags: ['React', 'TypeScript', 'Patterns', 'Hooks'],
-    estimatedTime: '8-10 hours',
-    submissions: 156,
-    image: '/src/assets/images/girl.jpg',
-  },
-  {
-    id: 2,
-    title: 'CSS Grid Mastery',
-    description:
-      'Build complex layouts using CSS Grid with responsive design principles and modern layout techniques.',
-    difficulty: 'Intermediate',
-    tags: ['CSS', 'Grid', 'Layout', 'Responsive'],
-    estimatedTime: '4-5 hours',
-    submissions: 892,
-    image: '/src/assets/images/girl.jpg',
-  },
-  {
-    id: 3,
-    title: 'Node.js REST API',
-    description:
-      'Create a full-featured REST API with authentication, validation, and database integration using modern Node.js practices.',
-    difficulty: 'Advanced',
-    tags: ['Node.js', 'API', 'Express', 'MongoDB'],
-    estimatedTime: '10-12 hours',
-    submissions: 234,
-    image: '/src/assets/images/girl.jpg',
-  },
-  {
-    id: 4,
-    title: 'Vue.js Component Library',
-    description:
-      'Build a reusable component library with proper documentation, testing, and TypeScript support.',
-    difficulty: 'Intermediate',
-    tags: ['Vue.js', 'Components', 'TypeScript', 'Testing'],
-    estimatedTime: '6-8 hours',
-    submissions: 445,
-    image: 'src/assets/images/girl.jpg',
-  },
-  {
-    id: 5,
-    title: 'MongoDB Database Design',
-    description:
-      'Learn how to design efficient MongoDB schemas and optimize queries for better performance in production applications.',
-    difficulty: 'Intermediate',
-    tags: ['MongoDB', 'Database', 'NoSQL', 'Performance'],
-    estimatedTime: '5-7 hours',
-    submissions: 312,
-    image: '/src/assets/images/girl.jpg',
-  },
-  {
-    id: 6,
-    title: 'GraphQL API Development',
-    description:
-      'Build modern APIs using GraphQL with resolvers, mutations, subscriptions, and proper error handling.',
-    difficulty: 'Advanced',
-    tags: ['GraphQL', 'API', 'Apollo', 'Subscriptions'],
-    estimatedTime: '12-15 hours',
-    submissions: 189,
-    image: '/src/assets/images/girl.jpg',
-  },
-]
-
 export function SavedChallenges() {
   const navigate = useNavigate()
-  const [savedChallenges, setSavedChallenges] = useState(savedChallengesData)
-  const [currentPage, setCurrentPage] = useState(1)
-
-  const [savedIds, setSavedIds] = useState<Set<number>>(
-    new Set(savedChallenges.map((c) => c.id))
+  const [savedChallenges, setSavedChallenges] = useState<ChallengeListItem[]>(
+    []
   )
+  const [currentPage, setCurrentPage] = useState(1)
+  const [isLoading, setIsLoading] = useState(true)
+  const [savingChallengeId, setSavingChallengeId] = useState<string | null>(
+    null
+  )
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+
+  const [savedIds, setSavedIds] = useState<Set<string>>(new Set())
+
+  // Load saved challenges from database on mount
+  useEffect(() => {
+    let mounted = true
+
+    const loadSavedChallenges = async () => {
+      try {
+        setIsLoading(true)
+
+        // Check authentication
+        const {
+          data: { session },
+          error: sessionError,
+        } = await supabase.auth.getSession()
+        if (sessionError) throw sessionError
+        if (!mounted) return
+
+        const isAuth = !!session
+        setIsAuthenticated(isAuth)
+
+        if (!isAuth) {
+          setSavedChallenges([])
+          setSavedIds(new Set())
+          setIsLoading(false)
+          return
+        }
+
+        // Get saved challenge IDs from profile
+        const savedChallengeIds = await getSavedChallenges()
+        if (!mounted) return
+
+        // Get all challenges to match with saved ones
+        const allChallenges = await getChallenges()
+        if (!mounted) return
+
+        // Filter challenges that are saved
+        const savedChallengesList = allChallenges.filter((challenge) =>
+          savedChallengeIds.includes(challenge.id)
+        )
+
+        setSavedChallenges(savedChallengesList)
+        setSavedIds(new Set(savedChallengeIds))
+      } catch (error) {
+        console.error(
+          '[SavedChallenges] Error loading saved challenges:',
+          error
+        )
+      } finally {
+        if (mounted) {
+          setIsLoading(false)
+        }
+      }
+    }
+
+    loadSavedChallenges()
+
+    return () => {
+      mounted = false
+    }
+  }, [])
 
   // Pagination logic
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
   const endIndex = startIndex + ITEMS_PER_PAGE
   const currentChallenges = savedChallenges.slice(startIndex, endIndex)
   const totalPages = Math.ceil(savedChallenges.length / ITEMS_PER_PAGE)
+
+  // Safety check: if current page is empty but there are challenges, go to last page
+  useEffect(() => {
+    if (
+      savedChallenges.length > 0 &&
+      currentChallenges.length === 0 &&
+      currentPage > 1
+    ) {
+      setCurrentPage(Math.max(1, totalPages))
+    }
+  }, [
+    savedChallenges.length,
+    currentChallenges.length,
+    currentPage,
+    totalPages,
+  ])
 
   const goToNextPage = () => {
     if (currentPage < totalPages) {
@@ -104,21 +121,158 @@ export function SavedChallenges() {
     }
   }
 
-  const handleToggleSave = (challengeId: number) => {
-    setSavedIds((prev) => {
-      const newSet = new Set(prev)
-      if (newSet.has(challengeId)) {
-        newSet.delete(challengeId)
-        setTimeout(() => {
-          setSavedChallenges((current) =>
-            current.filter((challenge) => challenge.id !== challengeId)
-          )
-        }, 300)
+  const handleToggleSave = async (challengeId: string) => {
+    // Prevent double-clicking the same challenge
+    if (savingChallengeId === challengeId) {
+      console.log('[handleToggleSave] ⏳ Already processing this challenge')
+      return
+    }
+
+    // Must be authenticated to save
+    if (!isAuthenticated) {
+      console.warn('[handleToggleSave] ⚠️ User not authenticated')
+      return
+    }
+
+    try {
+      setSavingChallengeId(challengeId)
+
+      // Get current state for optimistic update and rollback
+      const currentSavedState = savedIds.has(challengeId)
+      const optimisticSavedIds = new Set(savedIds)
+      const optimisticSavedChallenges = [...savedChallenges]
+
+      if (currentSavedState) {
+        // Removing from saved (unsaving)
+        optimisticSavedIds.delete(challengeId)
+        const updatedChallenges = optimisticSavedChallenges.filter(
+          (challenge) => challenge.id !== challengeId
+        )
+
+        console.log(`[handleToggleSave] 💔 Unsaving challenge:`, challengeId)
+
+        // Optimistic update - update UI immediately
+        setSavedIds(optimisticSavedIds)
+        setSavedChallenges(updatedChallenges)
+
+        // Adjust pagination if current page becomes empty
+        const newTotalPages = Math.ceil(
+          updatedChallenges.length / ITEMS_PER_PAGE
+        )
+        if (currentPage > newTotalPages && newTotalPages > 0) {
+          setCurrentPage(newTotalPages)
+        } else if (updatedChallenges.length === 0) {
+          setCurrentPage(1)
+        }
       } else {
-        newSet.add(challengeId)
+        // This shouldn't happen in profile page (we only display saved challenges)
+        console.warn(
+          '[handleToggleSave] ⚠️ Trying to save challenge that should already be saved'
+        )
+        return
       }
-      return newSet
-    })
+
+      // Call database function
+      const freshSavedIds = await toggleChallengeSave(
+        challengeId,
+        currentSavedState
+      )
+
+      if (freshSavedIds === null) {
+        // Database update failed - rollback optimistic update
+        console.error(
+          '[handleToggleSave] ❌ Database update failed, rolling back'
+        )
+        setSavedIds(savedIds) // Revert to original state
+        setSavedChallenges(savedChallenges) // Revert to original state
+        // TODO: Show error toast to user
+      } else {
+        console.log('[handleToggleSave] ✅ Database update successful')
+        // For profile page, we need to reload the challenges to get updated list
+        // since the user might have saved new challenges from other pages
+        if (currentSavedState) {
+          // Just removed a challenge - the optimistic update should be correct
+          // But let's get fresh data to be sure
+          try {
+            const allChallenges = await getChallenges()
+            const savedChallengesList = allChallenges.filter((challenge) =>
+              freshSavedIds.includes(challenge.id)
+            )
+            setSavedChallenges(savedChallengesList)
+            setSavedIds(new Set(freshSavedIds))
+          } catch (error) {
+            console.error(
+              '[handleToggleSave] Error reloading challenges:',
+              error
+            )
+          }
+        }
+      }
+    } catch (error) {
+      console.error('[handleToggleSave] ❌ Exception:', error)
+      // Rollback on error
+      setSavedIds(savedIds)
+      setSavedChallenges(savedChallenges)
+      // TODO: Show error toast to user
+    } finally {
+      setSavingChallengeId(null)
+    }
+  }
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className='space-y-6'>
+        <div className='bg-card border border-border rounded-xl p-6'>
+          <div className='flex items-center gap-3 mb-2'>
+            <div className='w-9 h-9 bg-muted rounded-lg animate-pulse' />
+            <div>
+              <div className='h-5 w-32 bg-muted rounded animate-pulse mb-2' />
+              <div className='h-4 w-24 bg-muted rounded animate-pulse' />
+            </div>
+          </div>
+        </div>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+          {Array.from({ length: 4 }).map((_, index) => (
+            <div
+              key={index}
+              className='bg-card border border-border rounded-xl p-6 animate-pulse'
+            >
+              <div className='h-48 bg-muted rounded-lg mb-4' />
+              <div className='h-4 bg-muted rounded mb-2' />
+              <div className='h-4 bg-muted rounded w-2/3 mb-4' />
+              <div className='flex gap-2'>
+                <div className='h-6 bg-muted rounded-full w-16' />
+                <div className='h-6 bg-muted rounded-full w-20' />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className='bg-card border border-border rounded-xl p-12 text-center transition-all duration-300 hover:shadow-xl hover:scale-[1.01]'>
+        <div className='p-4 bg-yellow-50 dark:bg-yellow-950/20 rounded-full w-fit mx-auto mb-6'>
+          <Heart className='w-12 h-12 text-yellow-500' />
+        </div>
+        <h3 className='text-xl font-semibold text-foreground mb-3'>
+          Sign In Required
+        </h3>
+        <p className='text-muted-foreground max-w-md mx-auto mb-8 leading-relaxed'>
+          Please sign in to view your saved challenges.
+        </p>
+        <Button
+          onClick={() => navigate({ to: '/login' })}
+          className='gap-2 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02]'
+        >
+          <span>Sign In</span>
+          <ArrowRight className='w-4 h-4' />
+        </Button>
+      </div>
+    )
   }
 
   if (savedChallenges.length === 0) {
@@ -182,16 +336,14 @@ export function SavedChallenges() {
       {/* Challenges Grid */}
       <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
         {currentChallenges.map((challenge) => (
-          <div
+          <ChallengeGridItem
             key={challenge.id}
-            className='transition-all duration-300 hover:scale-[1.02]'
-          >
-            <ChallengeGridItem
-              challenge={challenge}
-              isSaved={savedIds.has(challenge.id)}
-              onToggleSave={handleToggleSave}
-            />
-          </div>
+            challenge={challenge}
+            isSaved={savedIds.has(challenge.id)}
+            isSaving={savingChallengeId === challenge.id}
+            isAuthenticated={isAuthenticated}
+            onToggleSave={handleToggleSave}
+          />
         ))}
       </div>
 
