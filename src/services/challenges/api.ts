@@ -35,6 +35,24 @@ export const submitChallengeSolution = async (
       throw new Error('User not authenticated')
     }
 
+    // Check if the live preview URL matches any official challenge URLs
+    if (submission.liveUrl) {
+      const { data: officialChallenges } = await (supabase
+        .from('challenge_overview') as any)
+        .select('challenge_id, livepreviewurl')
+        .not('livepreviewurl', 'is', null)
+
+      if (officialChallenges && officialChallenges.length > 0) {
+        const isOfficialUrl = officialChallenges.some((challenge: any) => 
+          challenge.livepreviewurl && challenge.livepreviewurl.toLowerCase() === submission.liveUrl.toLowerCase()
+        )
+        
+        if (isOfficialUrl) {
+          throw new Error(`OFFICIAL_URL_USED: The live preview URL "${submission.liveUrl}" is an official challenge URL. You cannot submit the official solution as your own work.`)
+        }
+      }
+    }
+
     // Check if URLs are already used for a DIFFERENT challenge
     const { data: existingWithGithub } = await (supabase
       .from('challenge_submissions') as any)

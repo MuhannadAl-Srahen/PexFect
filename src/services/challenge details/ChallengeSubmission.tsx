@@ -82,6 +82,9 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
           else if (err.message.startsWith('LIVE_URL_USED:')) {
             errorMessage = err.message.replace('LIVE_URL_USED: ', '')
           }
+          else if (err.message.startsWith('OFFICIAL_URL_USED:')) {
+            errorMessage = err.message.replace('OFFICIAL_URL_USED: ', '')
+          }
           // Check for "URLs already used for another challenge" errors
           else if (err.message.includes('already used for another challenge')) {
             errorMessage = err.message
