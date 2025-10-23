@@ -72,7 +72,38 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
           })
         }, 2000)
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Failed to submit solution. Please try again.'
+        let errorMessage = 'Failed to submit solution. Please try again.'
+        
+        if (err instanceof Error) {
+          // Check for specific error codes
+          if (err.message.startsWith('GITHUB_URL_USED:')) {
+            errorMessage = err.message.replace('GITHUB_URL_USED: ', '')
+          }
+          else if (err.message.startsWith('LIVE_URL_USED:')) {
+            errorMessage = err.message.replace('LIVE_URL_USED: ', '')
+          }
+          // Check for "URLs already used for another challenge" errors
+          else if (err.message.includes('already used for another challenge')) {
+            errorMessage = err.message
+          }
+          // Check for duplicate GitHub URL error (should not happen with new logic)
+          else if (err.message.includes('challenge_submissions_github_url_key')) {
+            errorMessage = 'This GitHub repository URL is already in use. Please use a different repository.'
+          }
+          // Check for duplicate live site URL error (should not happen with new logic)
+          else if (err.message.includes('challenge_submissions_live_site_url_key')) {
+            errorMessage = 'This live preview URL is already in use. Please deploy your project to a different URL.'
+          }
+          // Generic duplicate key error
+          else if (err.message.includes('duplicate key')) {
+            errorMessage = 'This URL is already in use. Please use different URLs for your repository and live site.'
+          }
+          // Other errors
+          else {
+            errorMessage = err.message
+          }
+        }
+        
         setError(errorMessage)
       } finally {
         setIsSubmitting(false)

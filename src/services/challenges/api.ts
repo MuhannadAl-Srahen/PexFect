@@ -35,29 +35,86 @@ export const submitChallengeSolution = async (
       throw new Error('User not authenticated')
     }
 
-    // Insert the submission into the database first (without screenshot)
-    const { data, error } = await (supabase
+    // Check if URLs are already used for a DIFFERENT challenge
+    const { data: existingWithGithub } = await (supabase
       .from('challenge_submissions') as any)
-      .insert({
-        challenge_id: challengeId,
-        profile_id: user.id,
-        challenge_title: submission.title,
-        github_url: submission.githubUrl,
-        live_site_url: submission.liveUrl,
-        screenshots: null, // Will update after upload
-        submission_description: submission.description || null,
-      })
-      .select('id')
-      .single()
+      .select('challenge_id, challenge_title')
+      .eq('github_url', submission.githubUrl)
+      .neq('challenge_id', challengeId)
+      .limit(1)
 
-    if (error) {
-      console.error('Submission error:', error)
-      throw new Error(error.message)
+    if (existingWithGithub && existingWithGithub.length > 0) {
+      throw new Error(`GITHUB_URL_USED: The GitHub repository URL "${submission.githubUrl}" that you're trying to submit is already used for another challenge. Please create a new repository for this challenge.`)
     }
 
-    const submissionId = (data as { id: string }).id
+    const { data: existingWithLive } = await (supabase
+      .from('challenge_submissions') as any)
+      .select('challenge_id, challenge_title')
+      .eq('live_site_url', submission.liveUrl)
+      .neq('challenge_id', challengeId)
+      .limit(1)
 
-    // Handle screenshot upload if provided (after we have submission ID)
+    if (existingWithLive && existingWithLive.length > 0) {
+      throw new Error(`LIVE_URL_USED: The live preview URL "${submission.liveUrl}" that you're trying to submit is already used for another challenge. Please deploy this project to a different URL.`)
+    }
+
+    // Check if user already submitted this challenge with these URLs
+    const { data: existingSubmission } = await (supabase
+      .from('challenge_submissions') as any)
+      .select('id')
+      .eq('challenge_id', challengeId)
+      .eq('profile_id', user.id)
+      .or(`github_url.eq.${submission.githubUrl},live_site_url.eq.${submission.liveUrl}`)
+      .maybeSingle()
+
+    let submissionId: string
+    let isUpdate = false
+
+    if (existingSubmission) {
+      // UPDATE existing submission
+      submissionId = existingSubmission.id
+      isUpdate = true
+
+      const { error: updateError } = await (supabase
+        .from('challenge_submissions') as any)
+        .update({
+          challenge_title: submission.title,
+          github_url: submission.githubUrl,
+          live_site_url: submission.liveUrl,
+          submission_description: submission.description || null,
+          submitted_at: new Date().toISOString(), // Update timestamp
+        })
+        .eq('id', submissionId)
+
+      if (updateError) {
+        console.error('Update error:', updateError)
+        throw new Error(updateError.message)
+      }
+    } else {
+      // INSERT new submission
+      const { data, error } = await (supabase
+        .from('challenge_submissions') as any)
+        .insert({
+          challenge_id: challengeId,
+          profile_id: user.id,
+          challenge_title: submission.title,
+          github_url: submission.githubUrl,
+          live_site_url: submission.liveUrl,
+          screenshots: null, // Will update after upload
+          submission_description: submission.description || null,
+        })
+        .select('id')
+        .single()
+
+      if (error) {
+        console.error('Submission error:', error)
+        throw new Error(error.message)
+      }
+
+      submissionId = (data as { id: string }).id
+    }
+
+    // Handle screenshot upload if provided
     if (submission.screenshot) {
       const fileExt = submission.screenshot.name.split('.').pop()
       const fileName = `${challengeId}/${user.id}/${submissionId}/${Date.now()}.${fileExt}`
@@ -85,7 +142,8 @@ export const submitChallengeSolution = async (
     return {
       success: true,
       submissionId: submissionId,
-      message: 'Solution submitted successfully',
+      message: isUpdate ? 'Solution updated successfully' : 'Solution submitted successfully',
+      isUpdate,
     } as const
   } catch (error) {
     console.error('Submit challenge solution error:', error)
