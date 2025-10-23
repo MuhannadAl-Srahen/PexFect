@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { LogOut, Github, Map, BookOpen, Swords, Trophy } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { ThemeToggle } from './ThemeToggle'
+import { supabase } from '@/lib/supabaseClient'
 
 const navItems = [
   { name: 'Challenges', href: '/challenges', icon: Swords },
@@ -152,14 +153,19 @@ export const MobileMenu = ({
                 /* Clean Sign In Section */
                 <div className='flex gap-5 items-center justify-between'>
                   {/* Simple GitHub Login */}
-                  <Link
-                    to='/login'
-                    onClick={onClose}
+                  <button
+                    onClick={async () => {
+                      await supabase.auth.signInWithOAuth({
+                        provider: 'github',
+                        options: { redirectTo: window.location.origin },
+                      })
+                      onClose()
+                    }}
                     className='flex items-center gap-3 px-4 py-3 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 flex-1 transition-all duration-300'
                   >
                     <Github className='w-4 h-4' />
-                    <span className='font-medium text-sm'>Sign In</span>
-                  </Link>
+                    <span className='font-medium text-sm'>Sign In with GitHub</span>
+                  </button>
 
                   {/* Theme Toggle */}
                   <ThemeToggle

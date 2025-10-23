@@ -5,6 +5,7 @@ import {
   StaggerContainer,
   StaggerItem,
 } from '@/components/ui/animate-on-scroll'
+import { supabase } from '@/lib/supabaseClient'
 
 export function CIASection() {
   return (
@@ -80,11 +81,16 @@ export function CIASection() {
                   {/* CTA Buttons */}
                   <div className='flex flex-col sm:flex-row gap-3 sm:gap-4'>
                     <Button
-                      asChild
                       size='lg'
+                      onClick={async () => {
+                        await supabase.auth.signInWithOAuth({
+                          provider: 'github',
+                          options: { redirectTo: window.location.origin + '/challenges' },
+                        })
+                      }}
                       className='bg-primary hover:bg-primary/90 text-primary-foreground px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300'
                     >
-                      <Link to='/signup'>Start Your First Challenge</Link>
+                      Start Your First Challenge
                     </Button>
 
                     <Button

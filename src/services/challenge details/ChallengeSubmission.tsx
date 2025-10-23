@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Card } from '@/components/ui/card'
 import { useForm } from '@tanstack/react-form'
 import { useNavigate } from '@tanstack/react-router'
 import {
@@ -11,9 +12,11 @@ import {
   CheckCircle,
   AlertCircle,
   HelpCircle,
+  LogIn,
 } from 'lucide-react'
 import { submitChallengeSolution } from '../challenges/api'
 import type { Challenge } from '@/types'
+import { supabase } from '@/lib/supabaseClient'
 
 interface ChallengeSubmissionProps {
   challenge: Challenge
@@ -21,12 +24,22 @@ interface ChallengeSubmissionProps {
 
 export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
   const navigate = useNavigate()
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
   const [screenshot, setScreenshot] = useState<File | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isDragOver, setIsDragOver] = useState(false)
   const [, setDragCounter] = useState(0)
+
+  // Check authentication status
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      setIsAuthenticated(!!session)
+    }
+    checkAuth()
+  }, [])
 
   const form = useForm({
     defaultValues: {
@@ -46,7 +59,7 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
       setIsSubmitting(true)
 
       try {
-        await submitChallengeSolution(challenge.id, {
+        const result = await submitChallengeSolution(challenge.id, {
           ...value,
           screenshot,
         })
@@ -55,11 +68,12 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
 
         setTimeout(() => {
           navigate({
-            to: `/feedback/${Math.random().toString(36).slice(2, 11)}`,
+            to: `/feedback/${result.submissionId}`,
           })
         }, 2000)
-      } catch {
-        setError('Failed to submit solution. Please try again.')
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Failed to submit solution. Please try again.'
+        setError(errorMessage)
       } finally {
         setIsSubmitting(false)
       }
@@ -126,6 +140,47 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
     } else if (files.length > 0) {
       setError('Please upload an image file.')
     }
+  }
+
+  // Show loading while checking authentication
+  if (isAuthenticated === null) {
+    return (
+      <div className='min-h-[400px] flex items-center justify-center'>
+        <div className='animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full'></div>
+      </div>
+    )
+  }
+
+  // Show sign-in prompt for unauthenticated users
+  if (!isAuthenticated) {
+    return (
+      <div className='min-h-[400px] flex items-center justify-center'>
+        <Card className='w-full max-w-md bg-card text-card-foreground rounded-xl border shadow-xl text-center p-8'>
+          <div className='w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6'>
+            <LogIn className='h-10 w-10 text-primary' />
+          </div>
+          <h1 className='text-3xl font-bold text-foreground mb-4'>
+            Sign In to Submit Your Solution
+          </h1>
+          <p className='text-muted-foreground mb-6'>
+            Create an account or sign in to submit your challenge solutions and
+            get AI-powered feedback on your work.
+          </p>
+          <Button
+            onClick={async () => {
+              await supabase.auth.signInWithOAuth({
+                provider: 'github',
+                options: { redirectTo: window.location.href },
+              })
+            }}
+            className='w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary'
+          >
+            <Github className='mr-2 h-5 w-5' />
+            Sign In with GitHub
+          </Button>
+        </Card>
+      </div>
+    )
   }
 
   if (submitted) {

@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { Link } from '@tanstack/react-router'
 import { ChallengeGridItem } from '@/services/challenges/components/ChallengeGridItem'
-import { getChallenges } from '@/lib/getChallenges'
+import { getChallenges } from '@/services/challenges/lib/getChallenges'
 import { useState, useEffect } from 'react'
 import {
   MoveRight,

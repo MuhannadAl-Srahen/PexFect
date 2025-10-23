@@ -17,6 +17,7 @@ import {
   StaggerItem,
 } from '@/components/ui/animate-on-scroll'
 import { motion } from 'motion/react'
+import { supabase } from '@/lib/supabaseClient'
 
 export function HeroSection() {
   return (
@@ -113,14 +114,17 @@ export function HeroSection() {
                     whileTap={{ scale: 0.98 }}
                   >
                     <Button
-                      asChild
                       size='lg'
+                      onClick={async () => {
+                        await supabase.auth.signInWithOAuth({
+                          provider: 'github',
+                          options: { redirectTo: window.location.origin + '/challenges' },
+                        })
+                      }}
                       className='bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 rounded-xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group'
                     >
-                      <Link to='/signup'>
-                        Get Started Free
-                        <ArrowRight className='w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform' />
-                      </Link>
+                      Get Started Free
+                      <ArrowRight className='w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform' />
                     </Button>
                   </motion.div>
 

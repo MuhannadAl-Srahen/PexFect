@@ -1,5 +1,5 @@
 // src/lib/profileHelpers.ts
-import { supabase } from './supabaseClient'
+import { supabase } from '@/lib/supabaseClient'
 
 interface ProfileUpdate {
   full_name?: string

@@ -1,26 +1,63 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Github, Linkedin, Calendar, Globe, Edit, Save, X } from 'lucide-react'
-import { userProfile } from '@/services/profile/data'
 import { ProfileService } from '@/services/profile/api'
+import { supabase } from '@/lib/supabaseClient'
 import type { UserProfile } from '@/types'
 
 export function ProfileCard() {
-  const [user, setUser] = useState<UserProfile>(userProfile)
+  const [user, setUser] = useState<UserProfile | null>(null)
   const [isEditing, setIsEditing] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [isFetching, setIsFetching] = useState(true)
   const [editData, setEditData] = useState({
-    fullName: user.fullName,
-    email: user.email,
-    bio: user.bio || '',
-    githubUrl: user.githubUrl || '',
-    linkedinUrl: user.linkedinUrl || '',
-    website: user.website || '',
+    fullName: '',
+    email: '',
+    bio: '',
+    githubUrl: '',
+    linkedinUrl: '',
+    website: '',
   })
+
+  // Fetch user profile on mount
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        setIsFetching(true)
+        const { data: { user: authUser } } = await supabase.auth.getUser()
+        
+        if (!authUser) {
+          console.warn('[ProfileCard] No authenticated user')
+          setIsFetching(false)
+          return
+        }
+
+        const profile = await ProfileService.getProfile(authUser.id)
+        
+        if (profile) {
+          setUser(profile)
+          setEditData({
+            fullName: profile.fullName,
+            email: profile.email,
+            bio: profile.bio || '',
+            githubUrl: profile.githubUrl || '',
+            linkedinUrl: profile.linkedinUrl || '',
+            website: profile.website || '',
+          })
+        }
+      } catch (error) {
+        console.error('[ProfileCard] Error fetching profile:', error)
+      } finally {
+        setIsFetching(false)
+      }
+    }
+
+    fetchProfile()
+  }, [])
 
   const getInitials = (name: string) => {
     return name
@@ -32,6 +69,8 @@ export function ProfileCard() {
   }
 
   const handleSave = async () => {
+    if (!user) return
+    
     setIsLoading(true)
     try {
       // Save to backend using ProfileService
@@ -44,9 +83,11 @@ export function ProfileCard() {
         website: editData.website,
       })
       
-      setUser(updatedProfile)
-      setIsEditing(false)
-      console.log('Profile updated successfully!')
+      if (updatedProfile) {
+        setUser(updatedProfile)
+        setIsEditing(false)
+        console.log('Profile updated successfully!')
+      }
     } catch (error) {
       console.error('Failed to update profile:', error)
       // In a real app, you'd show an error toast here
@@ -56,6 +97,8 @@ export function ProfileCard() {
   }
 
   const handleCancel = () => {
+    if (!user) return
+    
     setEditData({
       fullName: user.fullName,
       email: user.email,
@@ -65,6 +108,39 @@ export function ProfileCard() {
       website: user.website || '',
     })
     setIsEditing(false)
+  }
+
+  // Show loading skeleton while fetching
+  if (isFetching) {
+    return (
+      <Card className='p-6 border-2 border-border/50 bg-card/50 backdrop-blur-sm shadow-lg'>
+        <div className='space-y-4 animate-pulse'>
+          <div className='flex flex-col items-center space-y-3'>
+            <div className='w-24 h-24 bg-muted rounded-full' />
+            <div className='h-6 w-32 bg-muted rounded' />
+            <div className='h-4 w-48 bg-muted rounded' />
+          </div>
+          <div className='space-y-2'>
+            <div className='h-4 bg-muted rounded' />
+            <div className='h-4 bg-muted rounded w-3/4' />
+          </div>
+        </div>
+      </Card>
+    )
+  }
+
+  // Show error state if no user
+  if (!user) {
+    return (
+      <Card className='p-6 border-2 border-border/50 bg-card/50 backdrop-blur-sm shadow-lg'>
+        <div className='text-center space-y-2'>
+          <p className='text-muted-foreground'>Unable to load profile</p>
+          <Button onClick={() => window.location.reload()} size='sm'>
+            Retry
+          </Button>
+        </div>
+      </Card>
+    )
   }
 
   return (
@@ -114,9 +190,6 @@ export function ProfileCard() {
               <p className='text-sm text-muted-foreground'>
                 {user.email}
               </p>
-              <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">
-                {user.experience} Level
-              </div>
             </div>
           )}
 

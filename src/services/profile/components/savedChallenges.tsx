@@ -6,7 +6,7 @@ import {
   getSavedChallenges,
   toggleChallengeSave,
 } from '@/services/challenges/lib/toggleChallengeSave'
-import { getChallenges } from '@/lib/getChallenges'
+import { getChallenges } from '@/services/challenges/lib/getChallenges'
 import { supabase } from '@/lib/supabaseClient'
 import { Heart, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { ChallengeListItem } from '@/types'
@@ -265,10 +265,15 @@ export function SavedChallenges() {
           Please sign in to view your saved challenges.
         </p>
         <Button
-          onClick={() => navigate({ to: '/login' })}
+          onClick={async () => {
+            await supabase.auth.signInWithOAuth({
+              provider: 'github',
+              options: { redirectTo: window.location.origin + '/profile?tab=saved' },
+            })
+          }}
           className='gap-2 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02]'
         >
-          <span>Sign In</span>
+          <span>Sign In with GitHub</span>
           <ArrowRight className='w-4 h-4' />
         </Button>
       </div>

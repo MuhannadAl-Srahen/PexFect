@@ -1,5 +1,6 @@
 import type { Challenge } from '@/types'
 import { getChallengeDetails } from './lib/getChallengeDetails'
+import { supabase } from '@/lib/supabaseClient'
 
 export const getChallengeById = async (
   id: string
@@ -17,8 +18,8 @@ export const getChallengeById = async (
 }
 
 export const submitChallengeSolution = async (
-  _challengeId: string,
-  _submission: {
+  challengeId: string,
+  submission: {
     title: string
     githubUrl: string
     liveUrl: string
@@ -26,17 +27,68 @@ export const submitChallengeSolution = async (
     description: string
   }
 ) => {
-  // Simulate API call delay
-  await new Promise((resolve) => setTimeout(resolve, 2000))
+  try {
+    // Get the current user
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    
+    if (authError || !user) {
+      throw new Error('User not authenticated')
+    }
 
-  // avoid unused parameter linting in this mock implementation
-  void _challengeId
-  void _submission
+    // Insert the submission into the database first (without screenshot)
+    const { data, error } = await (supabase
+      .from('challenge_submissions') as any)
+      .insert({
+        challenge_id: challengeId,
+        profile_id: user.id,
+        challenge_title: submission.title,
+        github_url: submission.githubUrl,
+        live_site_url: submission.liveUrl,
+        screenshots: null, // Will update after upload
+        submission_description: submission.description || null,
+      })
+      .select('id')
+      .single()
 
-  // Simulate successful submission
-  return {
-    success: true,
-    submissionId: Math.random().toString(36).slice(2, 11),
-    message: 'Solution submitted successfully',
-  } as const
+    if (error) {
+      console.error('Submission error:', error)
+      throw new Error(error.message)
+    }
+
+    const submissionId = (data as { id: string }).id
+
+    // Handle screenshot upload if provided (after we have submission ID)
+    if (submission.screenshot) {
+      const fileExt = submission.screenshot.name.split('.').pop()
+      const fileName = `${challengeId}/${user.id}/${submissionId}/${Date.now()}.${fileExt}`
+      
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('submission-screenshots')
+        .upload(fileName, submission.screenshot)
+
+      if (uploadError) {
+        console.error('Screenshot upload error:', uploadError)
+        // Continue without screenshot if upload fails
+      } else if (uploadData) {
+        const { data: { publicUrl } } = supabase.storage
+          .from('submission-screenshots')
+          .getPublicUrl(uploadData.path)
+        
+        // Update the submission with screenshot URL
+        await (supabase
+          .from('challenge_submissions') as any)
+          .update({ screenshots: [publicUrl] })
+          .eq('id', submissionId)
+      }
+    }
+
+    return {
+      success: true,
+      submissionId: submissionId,
+      message: 'Solution submitted successfully',
+    } as const
+  } catch (error) {
+    console.error('Submit challenge solution error:', error)
+    throw error
+  }
 }
