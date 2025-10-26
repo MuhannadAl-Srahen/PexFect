@@ -113,8 +113,12 @@ export const ProfileService = {
       if (updates.linkedinUrl !== undefined || updates.twitterUrl !== undefined || 
           updates.website !== undefined || updates.location !== undefined) {
         // Get existing social links
-        // @ts-expect-error - Supabase type inference issue
-        const existingSocialLinks = (existingProfile?.social_links as Record<string, string>) || {}
+        function isRecordOfString(obj: unknown): obj is Record<string, string> {
+          return typeof obj === 'object' && obj !== null &&
+            Object.values(obj).every(v => typeof v === 'string');
+        }
+        const existingSocialLinks: Record<string, string> =
+          isRecordOfString(existingProfile?.social_links) ? existingProfile!.social_links as Record<string, string> : {};
         
         // Merge with new values
         const socialLinks: Record<string, string> = { ...existingSocialLinks }
