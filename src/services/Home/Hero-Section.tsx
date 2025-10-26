@@ -116,10 +116,15 @@ export function HeroSection() {
                     <Button
                       size='lg'
                       onClick={async () => {
-                        await supabase.auth.signInWithOAuth({
-                          provider: 'github',
-                          options: { redirectTo: window.location.origin + '/challenges' },
-                        })
+                        try {
+                          await supabase.auth.signInWithOAuth({
+                            provider: 'github',
+                            options: { redirectTo: window.location.origin + '/challenges' },
+                          });
+                        } catch (error) {
+                          window.alert('Authentication failed. Please try again.');
+                          console.error('OAuth sign-in error:', error);
+                        }
                       }}
                       className='bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 rounded-xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group'
                     >
