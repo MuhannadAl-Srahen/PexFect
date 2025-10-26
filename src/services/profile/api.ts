@@ -23,7 +23,9 @@ export const ProfileService = {
     try {
       // If no userId provided, get current user
       if (!userId) {
-        const { data: { user } } = await supabase.auth.getUser()
+        const {
+          data: { user },
+        } = await supabase.auth.getUser()
         if (!user) return null
         userId = user.id
       }
@@ -50,7 +52,10 @@ export const ProfileService = {
 
       // Map database profile to UserProfile type
       const dbProfile = data as DbProfile
-      const socialLinks = dbProfile.social_links as Record<string, string> | null
+      const socialLinks = dbProfile.social_links as Record<
+        string,
+        string
+      > | null
 
       const profile: UserProfile = {
         id: dbProfile.id,
@@ -66,7 +71,8 @@ export const ProfileService = {
         twitterUrl: socialLinks?.twitter || undefined,
         skills: dbProfile.skills || [],
         experience: 'Intermediate', // Default value, you can add this to your schema
-        joinedAt: dbProfile.joined_date || new Date().toISOString().split('T')[0],
+        joinedAt:
+          dbProfile.joined_date || new Date().toISOString().split('T')[0],
         stats: {
           challengesCompleted: 0, // TODO: Calculate from saved_challenges
           totalSubmissions: 0,
@@ -90,14 +96,18 @@ export const ProfileService = {
     updates: Partial<UserProfile>
   ): Promise<UserProfile | null> {
     try {
-      console.log('[ProfileService] Updating profile for user:', userId, updates)
+      console.log(
+        '[ProfileService] Updating profile for user:',
+        userId,
+        updates
+      )
 
       // First, get existing profile to merge social links properly
-      const { data: existingProfile } = await supabase
+      const { data: existingProfile } = (await supabase
         .from('profiles')
         .select('social_links')
         .eq('id', userId)
-        .single()
+        .single()) as { data: Pick<DbProfile, 'social_links'> | null }
 
       // Map UserProfile updates to database schema
       const dbUpdates: Partial<DbProfile> = {}
@@ -106,36 +116,50 @@ export const ProfileService = {
       if (updates.email !== undefined) dbUpdates.email = updates.email
       if (updates.bio !== undefined) dbUpdates.bio = updates.bio
       if (updates.skills !== undefined) dbUpdates.skills = updates.skills
-      if (updates.avatar !== undefined) dbUpdates.profile_image_url = updates.avatar
-      if (updates.githubUrl !== undefined) dbUpdates.github_url = updates.githubUrl
+      if (updates.avatar !== undefined)
+        dbUpdates.profile_image_url = updates.avatar
+      if (updates.githubUrl !== undefined)
+        dbUpdates.github_url = updates.githubUrl
 
       // Handle social links - merge with existing ones
-      if (updates.linkedinUrl !== undefined || updates.twitterUrl !== undefined || 
-          updates.website !== undefined || updates.location !== undefined) {
+      if (
+        updates.linkedinUrl !== undefined ||
+        updates.twitterUrl !== undefined ||
+        updates.website !== undefined ||
+        updates.location !== undefined
+      ) {
         // Get existing social links
         function isRecordOfString(obj: unknown): obj is Record<string, string> {
-          return typeof obj === 'object' && obj !== null &&
-            Object.values(obj).every(v => typeof v === 'string');
+          return (
+            typeof obj === 'object' &&
+            obj !== null &&
+            Object.values(obj).every((v) => typeof v === 'string')
+          )
         }
-        const existingSocialLinks: Record<string, string> =
-          isRecordOfString(existingProfile?.social_links) ? existingProfile!.social_links as Record<string, string> : {};
-        
+        const existingSocialLinks: Record<string, string> = isRecordOfString(
+          existingProfile?.social_links
+        )
+          ? (existingProfile!.social_links as Record<string, string>)
+          : {}
+
         // Merge with new values
         const socialLinks: Record<string, string> = { ...existingSocialLinks }
-        if (updates.linkedinUrl !== undefined) socialLinks.linkedin = updates.linkedinUrl
-        if (updates.twitterUrl !== undefined) socialLinks.twitter = updates.twitterUrl
+        if (updates.linkedinUrl !== undefined)
+          socialLinks.linkedin = updates.linkedinUrl
+        if (updates.twitterUrl !== undefined)
+          socialLinks.twitter = updates.twitterUrl
         if (updates.website !== undefined) socialLinks.website = updates.website
-        if (updates.location !== undefined) socialLinks.location = updates.location
-        
+        if (updates.location !== undefined)
+          socialLinks.location = updates.location
+
         dbUpdates.social_links = socialLinks
       }
 
       console.log('[ProfileService] Database updates:', dbUpdates)
 
-      const { error } = await supabase
-        .from('profiles')
-        // Type assertion to ensure type safety for Supabase update
-        .update(dbUpdates as Partial<DbProfile>)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { error } = await (supabase.from('profiles') as any)
+        .update(dbUpdates)
         .eq('id', userId)
         .select()
         .single()
