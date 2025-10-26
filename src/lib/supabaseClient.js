@@ -27,9 +27,6 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
     schema: 'public',
   },
   // Add timeout and retry configuration
-  realtime: {
-    timeout: 10000, // 10 seconds for realtime connections
-  },
 })
 
 export async function signInWithGitHub() {
