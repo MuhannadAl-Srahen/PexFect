@@ -43,7 +43,7 @@ type ChallengeOverview = {
   livepreviewurl: string | null
 }
       const { data: officialChallenges } = await supabase
-        .from<ChallengeOverview>('challenge_overview')
+        .from('challenge_overview')
         .select('challenge_id, livepreviewurl')
         .not('livepreviewurl', 'is', null)
 
