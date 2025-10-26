@@ -31,6 +31,8 @@ function RouteComponent() {
   } = useQuery({
     queryKey: ['challenge', id],
     queryFn: () => getChallengeById(id),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    retry: 2,
   })
 
   // TODO: Add proper error handling and loading states

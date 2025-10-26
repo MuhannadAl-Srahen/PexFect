@@ -2,7 +2,7 @@
  * Helper functions for managing saved challenges per user
  */
 
-import { supabase } from './supabaseClient'
+import { supabase } from '@/lib/supabaseClient'
 
 export interface SavedChallenge {
   challenge_id: string

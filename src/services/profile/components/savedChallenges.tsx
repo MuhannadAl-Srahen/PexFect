@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 import { ChallengeGridItem } from '@/services/challenges/components/ChallengeGridItem'
+import { useChallenges } from '@/services/challenges/hooks/useChallenges'
 import {
-  getSavedChallenges,
-  toggleChallengeSave,
-} from '@/services/challenges/lib/toggleChallengeSave'
-import { getChallenges } from '@/lib/getChallenges'
+  useSavedChallenges,
+  useToggleSave,
+} from '@/services/challenges/hooks/useSavedChallenges'
+import { useAuth } from '@/services/challenges/hooks/useAuth'
 import { supabase } from '@/lib/supabaseClient'
 import { Heart, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { ChallengeListItem } from '@/types'
@@ -15,77 +16,24 @@ const ITEMS_PER_PAGE = 4
 
 export function SavedChallenges() {
   const navigate = useNavigate()
-  const [savedChallenges, setSavedChallenges] = useState<ChallengeListItem[]>(
-    []
-  )
   const [currentPage, setCurrentPage] = useState(1)
-  const [isLoading, setIsLoading] = useState(true)
-  const [savingChallengeId, setSavingChallengeId] = useState<string | null>(
-    null
+
+  // Use React Query hooks
+  const { data: authData, isLoading: isAuthLoading } = useAuth()
+  const { data: allChallenges = [], isLoading: isChallengesLoading } =
+    useChallenges()
+  const { data: savedChallengeIds = [], isLoading: isSavedLoading } =
+    useSavedChallenges(authData?.isAuthenticated ?? false)
+  const toggleSaveMutation = useToggleSave()
+
+  const isAuthenticated = authData?.isAuthenticated ?? false
+  const isLoading =
+    isAuthLoading || isChallengesLoading || (isAuthenticated && isSavedLoading)
+
+  // Filter challenges that are saved
+  const savedChallenges: ChallengeListItem[] = allChallenges.filter(
+    (challenge) => savedChallengeIds.includes(challenge.id)
   )
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-
-  const [savedIds, setSavedIds] = useState<Set<string>>(new Set())
-
-  // Load saved challenges from database on mount
-  useEffect(() => {
-    let mounted = true
-
-    const loadSavedChallenges = async () => {
-      try {
-        setIsLoading(true)
-
-        // Check authentication
-        const {
-          data: { session },
-          error: sessionError,
-        } = await supabase.auth.getSession()
-        if (sessionError) throw sessionError
-        if (!mounted) return
-
-        const isAuth = !!session
-        setIsAuthenticated(isAuth)
-
-        if (!isAuth) {
-          setSavedChallenges([])
-          setSavedIds(new Set())
-          setIsLoading(false)
-          return
-        }
-
-        // Get saved challenge IDs from profile
-        const savedChallengeIds = await getSavedChallenges()
-        if (!mounted) return
-
-        // Get all challenges to match with saved ones
-        const allChallenges = await getChallenges()
-        if (!mounted) return
-
-        // Filter challenges that are saved
-        const savedChallengesList = allChallenges.filter((challenge) =>
-          savedChallengeIds.includes(challenge.id)
-        )
-
-        setSavedChallenges(savedChallengesList)
-        setSavedIds(new Set(savedChallengeIds))
-      } catch (error) {
-        console.error(
-          '[SavedChallenges] Error loading saved challenges:',
-          error
-        )
-      } finally {
-        if (mounted) {
-          setIsLoading(false)
-        }
-      }
-    }
-
-    loadSavedChallenges()
-
-    return () => {
-      mounted = false
-    }
-  }, [])
 
   // Pagination logic
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
@@ -122,101 +70,41 @@ export function SavedChallenges() {
   }
 
   const handleToggleSave = async (challengeId: string) => {
-    // Prevent double-clicking the same challenge
-    if (savingChallengeId === challengeId) {
-      console.log('[handleToggleSave] ⏳ Already processing this challenge')
-      return
-    }
-
     // Must be authenticated to save
     if (!isAuthenticated) {
       console.warn('[handleToggleSave] ⚠️ User not authenticated')
       return
     }
 
-    try {
-      setSavingChallengeId(challengeId)
-
-      // Get current state for optimistic update and rollback
-      const currentSavedState = savedIds.has(challengeId)
-      const optimisticSavedIds = new Set(savedIds)
-      const optimisticSavedChallenges = [...savedChallenges]
-
-      if (currentSavedState) {
-        // Removing from saved (unsaving)
-        optimisticSavedIds.delete(challengeId)
-        const updatedChallenges = optimisticSavedChallenges.filter(
-          (challenge) => challenge.id !== challengeId
-        )
-
-        console.log(`[handleToggleSave] 💔 Unsaving challenge:`, challengeId)
-
-        // Optimistic update - update UI immediately
-        setSavedIds(optimisticSavedIds)
-        setSavedChallenges(updatedChallenges)
-
-        // Adjust pagination if current page becomes empty
-        const newTotalPages = Math.ceil(
-          updatedChallenges.length / ITEMS_PER_PAGE
-        )
-        if (currentPage > newTotalPages && newTotalPages > 0) {
-          setCurrentPage(newTotalPages)
-        } else if (updatedChallenges.length === 0) {
-          setCurrentPage(1)
-        }
-      } else {
-        // This shouldn't happen in profile page (we only display saved challenges)
-        console.warn(
-          '[handleToggleSave] ⚠️ Trying to save challenge that should already be saved'
-        )
-        return
-      }
-
-      // Call database function
-      const freshSavedIds = await toggleChallengeSave(
-        challengeId,
-        currentSavedState
-      )
-
-      if (freshSavedIds === null) {
-        // Database update failed - rollback optimistic update
-        console.error(
-          '[handleToggleSave] ❌ Database update failed, rolling back'
-        )
-        setSavedIds(savedIds) // Revert to original state
-        setSavedChallenges(savedChallenges) // Revert to original state
-        // TODO: Show error toast to user
-      } else {
-        console.log('[handleToggleSave] ✅ Database update successful')
-        // For profile page, we need to reload the challenges to get updated list
-        // since the user might have saved new challenges from other pages
-        if (currentSavedState) {
-          // Just removed a challenge - the optimistic update should be correct
-          // But let's get fresh data to be sure
-          try {
-            const allChallenges = await getChallenges()
-            const savedChallengesList = allChallenges.filter((challenge) =>
-              freshSavedIds.includes(challenge.id)
-            )
-            setSavedChallenges(savedChallengesList)
-            setSavedIds(new Set(freshSavedIds))
-          } catch (error) {
-            console.error(
-              '[handleToggleSave] Error reloading challenges:',
-              error
-            )
-          }
-        }
-      }
-    } catch (error) {
-      console.error('[handleToggleSave] ❌ Exception:', error)
-      // Rollback on error
-      setSavedIds(savedIds)
-      setSavedChallenges(savedChallenges)
-      // TODO: Show error toast to user
-    } finally {
-      setSavingChallengeId(null)
+    // Prevent double-clicking while mutation is in progress
+    if (toggleSaveMutation.isPending) {
+      console.log('[handleToggleSave] ⏳ Already processing a save request')
+      return
     }
+
+    const isSaved = savedChallengeIds.includes(challengeId)
+    console.log(
+      `[handleToggleSave] ${isSaved ? 'Unsaving' : 'Saving'} challenge:`,
+      challengeId
+    )
+
+    // Trigger the mutation
+    toggleSaveMutation.mutate(
+      { challengeId, isSaved },
+      {
+        onSuccess: () => {
+          // Adjust pagination if current page becomes empty after unsaving
+          const newTotalPages = Math.ceil(
+            (savedChallenges.length - 1) / ITEMS_PER_PAGE
+          )
+          if (currentPage > newTotalPages && newTotalPages > 0) {
+            setCurrentPage(newTotalPages)
+          } else if (savedChallenges.length === 1) {
+            setCurrentPage(1)
+          }
+        },
+      }
+    )
   }
 
   // Show loading state
@@ -265,10 +153,17 @@ export function SavedChallenges() {
           Please sign in to view your saved challenges.
         </p>
         <Button
-          onClick={() => navigate({ to: '/login' })}
+          onClick={async () => {
+            await supabase.auth.signInWithOAuth({
+              provider: 'github',
+              options: {
+                redirectTo: window.location.origin + '/profile?tab=saved',
+              },
+            })
+          }}
           className='gap-2 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02]'
         >
-          <span>Sign In</span>
+          <span>Sign In with GitHub</span>
           <ArrowRight className='w-4 h-4' />
         </Button>
       </div>
@@ -339,8 +234,11 @@ export function SavedChallenges() {
           <ChallengeGridItem
             key={challenge.id}
             challenge={challenge}
-            isSaved={savedIds.has(challenge.id)}
-            isSaving={savingChallengeId === challenge.id}
+            isSaved={savedChallengeIds.includes(challenge.id)}
+            isSaving={
+              toggleSaveMutation.isPending &&
+              toggleSaveMutation.variables?.challengeId === challenge.id
+            }
             isAuthenticated={isAuthenticated}
             onToggleSave={handleToggleSave}
           />

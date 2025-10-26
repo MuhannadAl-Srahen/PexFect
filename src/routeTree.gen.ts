@@ -9,10 +9,8 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ProgressRouteImport } from './routes/progress'
 import { Route as ProfileRouteImport } from './routes/profile'
-import { Route as LoginRouteImport } from './routes/login'
 import { Route as R404RouteImport } from './routes/404'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SettingsIndexRouteImport } from './routes/settings/index'
@@ -23,11 +21,6 @@ import { Route as FeedbackSubmissionIdRouteImport } from './routes/feedback/$sub
 import { Route as RoadmapPathIdIndexRouteImport } from './routes/roadmap/$pathId/index'
 import { Route as ChallengesIdIndexRouteImport } from './routes/challenges/$id/index'
 
-const SignupRoute = SignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ProgressRoute = ProgressRouteImport.update({
   id: '/progress',
   path: '/progress',
@@ -36,11 +29,6 @@ const ProgressRoute = ProgressRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const R404Route = R404RouteImport.update({
@@ -92,10 +80,8 @@ const ChallengesIdIndexRoute = ChallengesIdIndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/404': typeof R404Route
-  '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
-  '/signup': typeof SignupRoute
   '/feedback/$submissionId': typeof FeedbackSubmissionIdRoute
   '/challenges': typeof ChallengesIndexRoute
   '/resources': typeof ResourcesIndexRoute
@@ -107,10 +93,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/404': typeof R404Route
-  '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
-  '/signup': typeof SignupRoute
   '/feedback/$submissionId': typeof FeedbackSubmissionIdRoute
   '/challenges': typeof ChallengesIndexRoute
   '/resources': typeof ResourcesIndexRoute
@@ -123,10 +107,8 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/404': typeof R404Route
-  '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
-  '/signup': typeof SignupRoute
   '/feedback/$submissionId': typeof FeedbackSubmissionIdRoute
   '/challenges/': typeof ChallengesIndexRoute
   '/resources/': typeof ResourcesIndexRoute
@@ -140,10 +122,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/404'
-    | '/login'
     | '/profile'
     | '/progress'
-    | '/signup'
     | '/feedback/$submissionId'
     | '/challenges'
     | '/resources'
@@ -155,10 +135,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/404'
-    | '/login'
     | '/profile'
     | '/progress'
-    | '/signup'
     | '/feedback/$submissionId'
     | '/challenges'
     | '/resources'
@@ -170,10 +148,8 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/404'
-    | '/login'
     | '/profile'
     | '/progress'
-    | '/signup'
     | '/feedback/$submissionId'
     | '/challenges/'
     | '/resources/'
@@ -186,10 +162,8 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   R404Route: typeof R404Route
-  LoginRoute: typeof LoginRoute
   ProfileRoute: typeof ProfileRoute
   ProgressRoute: typeof ProgressRoute
-  SignupRoute: typeof SignupRoute
   FeedbackSubmissionIdRoute: typeof FeedbackSubmissionIdRoute
   ChallengesIndexRoute: typeof ChallengesIndexRoute
   ResourcesIndexRoute: typeof ResourcesIndexRoute
@@ -201,13 +175,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/signup': {
-      id: '/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof SignupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/progress': {
       id: '/progress'
       path: '/progress'
@@ -220,13 +187,6 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/404': {
@@ -298,10 +258,8 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   R404Route: R404Route,
-  LoginRoute: LoginRoute,
   ProfileRoute: ProfileRoute,
   ProgressRoute: ProgressRoute,
-  SignupRoute: SignupRoute,
   FeedbackSubmissionIdRoute: FeedbackSubmissionIdRoute,
   ChallengesIndexRoute: ChallengesIndexRoute,
   ResourcesIndexRoute: ResourcesIndexRoute,

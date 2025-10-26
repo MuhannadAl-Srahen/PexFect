@@ -1,20 +1,23 @@
-import { useState, useMemo, useEffect } from 'react'
-import { fetchResources } from '../lib/getResources'
+import { useState, useMemo } from 'react'
+import { useResources } from './useResources'
 import type { ResourceItem } from '@/types'
 
 export function useResourceManagement(externalSearchTerm?: string) {
-  const [activeTab, setActiveTab] = useState('documentation')
+  const [activeTab, setActiveTab] = useState<
+    'documentation' | 'video' | 'tools'
+  >('documentation')
   const [searchTerm, setSearchTerm] = useState('')
-  const [loading, setLoading] = useState(true)
-  const [cache, setCache] = useState<Record<string, ResourceItem[]>>({})
 
   // Use external search term if provided, otherwise use internal search term
   const effectiveSearchTerm =
     externalSearchTerm !== undefined ? externalSearchTerm : searchTerm
 
-  const getTabData = (key: string): ResourceItem[] => {
-    return cache[key] || []
-  }
+  // Use React Query to fetch resources for the active tab
+  const {
+    data: tabData = [],
+    isLoading: loading,
+    refetch,
+  } = useResources(activeTab)
 
   const filterResources = (
     data: ResourceItem[],
@@ -64,59 +67,12 @@ export function useResourceManagement(externalSearchTerm?: string) {
   }
 
   const filteredData = useMemo(() => {
-    const tabData = cache[activeTab] || []
     return filterResources(tabData, effectiveSearchTerm)
-  }, [effectiveSearchTerm, activeTab, cache])
-
-  useEffect(() => {
-    let mounted = true
-
-    const load = async () => {
-      setLoading(true)
-      try {
-        const typeMap: Record<string, 'video' | 'documentation' | 'tools'> = {
-          documentation: 'documentation',
-          tools: 'tools',
-          video: 'video',
-        }
-        const resType = typeMap[activeTab]
-        const data = await fetchResources(resType)
-        console.debug('[useResourceManagement] fetched', resType, data)
-        if (!mounted) return
-        // fetchResources returns the array stored in the JSONB column
-        setCache((c) => ({ ...c, [activeTab]: (data as ResourceItem[]) || [] }))
-      } catch (err) {
-        console.error('Failed to load resources for', activeTab, err)
-      } finally {
-        if (mounted) setLoading(false)
-      }
-    }
-
-    load()
-
-    return () => {
-      mounted = false
-    }
-  }, [activeTab])
+  }, [effectiveSearchTerm, tabData])
 
   // manual reload exposed to UI
   const reload = async () => {
-    setLoading(true)
-    try {
-      const typeMap: Record<string, 'video' | 'documentation' | 'tools'> = {
-        documentation: 'documentation',
-        tools: 'tools',
-        video: 'video',
-      }
-      const resType = typeMap[activeTab]
-      const data = await fetchResources(resType)
-      console.debug('[useResourceManagement] reload fetched', resType, data)
-      setCache((c) => ({ ...c, [activeTab]: (data as ResourceItem[]) || [] }))
-    } catch (err) {
-      console.error('Reload failed for', activeTab, err)
-    } finally {
-      setLoading(false)
-    }
+    refetch()
   }
 
   return {
@@ -126,7 +82,6 @@ export function useResourceManagement(externalSearchTerm?: string) {
     setSearchTerm,
     filteredData,
     loading,
-    getTabData,
     reload,
   }
 }
