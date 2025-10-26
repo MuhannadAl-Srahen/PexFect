@@ -37,13 +37,18 @@ export const submitChallengeSolution = async (
 
     // Check if the live preview URL matches any official challenge URLs
     if (submission.liveUrl) {
-      const { data: officialChallenges } = await (supabase
-        .from('challenge_overview') as any)
+// Define the type for challenge_overview table
+type ChallengeOverview = {
+  challenge_id: string
+  livepreviewurl: string | null
+}
+      const { data: officialChallenges } = await supabase
+        .from<ChallengeOverview>('challenge_overview')
         .select('challenge_id, livepreviewurl')
         .not('livepreviewurl', 'is', null)
 
       if (officialChallenges && officialChallenges.length > 0) {
-        const isOfficialUrl = officialChallenges.some((challenge: any) => 
+        const isOfficialUrl = officialChallenges.some((challenge: ChallengeOverview) => 
           challenge.livepreviewurl && challenge.livepreviewurl.toLowerCase() === submission.liveUrl.toLowerCase()
         )
         
