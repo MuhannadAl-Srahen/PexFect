@@ -134,8 +134,8 @@ export const ProfileService = {
 
       const { error } = await supabase
         .from('profiles')
-        // @ts-expect-error - Supabase client type inference issue with unknown database schema
-        .update(dbUpdates)
+        // Type assertion to ensure type safety for Supabase update
+        .update(dbUpdates as Partial<DbProfile>)
         .eq('id', userId)
         .select()
         .single()
