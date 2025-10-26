@@ -113,7 +113,7 @@ function RouteComponent() {
                 onClick={async () => {
                   await supabase.auth.signInWithOAuth({
                     provider: 'github',
-                    options: { redirectTo: window.location.origin },
+                    options: { redirectTo: window.location.origin + '/profile' },
                   })
                 }}
                 size='lg'
