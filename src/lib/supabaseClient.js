@@ -13,7 +13,24 @@ if (!SUPABASE_URL || !SUPABASE_KEY) {
   throw new Error('Missing Supabase environment variables')
 }
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+  },
+  global: {
+    headers: {
+      'x-client-info': 'pexfect-web',
+    },
+  },
+  db: {
+    schema: 'public',
+  },
+  // Add timeout and retry configuration
+  realtime: {
+    timeout: 10000, // 10 seconds for realtime connections
+  },
+})
 
 export async function signInWithGitHub() {
   // Clear existing Supabase session

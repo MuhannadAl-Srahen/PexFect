@@ -2,8 +2,8 @@ import React from 'react'
 import { Link } from '@tanstack/react-router'
 import type { ChallengeListItem } from '@/types'
 import { learningPaths } from '../data'
-import { useEffect, useState } from 'react'
-import { getChallenges } from '@/services/challenges/lib/getChallenges'
+import { useMemo } from 'react'
+import { useChallenges } from '@/services/challenges/hooks/useChallenges'
 import {
   ArrowLeft,
   BookOpen,
@@ -220,18 +220,15 @@ const SOLID_BG = {
 
 const PathDetails: React.FC<PathDetailsProps> = ({ pathId }) => {
   const path = learningPaths.find((p) => p.id === pathId)
-  const [pathChallenges, setPathChallenges] = useState<ChallengeListItem[]>([])
 
-  useEffect(() => {
-    let mounted = true
-    getChallenges().then((list) => {
-      if (!mounted) return
-      setPathChallenges(list.filter((c) => c.difficulty === CHALLENGE_MAP[pathId]))
-    })
-    return () => {
-      mounted = false
-    }
-  }, [pathId])
+  // Use React Query hook to fetch challenges
+  const { data: allChallenges = [], isLoading } = useChallenges()
+
+  // Filter challenges by difficulty level
+  const pathChallenges: ChallengeListItem[] = useMemo(() => {
+    return allChallenges.filter((c) => c.difficulty === CHALLENGE_MAP[pathId])
+  }, [allChallenges, pathId])
+
   const totalChallenges = pathChallenges.length
   const completedChallenges = 0
   const progress =
@@ -333,8 +330,13 @@ const PathDetails: React.FC<PathDetailsProps> = ({ pathId }) => {
 
       {/* Challenge list */}
       <div className='w-full flex flex-col items-center mt-2'>
-        {pathChallenges.length === 0 ? (
-          <div className='text-gray-400 text-center py-10'>
+        {isLoading ? (
+          <div className='text-muted-foreground text-center py-10'>
+            <div className='animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4'></div>
+            Loading challenges...
+          </div>
+        ) : pathChallenges.length === 0 ? (
+          <div className='text-muted-foreground text-center py-10'>
             No challenges found for this path.
           </div>
         ) : (

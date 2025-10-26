@@ -37,7 +37,9 @@ export function ResourcesSection({
             return (
               <button
                 key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
+                onClick={() =>
+                  setActiveTab(tab.key as 'video' | 'documentation' | 'tools')
+                }
                 className={`flex items-center justify-center gap-1 md:gap-2 h-full transition-all duration-200 relative px-1 ${
                   activeTab === tab.key
                     ? 'bg-primary/10 text-primary scale-100'

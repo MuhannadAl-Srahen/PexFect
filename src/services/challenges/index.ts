@@ -14,6 +14,10 @@ export { ChallengeSubmission } from '../challenge details/ChallengeSubmission'
 
 // Hooks
 export { useChallengeFilters } from './hooks/useChallengeFilters'
+export { useSubmissionForm } from './hooks/useSubmissionForm'
+export { useChallenges } from './hooks/useChallenges'
+export { useAuth } from './hooks/useAuth'
+export { useSavedChallenges, useToggleSave } from './hooks/useSavedChallenges'
 
 // Data and API
 export { getChallengeById, submitChallengeSolution } from './api'

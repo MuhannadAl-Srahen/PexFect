@@ -1,5 +1,6 @@
 export * from './data'
-export { ProfileService, useProfile } from './api'
+export { ProfileService } from './api'
 export * from './components'
 export * from './lib/savedChallenges'
 export * from './lib/profileHelpers'
+export { useProfile, useUpdateProfile } from './hooks/useProfile'

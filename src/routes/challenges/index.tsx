@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { PageLayout } from '@/layouts'
 import {
@@ -7,119 +7,39 @@ import {
   ChallengeView,
   useChallengeFilters,
 } from '@/services/challenges'
-import { getChallenges } from '@/services/challenges/lib/getChallenges'
-import {
-  toggleChallengeSave,
-  getSavedChallenges,
-} from '@/services/challenges/lib/toggleChallengeSave'
-import { supabase } from '@/lib/supabaseClient'
-import type { ChallengeListItem } from '@/types'
 import { EmptyState } from '@/layouts'
 import {
   ChallengeCardSkeleton,
   ChallengeListSkeleton,
 } from '@/components/ui/challenge-skeleton'
+import { useChallenges } from '@/services/challenges/hooks/useChallenges'
+import { useAuth } from '@/services/challenges/hooks/useAuth'
+import {
+  useSavedChallenges,
+  useToggleSave,
+} from '@/services/challenges/hooks/useSavedChallenges'
 
 export const Route = createFileRoute('/challenges/')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const [savedChallenges, setSavedChallenges] = useState<string[]>([])
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
-  const [allChallenges, setAllChallenges] = useState<ChallengeListItem[]>([])
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-  const [loadError, setLoadError] = useState<string | null>(null)
-  const [savingChallengeId, setSavingChallengeId] = useState<string | null>(
-    null
-  )
 
-  // Single effect to load all data on mount - no refresh effects to prevent conflicts
-  useEffect(() => {
-    let mounted = true
-    let timeoutId: NodeJS.Timeout
+  // Use React Query hooks for data fetching
+  const { data: authData, isLoading: isAuthLoading } = useAuth()
+  const {
+    data: allChallenges = [],
+    isLoading: isChallengesLoading,
+    error: challengesError,
+  } = useChallenges()
+  const { data: savedChallenges = [], isLoading: isSavedLoading } =
+    useSavedChallenges(authData?.isAuthenticated ?? false)
+  const toggleSaveMutation = useToggleSave()
 
-    const loadData = async () => {
-      try {
-        console.log('[RouteComponent] 🚀 Starting data load...')
-        setIsLoading(true)
-        setLoadError(null)
-
-        // Set a timeout to prevent infinite loading
-        timeoutId = setTimeout(() => {
-          if (mounted) {
-            console.warn(
-              '[RouteComponent] ⏰ Data loading timeout, forcing completion'
-            )
-            setIsLoading(false)
-            setLoadError('Loading took too long. Please refresh the page.')
-          }
-        }, 10000) // 10 second timeout
-
-        // Check authentication
-        const {
-          data: { session },
-          error: sessionError,
-        } = await supabase.auth.getSession()
-        if (sessionError) {
-          console.error('[RouteComponent] Auth error:', sessionError)
-          throw sessionError
-        }
-        if (!mounted) return
-
-        const isAuth = !!session
-        setIsAuthenticated(isAuth)
-        console.log('[RouteComponent] 👤 Authentication status:', isAuth)
-
-        // Load challenges
-        console.log('[RouteComponent] 📚 Loading challenges...')
-        const challengesList = await getChallenges()
-        if (!mounted) return
-
-        console.log(
-          '[RouteComponent] ✅ Challenges loaded:',
-          challengesList.length
-        )
-        setAllChallenges(challengesList)
-
-        // Load saved challenges if authenticated
-        if (isAuth) {
-          console.log('[RouteComponent] 💾 Loading saved challenges...')
-          const savedIds = await getSavedChallenges()
-          if (mounted) {
-            console.log(
-              '[RouteComponent] ✅ Saved challenges loaded:',
-              savedIds.length
-            )
-            setSavedChallenges(savedIds)
-          }
-        } else {
-          setSavedChallenges([])
-        }
-      } catch (error) {
-        console.error('[RouteComponent] ❌ Error loading data:', error)
-        if (mounted) {
-          setLoadError(
-            error instanceof Error ? error.message : 'Failed to load challenges'
-          )
-        }
-      } finally {
-        if (timeoutId) clearTimeout(timeoutId)
-        if (mounted) {
-          console.log('[RouteComponent] ✅ Data loading completed')
-          setIsLoading(false)
-        }
-      }
-    }
-
-    loadData()
-
-    return () => {
-      mounted = false
-      if (timeoutId) clearTimeout(timeoutId)
-    }
-  }, []) // Empty dependency array - only run on mount
+  const isAuthenticated = authData?.isAuthenticated ?? false
+  const isLoading =
+    isAuthLoading || isChallengesLoading || (isAuthenticated && isSavedLoading)
 
   const {
     searchTerm,
@@ -133,62 +53,34 @@ function RouteComponent() {
   } = useChallengeFilters(allChallenges)
 
   const handleToggleSave = async (challengeId: string) => {
-    // Prevent double-clicking the same challenge
-    if (savingChallengeId === challengeId) {
-      console.log('[handleToggleSave] ⏳ Already processing this challenge')
-      return
-    }
-
     // Must be authenticated to save
     if (!isAuthenticated) {
       console.warn('[handleToggleSave] ⚠️ User not authenticated')
       return
     }
 
-    try {
-      setSavingChallengeId(challengeId)
-
-      // Get current state for optimistic update and rollback
-      const currentSavedState = savedChallenges.includes(challengeId)
-      const optimisticSavedChallenges = currentSavedState
-        ? savedChallenges.filter((id) => id !== challengeId)
-        : [...savedChallenges, challengeId]
-
-      console.log(
-        `[handleToggleSave] ${currentSavedState ? 'Unsaving' : 'Saving'} challenge:`,
-        challengeId
-      )
-
-      // Optimistic update - update UI immediately
-      setSavedChallenges(optimisticSavedChallenges)
-
-      // Call database function
-      const freshSavedIds = await toggleChallengeSave(
-        challengeId,
-        currentSavedState
-      )
-
-      if (freshSavedIds === null) {
-        // Database update failed - rollback optimistic update
-        console.error(
-          '[handleToggleSave] ❌ Database update failed, rolling back'
-        )
-        setSavedChallenges(savedChallenges) // Revert to original state
-        // TODO: Show error toast to user
-      } else {
-        // Database succeeded - use fresh data from server as source of truth
-        console.log('[handleToggleSave] ✅ Database update successful')
-        setSavedChallenges(freshSavedIds)
-      }
-    } catch (error) {
-      console.error('[handleToggleSave] ❌ Exception:', error)
-      // Rollback on error
-      setSavedChallenges(savedChallenges)
-      // TODO: Show error toast to user
-    } finally {
-      setSavingChallengeId(null)
+    // Prevent double-clicking while mutation is in progress
+    if (toggleSaveMutation.isPending) {
+      console.log('[handleToggleSave] ⏳ Already processing a save request')
+      return
     }
+
+    const isSaved = savedChallenges.includes(challengeId)
+    console.log(
+      `[handleToggleSave] ${isSaved ? 'Unsaving' : 'Saving'} challenge:`,
+      challengeId
+    )
+
+    toggleSaveMutation.mutate({ challengeId, isSaved })
   }
+
+  // Get error message
+  const errorMessage =
+    challengesError instanceof Error
+      ? challengesError.message
+      : challengesError
+        ? 'Failed to load challenges'
+        : null
 
   return (
     <PageLayout maxWidth='6xl'>
@@ -207,11 +99,11 @@ function RouteComponent() {
         totalCount={allChallenges.length}
       />
 
-      {loadError ? (
+      {errorMessage ? (
         // Show error state
         <EmptyState
           title='Failed to load challenges'
-          message={loadError}
+          message={errorMessage}
           buttonText='Retry'
           onAction={() => window.location.reload()}
         />
@@ -241,7 +133,11 @@ function RouteComponent() {
         <ChallengeView
           challenges={filteredChallenges}
           savedChallenges={savedChallenges}
-          savingChallengeId={savingChallengeId}
+          savingChallengeId={
+            toggleSaveMutation.isPending
+              ? (toggleSaveMutation.variables?.challengeId ?? null)
+              : null
+          }
           onToggleSave={handleToggleSave}
           viewMode={viewMode}
           isAuthenticated={isAuthenticated}

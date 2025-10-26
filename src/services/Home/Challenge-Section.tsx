@@ -1,8 +1,12 @@
 import { Button } from '@/components/ui/button'
 import { Link } from '@tanstack/react-router'
 import { ChallengeGridItem } from '@/services/challenges/components/ChallengeGridItem'
-import { getChallenges } from '@/services/challenges/lib/getChallenges'
-import { useState, useEffect } from 'react'
+import { useChallenges } from '@/services/challenges/hooks/useChallenges'
+import {
+  useSavedChallenges,
+  useToggleSave,
+} from '@/services/challenges/hooks/useSavedChallenges'
+import { useAuth } from '@/services/challenges/hooks/useAuth'
 import {
   MoveRight,
   Target,
@@ -13,43 +17,30 @@ import {
   ArrowRight,
 } from 'lucide-react'
 import { motion } from 'motion/react'
-import type { ChallengeListItem } from '@/types'
 
 export function ChallengeSection() {
-  const [challenges, setChallenges] = useState<ChallengeListItem[]>([])
-  const [loading, setLoading] = useState(true)
-  const [savedChallenges, setSavedChallenges] = useState<Set<string>>(new Set())
-
-  // Load challenges from database
-  useEffect(() => {
-    const loadChallenges = async () => {
-      try {
-        setLoading(true)
-        const challengesData = await getChallenges()
-        setChallenges(challengesData)
-      } catch (error) {
-        console.error('Failed to load challenges:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    loadChallenges()
-  }, [])
+  const { data: challenges = [], isLoading } = useChallenges()
+  const { data: authData } = useAuth()
+  const { data: savedChallengeIds = [] } = useSavedChallenges(
+    authData?.isAuthenticated ?? false
+  )
+  const toggleSaveMutation = useToggleSave()
 
   // Use the first 3 challenges as featured
   const featuredChallenges = challenges.slice(0, 3)
 
   const handleToggleSave = (challengeId: string) => {
-    setSavedChallenges((prev) => {
-      const newSet = new Set(prev)
-      if (newSet.has(challengeId)) {
-        newSet.delete(challengeId)
-      } else {
-        newSet.add(challengeId)
-      }
-      return newSet
-    })
+    if (!authData?.isAuthenticated) {
+      console.warn('[handleToggleSave] User not authenticated')
+      return
+    }
+
+    if (toggleSaveMutation.isPending) {
+      return
+    }
+
+    const isSaved = savedChallengeIds.includes(challengeId)
+    toggleSaveMutation.mutate({ challengeId, isSaved })
   }
   return (
     <section className='relative py-20 lg:py-32 bg-gradient-to-b from-primary/5 to-background overflow-hidden'>
@@ -221,7 +212,7 @@ export function ChallengeSection() {
             </div>
 
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-              {loading
+              {isLoading
                 ? // Loading skeleton
                   Array.from({ length: 3 }).map((_, index) => (
                     <div
@@ -237,35 +228,33 @@ export function ChallengeSection() {
                       </div>
                     </div>
                   ))
-                : featuredChallenges.map(
-                    (challenge: ChallengeListItem, index: number) => (
+                : featuredChallenges.map((challenge, index: number) => (
+                    <motion.div
+                      key={challenge.id}
+                      initial={{ opacity: 0, y: 40 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6, delay: index * 0.1 }}
+                      viewport={{ once: true, margin: '-50px' }}
+                      className='group'
+                    >
                       <motion.div
-                        key={challenge.id}
-                        initial={{ opacity: 0, y: 40 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: index * 0.1 }}
-                        viewport={{ once: true, margin: '-50px' }}
-                        className='group'
+                        whileHover={{ y: -8, scale: 1.02 }}
+                        transition={{ duration: 0.3 }}
+                        className='h-full relative'
                       >
-                        <motion.div
-                          whileHover={{ y: -8, scale: 1.02 }}
-                          transition={{ duration: 0.3 }}
-                          className='h-full relative'
-                        >
-                          {index === 1 && (
-                            <div className='absolute -top-3 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold shadow-lg z-10'>
-                              Most Popular
-                            </div>
-                          )}
-                          <ChallengeGridItem
-                            challenge={challenge}
-                            isSaved={savedChallenges.has(challenge.id)}
-                            onToggleSave={handleToggleSave}
-                          />
-                        </motion.div>
+                        {index === 1 && (
+                          <div className='absolute -top-3 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold shadow-lg z-10'>
+                            Most Popular
+                          </div>
+                        )}
+                        <ChallengeGridItem
+                          challenge={challenge}
+                          isSaved={savedChallengeIds.includes(challenge.id)}
+                          onToggleSave={handleToggleSave}
+                        />
                       </motion.div>
-                    )
-                  )}
+                    </motion.div>
+                  ))}
             </div>
           </motion.div>
         </div>
