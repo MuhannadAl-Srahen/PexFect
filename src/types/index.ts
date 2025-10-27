@@ -186,6 +186,9 @@ export interface UserProfile {
   githubUrl?: string
   linkedinUrl?: string
   twitterUrl?: string
+  facebookUrl?: string
+  instagramUrl?: string
+  youtubeUrl?: string
   skills: string[]
   experience: ExperienceLevel
   joinedAt: string
