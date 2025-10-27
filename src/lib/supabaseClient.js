@@ -33,10 +33,27 @@ export async function signInWithGitHub() {
   // Clear existing Supabase session
   await supabase.auth.signOut()
 
-  // Redirect to GitHub OAuth with prompt
+  // Allowlist of permitted origins to prevent open redirect vulnerabilities
+  const ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'https://pexfect.vercel.app',
+    import.meta.env.VITE_APP_URL, // Production URL from env
+  ].filter(Boolean) // Remove undefined values
+
+  const currentOrigin = window.location.origin
+
+  // Validate the origin against the allowlist
+  if (!ALLOWED_ORIGINS.includes(currentOrigin)) {
+    console.error('Unauthorized origin detected:', currentOrigin)
+    throw new Error('Authentication not allowed from this domain')
+  }
+
+  // Redirect to GitHub OAuth with validated origin
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'github',
     options: {
+      redirectTo: currentOrigin,
       queryParams: {
         prompt: 'select_account', // force GitHub to show account chooser
       },
