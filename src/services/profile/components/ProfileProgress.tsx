@@ -138,29 +138,33 @@ export function ProfileProgress() {
           </div>
 
           <div className='space-y-4'>
-            {techEntries.slice(0, 8).map((tech) => (
-              <div
-                key={tech.name}
-                className='space-y-2 transition-all duration-300 hover:bg-muted/50 rounded-lg p-3 cursor-pointer group'
-              >
-                <div className='flex items-center justify-between text-sm'>
-                  <span className='font-medium group-hover:text-primary transition-colors'>
-                    {tech.name}
-                  </span>
-                  <span className='text-muted-foreground'>
-                    {tech.completed}/{tech.total}
-                  </span>
+            {techEntries.slice(0, 8).map((tech) => {
+              // Sanitize technology name into a safe CSS class key, e.g. "Tailwind CSS" -> "tailwind-css"
+              const safeName = tech.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+              return (
+                <div
+                  key={tech.name}
+                  className='space-y-2 transition-all duration-300 hover:bg-muted/50 rounded-lg p-3 cursor-pointer group'
+                >
+                  <div className='flex items-center justify-between text-sm'>
+                    <span className='font-medium group-hover:text-primary transition-colors'>
+                      {tech.name}
+                    </span>
+                    <span className='text-muted-foreground'>
+                      {tech.completed}/{tech.total}
+                    </span>
+                  </div>
+                  <div className='w-full bg-muted border-2 border-border rounded-full h-3 overflow-hidden shadow-inner'>
+                    <div
+                      className={`h-full rounded-full profile-progress-${safeName} profile-progress-default transition-all duration-500 ease-out shadow-md border-2 border-white/20 dark:border-white/30`}
+                      style={{
+                        width: `${(tech.total > 0 ? (tech.completed / tech.total) * 100 : 0).toFixed(1)}%`,
+                      }}
+                    />
+                  </div>
                 </div>
-                <div className='w-full bg-muted border-2 border-border rounded-full h-3 overflow-hidden shadow-inner'>
-                  <div
-                    className={`h-full rounded-full profile-progress-${tech.name.toLowerCase()} transition-all duration-500 ease-out shadow-md border-2 border-white/20 dark:border-white/30`}
-                    style={{
-                      width: `${(tech.total > 0 ? (tech.completed / tech.total) * 100 : 0).toFixed(1)}%`,
-                    }}
-                  />
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
 
