@@ -1,5 +1,6 @@
 import type { Challenge } from '@/types'
 import { getChallengeDetails } from './lib/getChallengeDetails'
+import { ProfileService } from '@/services/profile/api'
 import { supabase } from '@/lib/supabaseClient'
 
 export const getChallengeById = async (
@@ -159,6 +160,50 @@ type ChallengeOverview = {
           .from('challenge_submissions') as any)
           .update({ screenshots: [publicUrl] })
           .eq('id', submissionId)
+      }
+    }
+
+    // If this was a new submission (not an update), record progress for the user on the learning path
+    if (!isUpdate) {
+      try {
+        const challenge = await getChallengeById(challengeId)
+        if (challenge) {
+          const difficulty = challenge.difficulty // 'Beginner' | 'Intermediate' | 'Advanced'
+          const pathId = difficulty.toLowerCase()
+
+          // Count total challenges for this difficulty
+          const { count } = await supabase
+            .from('challenges')
+            .select('id', { count: 'exact', head: true })
+            .eq('difficulty', difficulty)
+
+          const totalChallenges = (count as number) || 0
+
+          // Get current profile to merge existing completedChallenges
+          const currentProfile = await ProfileService.getProfile(user.id)
+          const existingLP = (currentProfile && currentProfile.learningPaths) || {}
+          const existingEntry = existingLP[pathId] || { started: true, progress: 0, completedChallenges: [] }
+
+          const completedSet = new Set<string>(existingEntry.completedChallenges || [])
+          completedSet.add(challengeId)
+          const completedArr = Array.from(completedSet)
+
+          const newProgress = totalChallenges > 0 ? Math.round((completedArr.length / totalChallenges) * 100) : 0
+
+          const lpUpdate = {
+            [pathId]: {
+              started: true,
+              progress: newProgress,
+              completedChallenges: completedArr,
+            },
+          }
+
+          // Persist via ProfileService (it merges learningPaths into social_links)
+          await ProfileService.updateProfile(user.id, { learningPaths: lpUpdate })
+        }
+      } catch (err) {
+        console.error('Failed to update learning path progress:', err)
+        // Non-fatal; continue
       }
     }
 

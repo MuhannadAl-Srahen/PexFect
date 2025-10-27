@@ -189,6 +189,15 @@ export interface UserProfile {
   facebookUrl?: string
   instagramUrl?: string
   youtubeUrl?: string
+  /** Learning paths state saved on the profile (started/progress/completed challenges) */
+  learningPaths?: Record<
+    string,
+    {
+      started: boolean
+      progress: number
+      completedChallenges: string[]
+    }
+  >
   skills: string[]
   experience: ExperienceLevel
   joinedAt: string

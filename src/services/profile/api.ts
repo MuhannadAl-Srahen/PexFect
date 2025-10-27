@@ -9,7 +9,7 @@ interface DbProfile {
   email: string | null
   bio: string | null
   skills: string[] | null
-  social_links: Record<string, string> | null
+  social_links: Record<string, unknown> | null
   joined_date: string | null
   profile_image_url: string | null
   saved_challenges: unknown | null
@@ -81,6 +81,8 @@ export const ProfileService = {
           longestStreak: 0,
           totalPoints: 0,
         },
+        // expose any learning path state saved in social_links
+        learningPaths: (socialLinks && (socialLinks.learningPaths as any)) || undefined,
       }
 
       return profile
@@ -126,31 +128,31 @@ export const ProfileService = {
         updates.linkedinUrl !== undefined ||
         updates.twitterUrl !== undefined ||
         updates.website !== undefined ||
-        updates.location !== undefined
+        updates.location !== undefined ||
+        // allow passing learningPaths as part of updates
+        (updates as any).learningPaths !== undefined
       ) {
-        // Get existing social links
-        function isRecordOfString(obj: unknown): obj is Record<string, string> {
-          return (
-            typeof obj === 'object' &&
-            obj !== null &&
-            Object.values(obj).every((v) => typeof v === 'string')
-          )
-        }
-        const existingSocialLinks: Record<string, string> = isRecordOfString(
-          existingProfile?.social_links
-        )
-          ? (existingProfile!.social_links as Record<string, string>)
-          : {}
+        // Get existing social links (may contain nested objects such as learningPaths)
+        const existingSocialLinks: Record<string, unknown> =
+          (existingProfile?.social_links as Record<string, unknown>) || {}
 
-        // Merge with new values
-        const socialLinks: Record<string, string> = { ...existingSocialLinks }
+        // Merge with new simple string values
+        const socialLinks: Record<string, unknown> = { ...existingSocialLinks }
         if (updates.linkedinUrl !== undefined)
           socialLinks.linkedin = updates.linkedinUrl
         if (updates.twitterUrl !== undefined)
           socialLinks.twitter = updates.twitterUrl
         if (updates.website !== undefined) socialLinks.website = updates.website
-        if (updates.location !== undefined)
-          socialLinks.location = updates.location
+        if (updates.location !== undefined) socialLinks.location = updates.location
+        // merge learningPaths if provided
+        if ((updates as any).learningPaths !== undefined) {
+          const existingLP = (socialLinks.learningPaths as Record<string, unknown>) || {}
+          const incomingLP = (updates as any).learningPaths as Record<string, unknown>
+          socialLinks.learningPaths = {
+            ...existingLP,
+            ...incomingLP,
+          }
+        }
 
         dbUpdates.social_links = socialLinks
       }

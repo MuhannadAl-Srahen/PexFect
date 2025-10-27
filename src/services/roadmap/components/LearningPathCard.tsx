@@ -1,8 +1,12 @@
 import React from 'react'
-import { Link } from '@tanstack/react-router'
+// Link removed: card CTA handles navigation via Continue Path when started
 import type { LearningPath } from '../../../types/roadmap'
 
 import { BookOpen, Zap, Trophy } from 'lucide-react'
+import { Link } from '@tanstack/react-router'
+import { useProfile, useUpdateProfile } from '@/services/profile/hooks/useProfile'
+import { Button } from '@/components/ui/button'
+import { useChallenges } from '@/services/challenges/hooks/useChallenges'
 
 const ICON_GRADIENTS = {
   beginner: 'bg-primary/10',
@@ -24,6 +28,7 @@ const CTA_LABELS = {
   intermediate: 'Start Intermediate Path →',
   advanced: 'Start Advanced Path →',
 }
+// CTA_LINKS removed; navigation handled elsewhere when needed
 const CTA_LINKS = {
   beginner: '/roadmap/beginner',
   intermediate: '/roadmap/intermediate',
@@ -63,6 +68,15 @@ interface LearningPathCardProps {
 
 const LearningPathCard: React.FC<LearningPathCardProps> = ({ path }) => {
   const key = path.id as keyof typeof ICONS
+  const { data: profile } = useProfile(undefined)
+  const updateProfile = useUpdateProfile()
+  const progress = profile?.learningPaths?.[path.id]?.progress ?? 0
+  const started = Boolean(profile?.learningPaths?.[path.id]?.started)
+  const completedCount = profile?.learningPaths?.[path.id]?.completedChallenges?.length ?? 0
+
+  const { data: allChallenges = [] } = useChallenges()
+  const difficultyLabel = key === 'beginner' ? 'Beginner' : key === 'intermediate' ? 'Intermediate' : 'Advanced'
+  const totalForDifficulty = allChallenges.filter((c) => c.difficulty === difficultyLabel).length
 
   return (
     <Link to={CTA_LINKS[key]} className='w-full h-full'>
@@ -126,20 +140,54 @@ const LearningPathCard: React.FC<LearningPathCardProps> = ({ path }) => {
             </div>
             <div className='flex-1 bg-card rounded-xl py-2 md:py-3 px-3 md:px-4 flex flex-col items-center justify-center border border-border/50 shadow-sm transition-all duration-300 hover:shadow-md'>
               <span className='text-base md:text-lg font-bold text-primary leading-none'>
-                0%
+                {completedCount}/{totalForDifficulty}
               </span>
               <span className='text-xs text-muted-foreground font-medium mt-0.5 md:mt-1'>
-                Complete
+                Completed
               </span>
             </div>
           </div>
-          {/* CTA Button */}
-          <div
-            role='link'
-            aria-label={CTA_LABELS[key]}
-            className={`w-full flex items-center justify-center gap-2 text-center text-white text-sm md:text-base font-bold rounded-xl py-3 md:py-4 mt-auto transition-all duration-300 shadow-sm ${CTA_COLORS[key]} hover:shadow-lg hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-offset-2 relative z-10`}
-          >
-            {CTA_LABELS[key]}
+          {/* CTA / Start Button */}
+          <div className='mt-4 mb-1 relative z-10 w-full'>
+            {!started ? (
+              <div className='w-full'>
+                <Button
+                  className={`w-full ${CTA_COLORS[key]}`}
+                  onClick={async (e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    if (!profile?.id) return
+                    const lp = {
+                      [path.id]: { started: true, progress: 0, completedChallenges: [] },
+                    }
+                    updateProfile.mutate({ userId: profile.id, updates: { learningPaths: lp } })
+                  }}
+                  aria-label={`Start ${key} path`}
+                >
+                  {CTA_LABELS[key]}
+                </Button>
+              </div>
+            ) : (
+              <div className='w-full'>
+                {/* Progress line (no numeric percent shown) */}
+                <div className='w-full bg-muted rounded-full h-3 overflow-hidden border border-border/40'>
+                  <div
+                    className='h-full bg-primary transition-all duration-500'
+                    style={{ width: `${progress}%` }}
+                    aria-hidden
+                  />
+                </div>
+                {/* Small row: weeks on left, completed on right (responsive) */}
+                <div className='flex items-center justify-between mt-3 gap-2'>
+                  <div className='text-sm font-semibold text-foreground'>
+                    {path.duration}
+                  </div>
+                  <div className='text-sm text-muted-foreground'>
+                    {completedCount}/{totalForDifficulty} completed
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

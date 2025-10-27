@@ -1,66 +1,79 @@
 import { Target, Code, BarChart3 } from 'lucide-react'
 import '../../../types/profile.css'
-
-const mockProgressData = {
-  learningPaths: [
-    {
-      id: 'beginner',
-      name: 'Beginner Path',
-      completed: 8,
-      total: 8,
-      percentage: 100,
-    },
-    {
-      id: 'intermediate',
-      name: 'Intermediate Path',
-      completed: 6,
-      total: 10,
-      percentage: 60,
-    },
-    {
-      id: 'advanced',
-      name: 'Advanced Path',
-      completed: 0,
-      total: 8,
-      percentage: 0,
-    },
-  ],
-
-  technologies: [
-    { name: 'HTML', completed: 8, total: 10, color: 'html' },
-    { name: 'CSS', completed: 7, total: 12, color: 'css' },
-    { name: 'JavaScript', completed: 6, total: 15, color: 'javascript' },
-    { name: 'React', completed: 3, total: 8, color: 'react' },
-    { name: 'TypeScript', completed: 2, total: 6, color: 'typescript' },
-    { name: 'Node.js', completed: 1, total: 4, color: 'nodejs' },
-  ],
-
-  difficulty: [
-    {
-      level: 'Beginner',
-      completed: 12,
-      total: 15,
-      avgScore: 88,
-      color: 'beginner',
-    },
-    {
-      level: 'Intermediate',
-      completed: 5,
-      total: 8,
-      avgScore: 75,
-      color: 'intermediate',
-    },
-    {
-      level: 'Advanced',
-      completed: 1,
-      total: 4,
-      avgScore: 65,
-      color: 'advanced',
-    },
-  ],
-}
+import { useProfile } from '@/services/profile/hooks/useProfile'
+import { useChallenges } from '@/services/challenges/hooks/useChallenges'
 
 export function ProfileProgress() {
+  const { data: profile } = useProfile(undefined)
+  const { data: allChallenges = [] } = useChallenges()
+
+  // Build totals per difficulty
+  const totalsByDifficulty = allChallenges.reduce(
+    (acc, c) => {
+      acc[c.difficulty] = (acc[c.difficulty] || 0) + 1
+      return acc
+    },
+    {} as Record<string, number>
+  )
+
+  const pathIds: Array<'beginner' | 'intermediate' | 'advanced'> = [
+    'beginner',
+    'intermediate',
+    'advanced',
+  ]
+
+  const learningPathStats = pathIds.map((id) => {
+    const difficultyLabel = id === 'beginner' ? 'Beginner' : id === 'intermediate' ? 'Intermediate' : 'Advanced'
+    const completed = profile?.learningPaths?.[id]?.completedChallenges?.length ?? 0
+    const total = totalsByDifficulty[difficultyLabel] ?? 0
+    const percentage = total > 0 ? Math.round((completed / total) * 100) : 0
+    return { id, name: `${difficultyLabel} Path`, completed, total, percentage }
+  })
+
+  // Technology breakdown: count total challenges per tag and completed per tag
+  const techTotals: Record<string, { total: number; completed: number }> = {}
+  const challengeById = new Map(allChallenges.map((c) => [c.id, c]))
+
+  for (const ch of allChallenges) {
+    if (!ch.tags) continue
+    for (const tag of ch.tags) {
+      techTotals[tag] = techTotals[tag] || { total: 0, completed: 0 }
+      techTotals[tag].total += 1
+    }
+  }
+
+  // Collect completed challenge ids from profile across all paths
+  const completedSet = new Set<string>()
+  if (profile?.learningPaths) {
+    for (const lp of Object.values(profile.learningPaths)) {
+      for (const cid of lp.completedChallenges || []) completedSet.add(cid)
+    }
+  }
+
+  for (const cid of completedSet) {
+    const ch = challengeById.get(cid)
+    if (!ch || !ch.tags) continue
+    for (const tag of ch.tags) {
+      techTotals[tag] = techTotals[tag] || { total: 0, completed: 0 }
+      techTotals[tag].completed += 1
+    }
+  }
+
+  const techEntries = Object.keys(techTotals)
+    .map((name) => ({ name, ...techTotals[name] }))
+    .sort((a, b) => b.total - a.total)
+
+  // Difficulty section (aggregate across difficulties)
+  const difficultyStats = ['Beginner', 'Intermediate', 'Advanced'].map((level) => {
+    const completed = Array.from(completedSet).filter((cid) => {
+      const ch = challengeById.get(cid)
+      return ch?.difficulty === level
+    }).length
+    const total = totalsByDifficulty[level] ?? 0
+    const avgScore = 0 // no score data available here; kept as 0
+    return { level, completed, total, avgScore }
+  })
+
   return (
     <div className='space-y-6'>
       {/* Learning Path Progress */}
@@ -82,7 +95,7 @@ export function ProfileProgress() {
         </div>
 
         <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-          {mockProgressData.learningPaths.map((path) => (
+          {learningPathStats.map((path) => (
             <div
               key={path.id}
               className={`p-4 rounded-lg border profile-card-${path.id} transition-all duration-300 hover:scale-[1.02] cursor-pointer`}
@@ -125,7 +138,7 @@ export function ProfileProgress() {
           </div>
 
           <div className='space-y-4'>
-            {mockProgressData.technologies.map((tech) => (
+            {techEntries.slice(0, 8).map((tech) => (
               <div
                 key={tech.name}
                 className='space-y-2 transition-all duration-300 hover:bg-muted/50 rounded-lg p-3 cursor-pointer group'
@@ -140,9 +153,9 @@ export function ProfileProgress() {
                 </div>
                 <div className='w-full bg-muted border-2 border-border rounded-full h-3 overflow-hidden shadow-inner'>
                   <div
-                    className={`h-full rounded-full profile-progress-${tech.color} transition-all duration-500 ease-out shadow-md border-2 border-white/20 dark:border-white/30`}
+                    className={`h-full rounded-full profile-progress-${tech.name.toLowerCase()} transition-all duration-500 ease-out shadow-md border-2 border-white/20 dark:border-white/30`}
                     style={{
-                      width: `${(tech.completed / tech.total) * 100}%`,
+                      width: `${(tech.total > 0 ? (tech.completed / tech.total) * 100 : 0).toFixed(1)}%`,
                     }}
                   />
                 </div>
@@ -170,7 +183,7 @@ export function ProfileProgress() {
           </div>
 
           <div className='space-y-4'>
-            {mockProgressData.difficulty.map((diff) => (
+            {difficultyStats.map((diff) => (
               <div
                 key={diff.level}
                 className='space-y-2 transition-all duration-300 hover:bg-muted/50 rounded-lg p-3 cursor-pointer group'
@@ -178,7 +191,7 @@ export function ProfileProgress() {
                 <div className='flex items-center justify-between'>
                   <div className='flex items-center gap-2'>
                     <div
-                      className={`w-3 h-3 rounded-full profile-indicator-${diff.color} transition-transform group-hover:scale-110`}
+                      className={`w-3 h-3 rounded-full profile-indicator-${diff.level.toLowerCase()} transition-transform group-hover:scale-110`}
                     />
                     <span className='font-medium text-sm group-hover:text-primary transition-colors'>
                       {diff.level}
@@ -195,9 +208,9 @@ export function ProfileProgress() {
                 </div>
                 <div className='w-full bg-muted border-2 border-border rounded-full h-3 overflow-hidden shadow-inner'>
                   <div
-                    className={`h-full rounded-full profile-progress-${diff.color} transition-all duration-500 ease-out shadow-md border-2 border-white/20 dark:border-white/30`}
+                    className={`h-full rounded-full profile-progress-${diff.level.toLowerCase()} transition-all duration-500 ease-out shadow-md border-2 border-white/20 dark:border-white/30`}
                     style={{
-                      width: `${(diff.completed / diff.total) * 100}%`,
+                      width: `${diff.total > 0 ? (diff.completed / diff.total) * 100 : 0}%`,
                     }}
                   />
                 </div>
