@@ -33,10 +33,14 @@ export async function signInWithGitHub() {
   // Clear existing Supabase session
   await supabase.auth.signOut()
 
+  // Get the correct redirect URL based on environment
+  const redirectTo = window.location.origin
+
   // Redirect to GitHub OAuth with prompt
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'github',
     options: {
+      redirectTo, // Use current domain instead of hardcoded localhost
       queryParams: {
         prompt: 'select_account', // force GitHub to show account chooser
       },
