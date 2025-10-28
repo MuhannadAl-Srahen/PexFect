@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from '@tanstack/react-router'
 import type { ChallengeListItem } from '@/types'
 import { learningPaths } from '../data'
+import { useProfile } from '@/services/profile/hooks/useProfile'
 import { useMemo } from 'react'
 import { useChallenges } from '@/services/challenges/hooks/useChallenges'
 import {
@@ -16,6 +17,7 @@ import {
 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
+// Start button removed: progress is driven by challenge submissions
 
 const LEVEL_TAG_STYLES: Record<string, string> = {
   Beginner: 'bg-primary/10 text-primary border-primary/20',
@@ -230,11 +232,13 @@ const PathDetails: React.FC<PathDetailsProps> = ({ pathId }) => {
   }, [allChallenges, pathId])
 
   const totalChallenges = pathChallenges.length
-  const completedChallenges = 0
+  const { data: profile } = useProfile(undefined)
+  // Progress now comes from submissions; no manual "Start Path" action here.
+  const completedChallenges =
+    profile?.learningPaths?.[pathId]?.completedChallenges?.length ?? 0
   const progress =
-    totalChallenges > 0
-      ? Math.round((completedChallenges / totalChallenges) * 100)
-      : 0
+    profile?.learningPaths?.[pathId]?.progress ??
+    (totalChallenges > 0 ? Math.round((completedChallenges / totalChallenges) * 100) : 0)
 
   if (!path) return null
 
@@ -276,6 +280,7 @@ const PathDetails: React.FC<PathDetailsProps> = ({ pathId }) => {
                   {path.description}
                 </p>
               </div>
+              {/* Start Path action removed — progress is driven by submissions */}
             </div>
 
             {/* Stats Grid */}
