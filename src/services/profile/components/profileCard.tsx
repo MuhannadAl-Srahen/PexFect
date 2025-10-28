@@ -109,10 +109,10 @@ export function ProfileCard() {
       githubUrl: user.githubUrl || '',
       linkedinUrl: user.linkedinUrl || '',
       website: user.website || '',
-      facebookUrl: (user as any).facebookUrl || '',
-      twitterUrl: (user as any).twitterUrl || '',
-      instagramUrl: (user as any).instagramUrl || '',
-      youtubeUrl: (user as any).youtubeUrl || '',
+      facebookUrl: user.facebookUrl || '',
+      twitterUrl: user.twitterUrl || '',
+      instagramUrl: user.instagramUrl || '',
+      youtubeUrl: user.youtubeUrl || '',
     })
     setIsEditing(false)
   }
