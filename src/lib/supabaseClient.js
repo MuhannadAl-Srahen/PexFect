@@ -9,7 +9,9 @@ import { createClient } from '@supabase/supabase-js'
 // runtime by the hosting platform.
 function readMeta(name) {
   try {
-    const el = typeof document !== 'undefined' && document.querySelector(`meta[name="${name}"]`)
+    const el =
+      typeof document !== 'undefined' &&
+      document.querySelector(`meta[name="${name}"]`)
     return el ? el.getAttribute('content') : null
   } catch (e) {
     return null
@@ -21,8 +23,12 @@ const env = (typeof import.meta !== 'undefined' && import.meta.env) || {}
 const SUPABASE_URL =
   (env && env.local && env.local.VITE_SUPABASE_URL) ||
   env.VITE_SUPABASE_URL ||
-  (typeof window !== 'undefined' && window.__ENV && window.__ENV.VITE_SUPABASE_URL) ||
-  (typeof window !== 'undefined' && window._env_ && window._env_.VITE_SUPABASE_URL) ||
+  (typeof window !== 'undefined' &&
+    window.__ENV &&
+    window.__ENV.VITE_SUPABASE_URL) ||
+  (typeof window !== 'undefined' &&
+    window._env_ &&
+    window._env_.VITE_SUPABASE_URL) ||
   (typeof window !== 'undefined' && window.VITE_SUPABASE_URL) ||
   readMeta('VITE_SUPABASE_URL') ||
   null
@@ -30,8 +36,12 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
   (env && env.local && env.local.VITE_SUPABASE_ANON_KEY) ||
   env.VITE_SUPABASE_ANON_KEY ||
-  (typeof window !== 'undefined' && window.__ENV && window.__ENV.VITE_SUPABASE_ANON_KEY) ||
-  (typeof window !== 'undefined' && window._env_ && window._env_.VITE_SUPABASE_ANON_KEY) ||
+  (typeof window !== 'undefined' &&
+    window.__ENV &&
+    window.__ENV.VITE_SUPABASE_ANON_KEY) ||
+  (typeof window !== 'undefined' &&
+    window._env_ &&
+    window._env_.VITE_SUPABASE_ANON_KEY) ||
   (typeof window !== 'undefined' && window.VITE_SUPABASE_ANON_KEY) ||
   readMeta('VITE_SUPABASE_ANON_KEY') ||
   null
@@ -42,9 +52,18 @@ console.log('[supabaseClient] SUPABASE_URL present:', Boolean(SUPABASE_URL))
 console.log('[supabaseClient] SUPABASE_KEY present:', Boolean(SUPABASE_KEY))
 // Also log whether import.meta.env appears to contain our keys (without printing keys)
 try {
-  console.log('[supabaseClient] import.meta.env present:', Boolean(env && Object.keys(env).length > 0))
-  console.log('[supabaseClient] import.meta.env.VITE_SUPABASE_URL present:', Boolean(env && env.VITE_SUPABASE_URL))
-  console.log('[supabaseClient] import.meta.env.VITE_SUPABASE_ANON_KEY present:', Boolean(env && env.VITE_SUPABASE_ANON_KEY))
+  console.log(
+    '[supabaseClient] import.meta.env present:',
+    Boolean(env && Object.keys(env).length > 0)
+  )
+  console.log(
+    '[supabaseClient] import.meta.env.VITE_SUPABASE_URL present:',
+    Boolean(env && env.VITE_SUPABASE_URL)
+  )
+  console.log(
+    '[supabaseClient] import.meta.env.VITE_SUPABASE_ANON_KEY present:',
+    Boolean(env && env.VITE_SUPABASE_ANON_KEY)
+  )
 } catch (e) {
   // ignore
 }
@@ -54,13 +73,18 @@ if (!SUPABASE_URL || !SUPABASE_KEY) {
   // and where we looked for them (helpful for debugging runtime deployments).
   const sources = []
   try {
-    if (env && env.VITE_SUPABASE_URL) sources.push('import.meta.env.VITE_SUPABASE_URL')
-    if (env && env.local && env.local.VITE_SUPABASE_URL) sources.push('import.meta.env.local.VITE_SUPABASE_URL')
+    if (env && env.VITE_SUPABASE_URL)
+      sources.push('import.meta.env.VITE_SUPABASE_URL')
+    if (env && env.local && env.local.VITE_SUPABASE_URL)
+      sources.push('import.meta.env.local.VITE_SUPABASE_URL')
   } catch (e) {}
   if (typeof window !== 'undefined') {
-    if (window && window.__ENV && window.__ENV.VITE_SUPABASE_URL) sources.push('window.__ENV.VITE_SUPABASE_URL')
-    if (window && window._env_ && window._env_.VITE_SUPABASE_URL) sources.push('window._env_.VITE_SUPABASE_URL')
-    if (window && window.VITE_SUPABASE_URL) sources.push('window.VITE_SUPABASE_URL')
+    if (window && window.__ENV && window.__ENV.VITE_SUPABASE_URL)
+      sources.push('window.__ENV.VITE_SUPABASE_URL')
+    if (window && window._env_ && window._env_.VITE_SUPABASE_URL)
+      sources.push('window._env_.VITE_SUPABASE_URL')
+    if (window && window.VITE_SUPABASE_URL)
+      sources.push('window.VITE_SUPABASE_URL')
   }
 
   throw new Error(
@@ -92,6 +116,7 @@ export async function signInWithGitHub() {
   const ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://localhost:5173',
+    'https://pex-fect.vercel.app',
     'https://pexfect.vercel.app',
     import.meta.env.VITE_APP_URL, // Production URL from env
   ].filter(Boolean) // Remove undefined values
