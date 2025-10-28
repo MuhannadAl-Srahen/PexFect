@@ -37,8 +37,8 @@ export async function signInWithGitHub() {
   const ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://localhost:5173',
-    'https://pex-fect.vercel.app', // Your actual Vercel domain (with hyphen)
-    'https://pexfect.vercel.app', // Alternative domain (if you have both)
+    'https://pex-fect.vercel.app', // Primary Vercel domain (with hyphen)
+    'https://pexfect.vercel.app', // Secondary/legacy domain: included for migration or if both are configured in Vercel
     import.meta.env.VITE_APP_URL, // Production URL from env
   ].filter(Boolean) // Remove undefined values
 
