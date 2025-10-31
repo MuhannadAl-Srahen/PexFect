@@ -12,7 +12,7 @@ import { useAuth } from '@/services/challenges/hooks/useAuth'
 export function ProfileCard() {
   const { data: authData } = useAuth()
   const userId = authData?.session?.user?.id
-  const { data: user, isLoading: isFetching } = useProfile(undefined)
+  const { data: user, isLoading: isFetching } = useProfile(userId)
   const updateProfileMutation = useUpdateProfile()
 
   const [isEditing, setIsEditing] = useState(false)
