@@ -59,9 +59,26 @@ export function ProfileProgress() {
     }
   }
 
-  const techEntries = Object.keys(techTotals)
-    .map((name) => ({ name, ...techTotals[name] }))
-    .sort((a, b) => b.total - a.total)
+  // techEntries removed; we'll build finalTechEntries below including desired techs
+
+  // Ensure the profile shows a fixed set of technologies in the desired order
+  const desiredTechs = ['HTML', 'CSS', 'JavaScript', 'Tailwind CSS', 'React', 'TypeScript', 'API']
+
+  // Ensure each desired tech exists in the totals (even if zero)
+  for (const dt of desiredTechs) {
+    if (!techTotals[dt]) {
+      techTotals[dt] = { total: 0, completed: 0 }
+    }
+  }
+
+  // Build final entries with desiredTechs first, then the rest
+  const finalTechEntries = [
+    ...desiredTechs.map((name) => ({ name, ...techTotals[name] })),
+    ...Object.keys(techTotals)
+      .filter((n) => !desiredTechs.includes(n))
+      .map((name) => ({ name, ...techTotals[name] }))
+      .sort((a, b) => b.total - a.total),
+  ]
 
   // Difficulty section (aggregate across difficulties)
   const difficultyStats = ['Beginner', 'Intermediate', 'Advanced'].map((level) => {
@@ -138,7 +155,7 @@ export function ProfileProgress() {
           </div>
 
           <div className='space-y-4'>
-            {techEntries.slice(0, 8).map((tech) => {
+            {finalTechEntries.slice(0, 8).map((tech) => {
               // Sanitize technology name into a safe CSS class key, e.g. "Tailwind CSS" -> "tailwind-css"
               const safeName = tech.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
               return (

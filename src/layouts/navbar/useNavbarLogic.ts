@@ -5,6 +5,8 @@ import { useTheme } from 'next-themes'
 import { cn } from '@/lib/utils'
 import { supabase } from '@/lib/supabaseClient.js' // keep your .js path if that works in your setup
 import { ensureProfileExists } from '@/services/profile/lib/profileHelpers'
+import { useAuth } from '@/services/challenges/hooks/useAuth'
+import { useQueryClient } from '@tanstack/react-query'
 
 const SCROLL_THRESHOLD = 50
 const THROTTLE_DELAY = 16
@@ -42,36 +44,38 @@ export const useNavbarLogic = () => {
   const [user, setUser] = useState<any>(null)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [scrollY, setScrollY] = useState(0)
+  // Use the shared auth query to avoid duplicate fetches and to centralize auth state
+  const { data: authData } = useAuth()
+  const queryClient = useQueryClient()
 
   useEffect(() => {
-    // get current user on mount
-    const fetchUser = async () => {
-      const { data } = await supabase.auth.getUser()
-      setUser(data.user ?? null)
-      
-      // Ensure profile exists for authenticated users
-      if (data.user) {
-        await ensureProfileExists()
-      }
-    }
-    fetchUser()
+    // Update local user state when auth query changes
+    setUser(authData?.session?.user ?? null)
 
-    // listen to auth changes
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        setUser(session?.user ?? null)
-        
-        // Ensure profile exists when user signs in
-        if (session?.user) {
-          await ensureProfileExists()
-        }
+    // Ensure the user's profile exists when they sign in
+    if (authData?.session?.user) {
+      ensureProfileExists().catch((e) => console.error('[ensureProfileExists]', e))
+    }
+
+    // Subscribe to Supabase auth changes and update the shared query cache so all components see updates
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      queryClient.setQueryData(['auth'], { isAuthenticated: !!session, session })
+      setUser(session?.user ?? null)
+      if (session?.user) {
+        ensureProfileExists().catch((e) => console.error('[ensureProfileExists]', e))
       }
-    )
+    })
 
     return () => {
-      authListener.subscription?.unsubscribe?.()
+      if (
+        authListener &&
+        authListener.subscription &&
+        typeof authListener.subscription.unsubscribe === 'function'
+      ) {
+        authListener.subscription.unsubscribe()
+      }
     }
-  }, [])
+  }, [authData, queryClient])
 
   const handleScroll = useCallback(() => {
     setScrollY(window.scrollY)

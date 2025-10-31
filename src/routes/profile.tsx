@@ -10,6 +10,9 @@ import {
 import { CheckCircle, Trophy, Heart, LogIn } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabaseClient'
+import { useAuth } from '@/services/challenges/hooks/useAuth'
+import useDelayedLoading from '@/lib/useDelayedLoading'
+import { useQueryClient } from '@tanstack/react-query'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import '@/types/profile.css'
@@ -40,23 +43,26 @@ export const Route = createFileRoute('/profile')({
 function RouteComponent() {
   const { tab } = Route.useSearch()
   const [activeTab, setActiveTab] = useState(tab || 'recent')
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
+  // Use the shared useAuth query so auth state is cached and consistent
+  const { data: authData, isLoading: isAuthLoading } = useAuth()
+  const isAuthenticated = authData?.isAuthenticated ?? false
 
-  // Check authentication status
+  // delay showing the spinner a little so short loads don't flicker
+  const showLoading = useDelayedLoading(isAuthLoading, 180)
+
+  // Keep the auth query up-to-date if Supabase emits auth changes (update the query cache)
+  const queryClient = useQueryClient()
   useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      setIsAuthenticated(!!session)
-    }
-    checkAuth()
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsAuthenticated(!!session)
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      queryClient.setQueryData(['auth'], { isAuthenticated: !!session, session })
     })
 
-    return () => subscription.unsubscribe()
-  }, [])
+    return () => {
+      if (listener.subscription && typeof listener.subscription.unsubscribe === 'function') {
+        listener.subscription.unsubscribe();
+      }
+    }
+  }, [queryClient])
 
   // Update tab when search param changes
   useEffect(() => {
@@ -77,7 +83,7 @@ function RouteComponent() {
   }
 
   // Show loading state while checking auth
-  if (isAuthenticated === null) {
+  if (showLoading && isAuthLoading) {
     return (
       <PageLayout maxWidth='6xl'>
         <div className='flex items-center justify-center min-h-[60vh]'>
