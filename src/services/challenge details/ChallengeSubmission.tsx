@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -17,6 +17,8 @@ import {
 import { submitChallengeSolution } from '../challenges/api'
 import type { Challenge } from '@/types'
 import { supabase } from '@/lib/supabaseClient'
+import { useAuth } from '@/services/challenges/hooks/useAuth'
+import useDelayedLoading from '@/lib/useDelayedLoading'
 
 interface ChallengeSubmissionProps {
   challenge: Challenge
@@ -24,22 +26,16 @@ interface ChallengeSubmissionProps {
 
 export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
   const navigate = useNavigate()
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
+  // Use the shared auth query instead of manual effect
+  const { data: authData, isLoading: isAuthLoading } = useAuth()
+  const isAuthenticated = authData?.isAuthenticated ?? false
+  const showLoading = useDelayedLoading(isAuthLoading, 160)
   const [screenshot, setScreenshot] = useState<File | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isDragOver, setIsDragOver] = useState(false)
   const [, setDragCounter] = useState(0)
-
-  // Check authentication status
-  useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      setIsAuthenticated(!!session)
-    }
-    checkAuth()
-  }, [])
 
   const form = useForm({
     defaultValues: {
@@ -176,8 +172,8 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
     }
   }
 
-  // Show loading while checking authentication
-  if (isAuthenticated === null) {
+  // Show loading while checking authentication (small delay to avoid flicker)
+  if (showLoading && isAuthLoading) {
     return (
       <div className='min-h-[400px] flex items-center justify-center'>
         <div className='animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full'></div>

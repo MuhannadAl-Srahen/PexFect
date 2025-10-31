@@ -4,13 +4,15 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Github, Linkedin, Calendar, Globe, Edit, Save, X, Twitter, Instagram, Youtube, Facebook } from 'lucide-react'
+import { Github, Linkedin, Calendar, Globe, Edit, Save, X } from 'lucide-react'
 import { useProfile, useUpdateProfile } from '../hooks/useProfile'
-import { supabase } from '@/lib/supabaseClient'
+// Use the shared auth hook instead of directly calling supabase in this component
+import { useAuth } from '@/services/challenges/hooks/useAuth'
 
 export function ProfileCard() {
-  const [userId, setUserId] = useState<string | undefined>(undefined)
-  const { data: user, isLoading: isFetching } = useProfile(userId)
+  const { data: authData } = useAuth()
+  const userId = authData?.session?.user?.id
+  const { data: user, isLoading: isFetching } = useProfile(undefined)
   const updateProfileMutation = useUpdateProfile()
 
   const [isEditing, setIsEditing] = useState(false)
@@ -21,24 +23,9 @@ export function ProfileCard() {
     githubUrl: '',
     linkedinUrl: '',
     website: '',
-    facebookUrl: '',
-    twitterUrl: '',
-    instagramUrl: '',
-    youtubeUrl: '',
   })
 
-  // Get current user ID on mount
-  useEffect(() => {
-    const getCurrentUser = async () => {
-      const {
-        data: { user: authUser },
-      } = await supabase.auth.getUser()
-      if (authUser) {
-        setUserId(authUser.id)
-      }
-    }
-    getCurrentUser()
-  }, [])
+  // userId derived from the shared auth query (authData)
 
   // Update edit data when user data changes
   useEffect(() => {
@@ -50,10 +37,6 @@ export function ProfileCard() {
         githubUrl: user.githubUrl || '',
         linkedinUrl: user.linkedinUrl || '',
         website: user.website || '',
-        facebookUrl: (user as any).facebookUrl || '',
-        twitterUrl: (user as any).twitterUrl || '',
-        instagramUrl: (user as any).instagramUrl || '',
-        youtubeUrl: (user as any).youtubeUrl || '',
       })
     }
   }, [user])
@@ -74,17 +57,13 @@ export function ProfileCard() {
       {
         userId,
         updates: {
-          fullName: editData.fullName,
-          email: editData.email,
-          bio: editData.bio,
-          githubUrl: editData.githubUrl,
-          linkedinUrl: editData.linkedinUrl,
-          website: editData.website,
-          facebookUrl: editData.facebookUrl,
-          twitterUrl: editData.twitterUrl,
-          instagramUrl: editData.instagramUrl,
-          youtubeUrl: editData.youtubeUrl,
-        },
+            fullName: editData.fullName,
+            email: editData.email,
+            bio: editData.bio,
+            githubUrl: editData.githubUrl,
+            linkedinUrl: editData.linkedinUrl,
+            website: editData.website,
+          },
       },
       {
         onSuccess: () => {
@@ -109,10 +88,6 @@ export function ProfileCard() {
       githubUrl: user.githubUrl || '',
       linkedinUrl: user.linkedinUrl || '',
       website: user.website || '',
-      facebookUrl: user.facebookUrl || '',
-      twitterUrl: user.twitterUrl || '',
-      instagramUrl: user.instagramUrl || '',
-      youtubeUrl: user.youtubeUrl || '',
     })
     setIsEditing(false)
   }
@@ -326,7 +301,7 @@ export function ProfileCard() {
                   }
                   className='text-sm'
                 />
-                <div className='text-xs text-muted-foreground/70'>Enter the full GitHub URL (e.g. https://github.com/your-username)</div>
+                {/* helper text removed per design: keep only the input */}
               </div>
               <div className='space-y-1'>
                 <Label
@@ -348,7 +323,7 @@ export function ProfileCard() {
                   }
                   className='text-sm'
                 />
-                <div className='text-xs text-muted-foreground/70'>Add your public LinkedIn profile URL so recruiters and collaborators can connect.</div>
+                {/* helper text removed per design */}
               </div>
               <div className='space-y-1'>
                 <Label
@@ -370,68 +345,9 @@ export function ProfileCard() {
                   }
                   className='text-sm'
                 />
-                <div className='text-xs text-muted-foreground/70'>Optional: personal site, portfolio or blog. Include full URL starting with https://</div>
+                {/* helper text removed per design */}
               </div>
-              {/* Additional social inputs so edit mode shows all socials */}
-              <div className='space-y-1'>
-                <Label htmlFor='facebookUrl' className='text-xs font-medium text-muted-foreground flex items-center gap-1'>
-                  <Facebook className='w-3 h-3' />
-                  Facebook
-                </Label>
-                <Input
-                  id='facebookUrl'
-                  placeholder='https://facebook.com/yourpage'
-                  value={editData.facebookUrl}
-                  onChange={(e) => setEditData((prev) => ({ ...prev, facebookUrl: e.target.value }))}
-                  className='text-sm'
-                />
-                <div className='text-xs text-muted-foreground/70'>Optional: Facebook profile or page URL.</div>
-              </div>
-
-              <div className='space-y-1'>
-                <Label htmlFor='twitterUrl' className='text-xs font-medium text-muted-foreground flex items-center gap-1'>
-                  <Twitter className='w-3 h-3' />
-                  Twitter
-                </Label>
-                <Input
-                  id='twitterUrl'
-                  placeholder='https://twitter.com/username'
-                  value={editData.twitterUrl}
-                  onChange={(e) => setEditData((prev) => ({ ...prev, twitterUrl: e.target.value }))}
-                  className='text-sm'
-                />
-                <div className='text-xs text-muted-foreground/70'>Optional: your Twitter profile (full URL or @handle).</div>
-              </div>
-
-              <div className='space-y-1'>
-                <Label htmlFor='instagramUrl' className='text-xs font-medium text-muted-foreground flex items-center gap-1'>
-                  <Instagram className='w-3 h-3' />
-                  Instagram
-                </Label>
-                <Input
-                  id='instagramUrl'
-                  placeholder='https://instagram.com/username'
-                  value={editData.instagramUrl}
-                  onChange={(e) => setEditData((prev) => ({ ...prev, instagramUrl: e.target.value }))}
-                  className='text-sm'
-                />
-                <div className='text-xs text-muted-foreground/70'>Optional: Instagram profile URL.</div>
-              </div>
-
-              <div className='space-y-1'>
-                <Label htmlFor='youtubeUrl' className='text-xs font-medium text-muted-foreground flex items-center gap-1'>
-                  <Youtube className='w-3 h-3' />
-                  YouTube
-                </Label>
-                <Input
-                  id='youtubeUrl'
-                  placeholder='https://youtube.com/channel/your-channel'
-                  value={editData.youtubeUrl}
-                  onChange={(e) => setEditData((prev) => ({ ...prev, youtubeUrl: e.target.value }))}
-                  className='text-sm'
-                />
-                <div className='text-xs text-muted-foreground/70'>Optional: your YouTube channel URL.</div>
-              </div>
+              {/* only GitHub, LinkedIn and Website inputs are shown per request */}
             </div>
           ) : (
             <div className='space-y-2'>
@@ -466,7 +382,7 @@ export function ProfileCard() {
                     className='w-full justify-start text-muted-foreground/70 border-0 bg-transparent hover:bg-primary/5 min-w-0'
                   >
                     <Github className='w-4 h-4 mr-3 flex-shrink-0' />
-                    <span className='truncate'>Add your GitHub (e.g. github.com/username)</span>
+                    <span className='truncate'>Add your GitHub</span>
                   </Button>
                 )}
               </div>
@@ -499,7 +415,7 @@ export function ProfileCard() {
                     className='w-full justify-start text-muted-foreground/70 border-0 bg-transparent hover:bg-primary/5 min-w-0'
                   >
                     <Linkedin className='w-4 h-4 mr-3 flex-shrink-0' />
-                    <span className='truncate'>Add your LinkedIn (e.g. linkedin.com/in/username)</span>
+                    <span className='truncate'>Add your LinkedIn</span>
                   </Button>
                 )}
               </div>
@@ -532,144 +448,11 @@ export function ProfileCard() {
                     className='w-full justify-start text-muted-foreground/70 border-0 bg-transparent hover:bg-primary/5 min-w-0'
                   >
                     <Globe className='w-4 h-4 mr-3 flex-shrink-0' />
-                    <span className='truncate'>Add your website (e.g. yoursite.com)</span>
+                    <span className='truncate'>Add your website</span>
                   </Button>
                 )}
               </div>
-              {/* New social display rows */}
-              <div>
-                {(editData.facebookUrl || (user as any).facebookUrl) ? (
-                  <Button
-                    variant='ghost'
-                    size='sm'
-                    className='w-full justify-start text-muted-foreground hover:text-primary hover:bg-primary/10 border-0 transition-all duration-300 hover:scale-[1.02] hover:translate-x-1'
-                    asChild
-                  >
-                    <a
-                      href={editData.facebookUrl || (user as any).facebookUrl}
-                      target='_blank'
-                      rel='noopener noreferrer'
-                      className='flex items-center min-w-0'
-                    >
-                      <Facebook className='w-4 h-4 mr-3 flex-shrink-0' />
-                      <span className='truncate'>{(editData.facebookUrl || (user as any).facebookUrl || '').replace(/^https?:\/\//, '')}</span>
-                    </a>
-                  </Button>
-                ) : (
-                  <Button
-                    variant='ghost'
-                    size='sm'
-                    onClick={() => setIsEditing(true)}
-                    className='w-full justify-start text-muted-foreground/70 border-0 bg-transparent hover:bg-primary/5 min-w-0'
-                  >
-                    <Facebook className='w-4 h-4 mr-3 flex-shrink-0' />
-                    <span className='truncate'>Add your Facebook (e.g. facebook.com/yourpage)</span>
-                  </Button>
-                )}
-              </div>
-
-              <div>
-                {(editData.twitterUrl || (user as any).twitterUrl) ? (
-                  <Button
-                    variant='ghost'
-                    size='sm'
-                    className='w-full justify-start text-muted-foreground hover:text-primary hover:bg-primary/10 border-0 transition-all duration-300 hover:scale-[1.02] hover:translate-x-1'
-                    asChild
-                  >
-                    <a
-                      href={editData.twitterUrl || (user as any).twitterUrl}
-                      target='_blank'
-                      rel='noopener noreferrer'
-                      className='flex items-center min-w-0'
-                    >
-                      <Twitter className='w-4 h-4 mr-3 flex-shrink-0' />
-                      <span className='truncate'>
-                        {(() => {
-                          const val = editData.twitterUrl || (user as any).twitterUrl || ''
-                          try {
-                            const handle = val.split('/').filter(Boolean).pop()
-                            return handle?.startsWith('@') ? handle : (handle || val.replace(/^https?:\/\//, ''))
-                          } catch {
-                            return val.replace(/^https?:\/\//, '')
-                          }
-                        })()}
-                      </span>
-                    </a>
-                  </Button>
-                ) : (
-                  <Button
-                    variant='ghost'
-                    size='sm'
-                    onClick={() => setIsEditing(true)}
-                    className='w-full justify-start text-muted-foreground/70 border-0 bg-transparent hover:bg-primary/5 min-w-0'
-                  >
-                    <Twitter className='w-4 h-4 mr-3 flex-shrink-0' />
-                    <span className='truncate'>Add your Twitter (e.g. twitter.com/username)</span>
-                  </Button>
-                )}
-              </div>
-
-              <div>
-                {(editData.instagramUrl || (user as any).instagramUrl) ? (
-                  <Button
-                    variant='ghost'
-                    size='sm'
-                    className='w-full justify-start text-muted-foreground hover:text-primary hover:bg-primary/10 border-0 transition-all duration-300 hover:scale-[1.02] hover:translate-x-1'
-                    asChild
-                  >
-                    <a
-                      href={editData.instagramUrl || (user as any).instagramUrl}
-                      target='_blank'
-                      rel='noopener noreferrer'
-                      className='flex items-center min-w-0'
-                    >
-                      <Instagram className='w-4 h-4 mr-3 flex-shrink-0' />
-                      <span className='truncate'>{(editData.instagramUrl || (user as any).instagramUrl || '').replace(/^https?:\/\//, '')}</span>
-                    </a>
-                  </Button>
-                ) : (
-                  <Button
-                    variant='ghost'
-                    size='sm'
-                    onClick={() => setIsEditing(true)}
-                    className='w-full justify-start text-muted-foreground/70 border-0 bg-transparent hover:bg-primary/5 min-w-0'
-                  >
-                    <Instagram className='w-4 h-4 mr-3 flex-shrink-0' />
-                    <span className='truncate'>Add your Instagram (e.g. instagram.com/username)</span>
-                  </Button>
-                )}
-              </div>
-
-              <div>
-                {(editData.youtubeUrl || (user as any).youtubeUrl) ? (
-                  <Button
-                    variant='ghost'
-                    size='sm'
-                    className='w-full justify-start text-muted-foreground hover:text-primary hover:bg-primary/10 border-0 transition-all duration-300 hover:scale-[1.02] hover:translate-x-1'
-                    asChild
-                  >
-                    <a
-                      href={editData.youtubeUrl || (user as any).youtubeUrl}
-                      target='_blank'
-                      rel='noopener noreferrer'
-                      className='flex items-center min-w-0'
-                    >
-                      <Youtube className='w-4 h-4 mr-3 flex-shrink-0' />
-                      <span className='truncate'>{(editData.youtubeUrl || (user as any).youtubeUrl || '').replace(/^https?:\/\//, '')}</span>
-                    </a>
-                  </Button>
-                ) : (
-                  <Button
-                    variant='ghost'
-                    size='sm'
-                    onClick={() => setIsEditing(true)}
-                    className='w-full justify-start text-muted-foreground/70 border-0 bg-transparent hover:bg-primary/5 min-w-0'
-                  >
-                    <Youtube className='w-4 h-4 mr-3 flex-shrink-0' />
-                    <span className='truncate'>Add your YouTube channel</span>
-                  </Button>
-                )}
-              </div>
+              {/* removed extra social displays per request */}
             </div>
           )}
         </div>
