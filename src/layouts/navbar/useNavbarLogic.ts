@@ -67,7 +67,13 @@ export const useNavbarLogic = () => {
     })
 
     return () => {
-      authListener.subscription?.unsubscribe?.()
+      if (
+        authListener &&
+        authListener.subscription &&
+        typeof authListener.subscription.unsubscribe === 'function'
+      ) {
+        authListener.subscription.unsubscribe()
+      }
     }
   }, [authData, queryClient])
 
