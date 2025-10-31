@@ -57,13 +57,13 @@ export function ProfileCard() {
       {
         userId,
         updates: {
-            fullName: editData.fullName,
-            email: editData.email,
-            bio: editData.bio,
-            githubUrl: editData.githubUrl,
-            linkedinUrl: editData.linkedinUrl,
-            website: editData.website,
-          },
+          fullName: editData.fullName,
+          email: editData.email,
+          bio: editData.bio,
+          githubUrl: editData.githubUrl,
+          linkedinUrl: editData.linkedinUrl,
+          website: editData.website,
+        },
       },
       {
         onSuccess: () => {
