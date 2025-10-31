@@ -36,7 +36,20 @@ export function ChallengeResources({ challenge }: ChallengeResourcesProps) {
             >
               <div className='aspect-video bg-muted relative overflow-hidden'>
                 <img
-                  src={video.thumbnail || '/placeholder.svg'}
+                  src={
+                    video.thumbnail || (() => {
+                      try {
+                        const u = new URL(video.url)
+                        let id = ''
+                        if (u.hostname.includes('youtu.be')) id = u.pathname.slice(1)
+                        else if (u.hostname.includes('youtube.com')) id = u.searchParams.get('v') || ''
+                        if (id) return `https://img.youtube.com/vi/${id}/maxresdefault.jpg`
+                      } catch (e) {
+                        // ignore
+                      }
+                      return '/placeholder.svg'
+                    })()
+                  }
                   alt={video.title}
                   className='w-full h-full object-cover transition-transform duration-500 group-hover:scale-105'
                 />

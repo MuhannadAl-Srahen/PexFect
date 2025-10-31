@@ -36,8 +36,38 @@ const getCategoryIcon = (category: string) => {
 export function ResourceCard({ resource }: { resource: ResourceItem }) {
   const CategoryIcon = getCategoryIcon(resource.category)
 
-  // Check if this is a video resource
-  const isVideo = getCategoryIcon(resource.category) === Video
+  // More robust video detection: prefer category, but also check URL/thumbnail
+  const categoryLower = (resource.category || '').toLowerCase()
+  const urlIsYouTube = !!resource.url && /youtu(?:\.be|be\.com)/i.test(resource.url)
+  const isVideo =
+    categoryLower.includes('video') ||
+    categoryLower.includes('youtube') ||
+    urlIsYouTube ||
+    Boolean(resource.thumbnail)
+
+  const getYouTubeThumbnail = (url: string | undefined) => {
+    if (!url) return undefined
+    try {
+      const u = new URL(url)
+      let id = ''
+      if (u.hostname.includes('youtu.be')) {
+        id = u.pathname.slice(1)
+      } else if (u.hostname.includes('youtube.com')) {
+        id = u.searchParams.get('v') || ''
+      }
+      if (!id) return undefined
+      // Prefer maxres, fall back to hq
+      return `https://img.youtube.com/vi/${id}/maxresdefault.jpg`
+    } catch (e) {
+      return undefined
+    }
+  }
+
+  const resolveThumbnail = () => {
+    return (
+      resource.thumbnail || resource.image || getYouTubeThumbnail(resource.url) || undefined
+    )
+  }
 
   if (isVideo) {
     return (
@@ -50,9 +80,9 @@ export function ResourceCard({ resource }: { resource: ResourceItem }) {
         <Card className='flex h-full flex-col overflow-hidden rounded-xl border border-border/50 bg-card shadow-md transition-all duration-300 hover:shadow-xl hover:scale-[1.02] p-0 gap-0'>
           {/* Video Thumbnail Section */}
           <div className='aspect-video bg-muted relative overflow-hidden'>
-            {resource.thumbnail ? (
+            {resolveThumbnail() ? (
               <img
-                src={resource.thumbnail}
+                src={resolveThumbnail()}
                 alt={resource.title}
                 className='w-full h-full object-cover transition-transform duration-500 group-hover:scale-105'
               />
