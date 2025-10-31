@@ -57,7 +57,11 @@ function RouteComponent() {
       queryClient.setQueryData(['auth'], { isAuthenticated: !!session, session })
     })
 
-    return () => listener.subscription?.unsubscribe?.()
+    return () => {
+      if (listener.subscription && typeof listener.subscription.unsubscribe === 'function') {
+        listener.subscription.unsubscribe();
+      }
+    }
   }, [queryClient])
 
   // Update tab when search param changes
