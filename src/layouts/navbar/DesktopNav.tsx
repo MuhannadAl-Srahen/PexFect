@@ -24,7 +24,7 @@ export const DesktopNav = ({ pathname }: DesktopNavProps) => {
           <Link
             key={item.name}
             to={item.href}
-            className='group relative flex items-center space-x-2 px-4 py-2 transition-all duration-300 rounded-xl'
+            className='group relative flex items-center space-x-2 px-4 py-2 transition-all duration-300 rounded-xl cursor-pointer hover:bg-muted/30 active:scale-95'
           >
             <Icon
               className={cn(

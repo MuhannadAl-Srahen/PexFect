@@ -22,7 +22,7 @@ export const ThemeToggle = ({
         size='default'
         onClick={toggleTheme}
         className={cn(
-          'flex items-center justify-center w-11 h-11 rounded-xl bg-muted/30 hover:bg-muted/50 transition-all duration-300 group',
+          'flex items-center justify-center w-11 h-11 rounded-xl bg-muted/30 hover:bg-muted/50 transition-all duration-300 group cursor-pointer hover:scale-105 active:scale-95',
           className
         )}
         aria-label='Toggle theme'
@@ -42,7 +42,7 @@ export const ThemeToggle = ({
       variant='ghost'
       size='icon'
       className={cn(
-        'hidden md:flex h-11 w-11 rounded-full hover:bg-transparent transition-all duration-300 group',
+        'hidden md:flex h-11 w-11 rounded-full transition-all duration-300 group cursor-pointer hover:scale-105 active:scale-95 hover:bg-muted/30',
         className
       )}
       aria-label='Toggle theme'
