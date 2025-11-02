@@ -57,6 +57,7 @@ export default function Navbar() {
           pathname={pathname}
           theme={theme}
           isLoggedIn={isLoggedIn}
+          user={user}
           onClose={closeMobileMenu}
           onToggleTheme={toggleTheme}
           onLogout={handleLogout}
