@@ -12,11 +12,21 @@ const navItems = [
   { name: 'Progress', href: '/progress', icon: Trophy },
 ] as const
 
+interface UserData {
+  email?: string
+  user_metadata?: {
+    avatar_url?: string
+    name?: string
+    user_name?: string
+  }
+}
+
 interface MobileMenuProps {
   isOpen: boolean
   pathname: string
   theme: string | undefined
   isLoggedIn: boolean
+  user?: UserData | null
   onClose: () => void
   onToggleTheme: () => void
   onLogout: () => void
@@ -27,10 +37,22 @@ export const MobileMenu = ({
   pathname,
   theme,
   isLoggedIn,
+  user,
   onClose,
   onToggleTheme,
   onLogout,
 }: MobileMenuProps) => {
+  const avatarUrl =
+    user?.user_metadata?.avatar_url || '/placeholder.svg?height=40&width=40'
+  const fullName = user?.user_metadata?.name || user?.email || 'User'
+  const githubUsername = user?.user_metadata?.user_name
+  const initials = fullName
+    .split(' ')
+    .map((s: string) => s?.[0] ?? '')
+    .join('')
+    .slice(0, 2)
+    .toUpperCase()
+
   return (
     <div
       className={cn(
@@ -60,7 +82,7 @@ export const MobileMenu = ({
                     to={item.href}
                     onClick={onClose}
                     className={cn(
-                      'flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 hover:shadow-sm hover:scale-105',
+                      'flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 hover:shadow-md hover:scale-[1.02] cursor-pointer active:scale-95',
                       isActive
                         ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm animate-in slide-in-from-left-1'
                         : 'text-foreground hover:bg-muted/50 hover:text-primary'
@@ -104,26 +126,58 @@ export const MobileMenu = ({
                     to='/profile'
                     search={{ tab: 'recent' }}
                     onClick={onClose}
-                    className='flex items-center gap-3 px-4 py-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-all duration-300 mb-3 hover:shadow-sm hover:scale-105'
+                    className='flex items-center gap-3 px-4 py-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-all duration-300 mb-3 hover:shadow-md hover:scale-[1.02] cursor-pointer active:scale-95 group'
                   >
-                    <Avatar className='h-10 w-10'>
+                    <Avatar className='h-10 w-10 ring-2 ring-transparent group-hover:ring-primary/20 transition-all duration-300'>
                       <AvatarImage
-                        src='/placeholder.svg?height=40&width=40'
+                        src={avatarUrl}
                         alt='User'
+                        referrerPolicy='no-referrer'
+                        crossOrigin='anonymous'
                       />
-                      <AvatarFallback className='bg-primary/10 text-primary text-sm font-medium'>
-                        MA
+                      <AvatarFallback className='bg-primary/10 text-primary text-sm font-medium group-hover:bg-primary/20 transition-colors duration-300'>
+                        {initials}
                       </AvatarFallback>
                     </Avatar>
                     <div className='flex-1 min-w-0'>
-                      <p className='text-sm font-semibold text-foreground truncate'>
-                        Muhannad Al-Srahen
+                      <p className='text-sm font-semibold text-foreground truncate group-hover:text-primary transition-colors duration-300'>
+                        {fullName}
                       </p>
                       <p className='text-xs text-muted-foreground'>
-                        @muhannad-dev
+                        {user?.email}
                       </p>
                     </div>
                   </Link>
+
+                  {/* GitHub Profile Link */}
+                  {githubUsername && (
+                    <a
+                      href={`https://github.com/${githubUsername}`}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      className='flex items-center gap-3 px-4 py-3 rounded-xl bg-muted/20 hover:bg-muted/40 transition-all duration-300 mb-3 hover:shadow-md hover:scale-[1.02] cursor-pointer active:scale-95 group'
+                    >
+                      <div className='flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110'>
+                        <Github className='w-4 h-4 text-primary transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12' />
+                      </div>
+                      <span className='text-sm font-medium text-foreground group-hover:text-primary transition-colors duration-300'>
+                        View GitHub Profile
+                      </span>
+                      <svg
+                        className='w-3 h-3 ml-auto text-muted-foreground group-hover:text-primary transition-colors duration-300'
+                        fill='none'
+                        stroke='currentColor'
+                        viewBox='0 0 24 24'
+                      >
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          strokeWidth={2}
+                          d='M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14'
+                        />
+                      </svg>
+                    </a>
+                  )}
 
                   {/* Actions Row */}
                   <div className='flex gap-5 items-center justify-between'>
@@ -133,10 +187,10 @@ export const MobileMenu = ({
                         onLogout()
                         onClose()
                       }}
-                      className='flex items-center gap-3 px-3 py-3 rounded-xl bg-destructive/10 hover:bg-destructive/20 text-destructive transition-all duration-300 flex-1 hover:shadow-md hover:scale-105'
+                      className='flex items-center gap-3 px-3 py-3 rounded-xl bg-destructive/10 hover:bg-destructive/20 text-destructive transition-all duration-300 flex-1 hover:shadow-md hover:scale-[1.02] cursor-pointer active:scale-95 group'
                     >
-                      <div className='flex items-center justify-center w-8 h-8 rounded-lg bg-destructive/20 hover:bg-destructive/30 transition-all duration-300 hover:scale-110'>
-                        <LogOut className='w-4 h-4 transition-transform duration-300 hover:rotate-12' />
+                      <div className='flex items-center justify-center w-8 h-8 rounded-lg bg-destructive/20 group-hover:bg-destructive/30 transition-all duration-300 group-hover:scale-110'>
+                        <LogOut className='w-4 h-4 transition-transform duration-300 group-hover:rotate-12' />
                       </div>
                       <span className='font-medium'>Sign out</span>
                     </button>
@@ -161,10 +215,12 @@ export const MobileMenu = ({
                       })
                       onClose()
                     }}
-                    className='flex items-center gap-3 px-4 py-3 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 flex-1 transition-all duration-300'
+                    className='flex items-center gap-3 px-4 py-3 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 flex-1 transition-all duration-300 hover:shadow-md hover:scale-[1.02] cursor-pointer active:scale-95 group'
                   >
-                    <Github className='w-4 h-4' />
-                    <span className='font-medium text-sm'>Sign In with GitHub</span>
+                    <Github className='w-4 h-4 group-hover:scale-110 transition-transform duration-300' />
+                    <span className='font-medium text-sm'>
+                      Sign In with GitHub
+                    </span>
                   </button>
 
                   {/* Theme Toggle */}
