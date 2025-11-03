@@ -23,6 +23,12 @@ import {
 } from '@/components/ui/animate-on-scroll'
 import { useRef } from 'react'
 
+// Animation states for stats cards
+const statsAnimationStates = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+}
+
 export function ChallengeSection() {
   const { data: challenges = [], isLoading } = useChallenges()
   const { data: authData } = useAuth()
@@ -142,11 +148,11 @@ export function ChallengeSection() {
                     ].map((stat, index) => (
                       <motion.div
                         key={stat.label}
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={statsAnimationStates.hidden}
                         animate={
                           isInView
-                            ? { opacity: 1, y: 0 }
-                            : { opacity: 0, y: 20 }
+                            ? statsAnimationStates.visible
+                            : statsAnimationStates.hidden
                         }
                         transition={{
                           duration: 0.6,
