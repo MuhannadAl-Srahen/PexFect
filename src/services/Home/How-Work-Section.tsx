@@ -67,158 +67,158 @@ export function HowWorkSection() {
                   index % 2 === 1 ? 'lg:flex-row-reverse' : ''
                 }`}
               >
-                  {/* Mockup/Visual Side */}
+                {/* Mockup/Visual Side */}
+                <motion.div
+                  className='flex-1 w-full relative'
+                  initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{
+                    duration: 0.6,
+                    delay: 0.3,
+                    ease: [0.25, 0.1, 0.25, 1],
+                  }}
+                  viewport={{ once: true, amount: 0.3 }}
+                >
                   <motion.div
-                    className='flex-1 w-full relative'
-                    initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{
-                      duration: 0.6,
-                      delay: 0.3,
-                      ease: [0.25, 0.1, 0.25, 1],
-                    }}
-                    viewport={{ once: true, amount: 0.3 }}
+                    whileHover={{ scale: 1.02, y: -5 }}
+                    transition={{ duration: 0.3 }}
+                    className='relative'
                   >
-                    <motion.div
-                      whileHover={{ scale: 1.02, y: -5 }}
-                      transition={{ duration: 0.3 }}
-                      className='relative'
+                    {/* Card/Mockup Container */}
+                    <div
+                      className={`relative ${step.bgColor} rounded-3xl p-6 lg:p-8 xl:p-12 shadow-2xl border border-primary/10`}
                     >
-                      {/* Card/Mockup Container */}
-                      <div
-                        className={`relative ${step.bgColor} rounded-3xl p-6 lg:p-8 xl:p-12 shadow-2xl border border-primary/10`}
-                      >
-                    {/* Mockup Content based on step */}
-                    {index === 0 && (
-                      <div className='bg-card/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-border/40'>
-                        <div className='flex items-center justify-between mb-6'>
-                          <h4 className='text-lg font-bold text-foreground'>
-                            Choose a Challenge
-                          </h4>
-                          <div className='w-10 h-10 bg-primary rounded-lg flex items-center justify-center'>
-                            <Globe className='w-5 h-5 text-primary-foreground' />
+                      {/* Mockup Content based on step */}
+                      {index === 0 && (
+                        <div className='bg-card/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-border/40'>
+                          <div className='flex items-center justify-between mb-6'>
+                            <h4 className='text-lg font-bold text-foreground'>
+                              Choose a Challenge
+                            </h4>
+                            <div className='w-10 h-10 bg-primary rounded-lg flex items-center justify-center'>
+                              <Globe className='w-5 h-5 text-primary-foreground' />
+                            </div>
+                          </div>
+                          <div className='space-y-4 mb-6'>
+                            <div className='bg-gradient-to-r from-primary/20 to-primary/10 rounded-lg p-3'>
+                              <div className='h-2.5 bg-primary/40 rounded-full w-full mb-2' />
+                              <div className='h-2 bg-primary/30 rounded-full w-3/4' />
+                            </div>
+                            <div className='bg-muted/40 rounded-lg p-3'>
+                              <div className='h-2.5 bg-muted-foreground/20 rounded-full w-4/5 mb-2' />
+                              <div className='h-2 bg-muted-foreground/15 rounded-full w-2/3' />
+                            </div>
+                            <div className='bg-muted/40 rounded-lg p-3'>
+                              <div className='h-2.5 bg-muted-foreground/20 rounded-full w-full mb-2' />
+                              <div className='h-2 bg-muted-foreground/15 rounded-full w-1/2' />
+                            </div>
+                          </div>
+                          <div className='mt-6 bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-3 rounded-xl text-center font-semibold shadow-lg transition-all duration-300'>
+                            Start Challenge
                           </div>
                         </div>
-                        <div className='space-y-4 mb-6'>
-                          <div className='bg-gradient-to-r from-primary/20 to-primary/10 rounded-lg p-3'>
-                            <div className='h-2.5 bg-primary/40 rounded-full w-full mb-2' />
-                            <div className='h-2 bg-primary/30 rounded-full w-3/4' />
-                          </div>
-                          <div className='bg-muted/40 rounded-lg p-3'>
-                            <div className='h-2.5 bg-muted-foreground/20 rounded-full w-4/5 mb-2' />
-                            <div className='h-2 bg-muted-foreground/15 rounded-full w-2/3' />
-                          </div>
-                          <div className='bg-muted/40 rounded-lg p-3'>
-                            <div className='h-2.5 bg-muted-foreground/20 rounded-full w-full mb-2' />
-                            <div className='h-2 bg-muted-foreground/15 rounded-full w-1/2' />
-                          </div>
-                        </div>
-                        <div className='mt-6 bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-3 rounded-xl text-center font-semibold shadow-lg transition-all duration-300'>
-                          Start Challenge
-                        </div>
-                      </div>
-                    )}
+                      )}
 
-                    {index === 1 && (
-                      <div className='bg-card/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-border/40'>
-                        <div className='flex items-center gap-3 mb-6'>
-                          <div className='w-10 h-10 bg-primary rounded-lg flex items-center justify-center'>
-                            <Github className='w-5 h-5 text-primary-foreground' />
+                      {index === 1 && (
+                        <div className='bg-card/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-border/40'>
+                          <div className='flex items-center gap-3 mb-6'>
+                            <div className='w-10 h-10 bg-primary rounded-lg flex items-center justify-center'>
+                              <Github className='w-5 h-5 text-primary-foreground' />
+                            </div>
+                            <h4 className='text-lg font-bold text-foreground'>
+                              Build & Submit
+                            </h4>
                           </div>
-                          <h4 className='text-lg font-bold text-foreground'>
-                            Build & Submit
-                          </h4>
+                          <div className='bg-muted/50 rounded-xl p-5 font-mono text-sm mb-4 border border-border/30'>
+                            <div className='text-primary font-semibold mb-2'>
+                              const solution = () =&gt; {'{'}
+                            </div>
+                            <div className='text-foreground/70 ml-4 mb-1'>
+                              // Your code here
+                            </div>
+                            <div className='text-foreground/70 ml-4 mb-1'>
+                              return &lt;Component /&gt;
+                            </div>
+                            <div className='text-primary font-semibold'>
+                              {'}'}
+                            </div>
+                          </div>
+                          <div className='flex gap-3 mt-4'>
+                            <div className='bg-primary/20 border border-primary/30 px-4 py-2 rounded-lg text-sm font-medium text-primary flex items-center gap-2'>
+                              <Github className='w-3.5 h-3.5' />
+                              GitHub Repo
+                            </div>
+                            <div className='bg-muted/40 border border-border/30 px-4 py-2 rounded-lg text-sm font-medium text-foreground flex items-center gap-2'>
+                              <Globe className='w-3.5 h-3.5' />
+                              Live Demo
+                            </div>
+                          </div>
                         </div>
-                        <div className='bg-muted/50 rounded-xl p-5 font-mono text-sm mb-4 border border-border/30'>
-                          <div className='text-primary font-semibold mb-2'>
-                            const solution = () =&gt; {'{'}
-                          </div>
-                          <div className='text-foreground/70 ml-4 mb-1'>
-                            // Your code here
-                          </div>
-                          <div className='text-foreground/70 ml-4 mb-1'>
-                            return &lt;Component /&gt;
-                          </div>
-                          <div className='text-primary font-semibold'>
-                            {'}'}
-                          </div>
-                        </div>
-                        <div className='flex gap-3 mt-4'>
-                          <div className='bg-primary/20 border border-primary/30 px-4 py-2 rounded-lg text-sm font-medium text-primary flex items-center gap-2'>
-                            <Github className='w-3.5 h-3.5' />
-                            GitHub Repo
-                          </div>
-                          <div className='bg-muted/40 border border-border/30 px-4 py-2 rounded-lg text-sm font-medium text-foreground flex items-center gap-2'>
-                            <Globe className='w-3.5 h-3.5' />
-                            Live Demo
-                          </div>
-                        </div>
-                      </div>
-                    )}
+                      )}
 
-                    {index === 2 && (
-                      <div className='bg-card/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-border/40'>
-                        <div className='flex items-center gap-3 mb-6'>
-                          <div className='w-10 h-10 bg-primary rounded-lg flex items-center justify-center'>
-                            <Heart className='w-5 h-5 text-primary-foreground' />
+                      {index === 2 && (
+                        <div className='bg-card/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-border/40'>
+                          <div className='flex items-center gap-3 mb-6'>
+                            <div className='w-10 h-10 bg-primary rounded-lg flex items-center justify-center'>
+                              <Heart className='w-5 h-5 text-primary-foreground' />
+                            </div>
+                            <h4 className='text-lg font-bold text-foreground'>
+                              Get Feedback
+                            </h4>
                           </div>
-                          <h4 className='text-lg font-bold text-foreground'>
-                            Get Feedback
-                          </h4>
-                        </div>
-                        <div className='space-y-4 mb-5'>
-                          <div className='flex gap-3'>
-                            <div className='text-3xl'>😱</div>
-                            <div className='text-3xl'>😍</div>
-                            <div className='text-3xl'>❤️</div>
+                          <div className='space-y-4 mb-5'>
+                            <div className='flex gap-3'>
+                              <div className='text-3xl'>😱</div>
+                              <div className='text-3xl'>😍</div>
+                              <div className='text-3xl'>❤️</div>
+                            </div>
+                            <div className='space-y-2'>
+                              <div className='h-2.5 bg-gradient-to-r from-primary/30 to-primary/10 rounded-full w-full' />
+                              <div className='h-2.5 bg-gradient-to-r from-green-500/30 to-green-500/10 rounded-full w-4/5' />
+                              <div className='h-2.5 bg-gradient-to-r from-blue-500/30 to-blue-500/10 rounded-full w-3/4' />
+                            </div>
                           </div>
-                          <div className='space-y-2'>
-                            <div className='h-2.5 bg-gradient-to-r from-primary/30 to-primary/10 rounded-full w-full' />
-                            <div className='h-2.5 bg-gradient-to-r from-green-500/30 to-green-500/10 rounded-full w-4/5' />
-                            <div className='h-2.5 bg-gradient-to-r from-blue-500/30 to-blue-500/10 rounded-full w-3/4' />
+                          <div className='bg-primary/10 border border-primary/20 rounded-lg p-4 mt-4'>
+                            <p className='text-sm text-foreground/80 leading-relaxed'>
+                              Detailed feedback on your solution...
+                            </p>
                           </div>
                         </div>
-                        <div className='bg-primary/10 border border-primary/20 rounded-lg p-4 mt-4'>
-                          <p className='text-sm text-foreground/80 leading-relaxed'>
-                            Detailed feedback on your solution...
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
-                  </motion.div>
-
-                  {/* Content Side */}
-                  <motion.div
-                    className='flex-1 w-full text-center lg:text-left space-y-4 lg:space-y-6'
-                    initial={{ opacity: 0, x: index % 2 === 0 ? 30 : -30 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{
-                      duration: 0.6,
-                      delay: 0.4,
-                      ease: [0.25, 0.1, 0.25, 1],
-                    }}
-                    viewport={{ once: true, amount: 0.3 }}
-                  >
-                    <div className='inline-flex items-center gap-3 mb-4 lg:mb-6'>
-                      <div className='w-10 h-10 lg:w-12 lg:h-12 bg-primary rounded-2xl flex items-center justify-center shadow-lg'>
-                        <step.icon className='w-5 h-5 lg:w-6 lg:h-6 text-primary-foreground' />
-                      </div>
-                      <span className='text-4xl lg:text-5xl font-black text-primary/20'>
-                        {step.step}
-                      </span>
+                      )}
                     </div>
-
-                    <h3 className='text-2xl lg:text-3xl xl:text-4xl font-bold text-foreground mb-4 lg:mb-6'>
-                      {step.title}
-                    </h3>
-
-                    <p className='text-base lg:text-lg text-muted-foreground leading-relaxed max-w-lg mx-auto lg:mx-0'>
-                      {step.description}
-                    </p>
                   </motion.div>
                 </motion.div>
+
+                {/* Content Side */}
+                <motion.div
+                  className='flex-1 w-full text-center lg:text-left space-y-4 lg:space-y-6'
+                  initial={{ opacity: 0, x: index % 2 === 0 ? 30 : -30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{
+                    duration: 0.6,
+                    delay: 0.4,
+                    ease: [0.25, 0.1, 0.25, 1],
+                  }}
+                  viewport={{ once: true, amount: 0.3 }}
+                >
+                  <div className='inline-flex items-center gap-3 mb-4 lg:mb-6'>
+                    <div className='w-10 h-10 lg:w-12 lg:h-12 bg-primary rounded-2xl flex items-center justify-center shadow-lg'>
+                      <step.icon className='w-5 h-5 lg:w-6 lg:h-6 text-primary-foreground' />
+                    </div>
+                    <span className='text-4xl lg:text-5xl font-black text-primary/20'>
+                      {step.step}
+                    </span>
+                  </div>
+
+                  <h3 className='text-2xl lg:text-3xl xl:text-4xl font-bold text-foreground mb-4 lg:mb-6'>
+                    {step.title}
+                  </h3>
+
+                  <p className='text-base lg:text-lg text-muted-foreground leading-relaxed max-w-lg mx-auto lg:mx-0'>
+                    {step.description}
+                  </p>
+                </motion.div>
+              </motion.div>
             ))}
           </div>
         </StaggerContainer>

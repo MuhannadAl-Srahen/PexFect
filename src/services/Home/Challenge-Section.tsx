@@ -126,7 +126,10 @@ export function ChallengeSection() {
                   </div>
 
                   {/* Right Side - Stats Grid */}
-                  <div ref={statsRef} className='grid grid-cols-2 gap-3 sm:gap-4'>
+                  <div
+                    ref={statsRef}
+                    className='grid grid-cols-2 gap-3 sm:gap-4'
+                  >
                     {[
                       { label: 'Challenges', value: '12+', icon: Target },
                       { label: 'Skill Levels', value: '3', icon: Users },
