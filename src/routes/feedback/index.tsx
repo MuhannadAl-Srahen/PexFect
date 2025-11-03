@@ -1,0 +1,202 @@
+import { createFileRoute } from '@tanstack/react-router'
+import { Eye, Code2, CheckCircle, AlertTriangle, Info, Circle } from 'lucide-react'
+import { PageLayout } from '@/layouts'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import {
+  ExpandableSection,
+  RecommendedResources,
+  NextChallengeComponent as NextChallenge,
+  mockFeedbackData
+} from '@/services/feedback'
+
+export const Route = createFileRoute('/feedback/')({
+  component: RouteComponent,
+})
+
+function RouteComponent() {
+  // Using mock data - will be replaced with actual data from Supabase/AI
+  const feedbackData = mockFeedbackData
+
+  const getScoreColor = (score: number) => {
+    if (score >= 90) return 'text-green-500'
+    if (score >= 80) return 'text-blue-500'
+    if (score >= 70) return 'text-yellow-500'
+    return 'text-red-500'
+  }
+
+  const getScoreBadgeColor = (score: number) => {
+    if (score >= 90) return 'bg-green-100 text-green-800 hover:bg-green-100'
+    if (score >= 80) return 'bg-blue-100 text-blue-800 hover:bg-blue-100'
+    if (score >= 70) return 'bg-yellow-100 text-yellow-800 hover:bg-yellow-100'
+    return 'bg-red-100 text-red-800 hover:bg-red-100'
+  }
+
+  return (
+    <PageLayout maxWidth='6xl'>
+      <div className='space-y-8'>
+        {/* Top Badge - User Result */}
+        <div className='flex justify-start'>
+          <Badge 
+            variant='secondary' 
+            className={`text-lg px-4 py-2 ${getScoreBadgeColor(feedbackData.overallScore)}`}
+          >
+            {feedbackData.overallScore} {feedbackData.scoreLevel}
+          </Badge>
+        </div>
+
+        {/* Header Section */}
+        <Card className='p-6'>
+          <div className='flex items-start justify-between'>
+            {/* Left Side - Title, Date, Buttons */}
+            <div className='flex-1'>
+              <h1 className='text-3xl font-bold text-foreground mb-2'>
+                {feedbackData.challengeTitle}
+              </h1>
+              <p className='text-muted-foreground mb-6'>
+                Submitted on {feedbackData.submissionDate}
+              </p>
+              
+              {/* Action Buttons */}
+              <div className='flex space-x-4'>
+                <Button className='bg-primary text-primary-foreground hover:bg-primary/90'>
+                  <Eye className='w-4 h-4 mr-2' />
+                  Live Preview
+                </Button>
+                <Button variant='outline'>
+                  <Code2 className='w-4 h-4 mr-2' />
+                  View Code
+                </Button>
+              </div>
+            </div>
+            
+            {/* Right Side - Overall Score */}
+            <div className='text-center'>
+              <div className={`text-6xl font-bold ${getScoreColor(feedbackData.overallScore)} mb-2`}>
+                {feedbackData.overallScore}
+              </div>
+              <div className='text-muted-foreground text-sm'>Overall Score</div>
+            </div>
+          </div>
+        </Card>
+
+        {/* Overall Analysis Section */}
+        <Card className='p-6'>
+          <h2 className='text-2xl font-bold text-foreground mb-6'>Overall Analysis</h2>
+          <p className='text-muted-foreground mb-6 leading-relaxed'>
+            {feedbackData.overallAnalysis}
+          </p>
+          
+          <div className='grid md:grid-cols-2 gap-8'>
+            {/* What You Did Well */}
+            <div>
+              <div className='flex items-center mb-4'>
+                <CheckCircle className='w-5 h-5 text-green-500 mr-2' />
+                <h3 className='text-lg font-semibold text-green-700 dark:text-green-400'>
+                  What You Did Well
+                </h3>
+              </div>
+              <ul className='space-y-3'>
+                {feedbackData.bestPractices.whatYouDidWell.slice(0, 4).map((item: string, index: number) => (
+                  <li key={index} className='text-sm text-muted-foreground flex items-start'>
+                    <CheckCircle className='w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0' />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Areas for Improvement */}
+            <div>
+              <div className='flex items-center mb-4'>
+                <AlertTriangle className='w-5 h-5 text-orange-500 mr-2' />
+                <h3 className='text-lg font-semibold text-orange-700 dark:text-orange-400'>
+                  Areas for Improvement
+                </h3>
+              </div>
+              <ul className='space-y-3'>
+                {feedbackData.bestPractices.areasForImprovement.map((item: string, index: number) => (
+                  <li key={index} className='text-sm text-muted-foreground flex items-start'>
+                    <AlertTriangle className='w-4 h-4 text-orange-500 mr-2 mt-0.5 flex-shrink-0' />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </Card>
+
+        {/* Design Comparison Section */}
+        <Card className='p-6'>
+          <h2 className='text-2xl font-bold text-foreground mb-2'>Design Comparison</h2>
+          <p className='text-muted-foreground mb-6'>
+            Side-by-side comparison with the original design
+          </p>
+
+          <div className='grid md:grid-cols-2 gap-6'>
+            {/* Original Design */}
+            <div>
+              <h3 className='font-semibold text-foreground mb-3'>Original Design</h3>
+              <div className='bg-muted rounded-lg aspect-video flex items-center justify-center border-2 border-dashed border-border'>
+                <div className='text-center text-muted-foreground'>
+                  <div className='w-16 h-16 bg-muted-foreground/20 rounded-lg mx-auto mb-2' />
+                  <p className='text-sm'>Original Design Preview</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Your Result */}
+            <div>
+              <h3 className='font-semibold text-foreground mb-3'>Your Result</h3>
+              <div className='bg-muted rounded-lg aspect-video flex items-center justify-center border-2 border-dashed border-border'>
+                <div className='text-center text-muted-foreground'>
+                  <div className='w-16 h-16 bg-muted-foreground/20 rounded-lg mx-auto mb-2' />
+                  <p className='text-sm'>Your Implementation</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        {/* Tech Analysis - Collapsible Sections */}
+        <div className='space-y-4'>
+          <h2 className='text-2xl font-bold text-foreground'>Tech Analysis</h2>
+          
+          {/* Best Practices */}
+          <ExpandableSection 
+            section={feedbackData.bestPractices}
+            icon={<CheckCircle className='w-5 h-5' />}
+          />
+          
+          {/* Code Formatting */}
+          <ExpandableSection 
+            section={feedbackData.codeFormatting}
+            icon={<Code2 className='w-5 h-5' />}
+          />
+          
+          {/* Functionality */}
+          <ExpandableSection 
+            section={feedbackData.functionality}
+            icon={<Circle className='w-5 h-5' />}
+          />
+          
+          {/* Accessibility */}
+          <ExpandableSection 
+            section={feedbackData.accessibility}
+            icon={<Info className='w-5 h-5' />}
+          />
+        </div>
+
+        {/* Bottom Section - Recommendations */}
+        <div className='grid lg:grid-cols-2 gap-8'>
+          {/* Recommended Learning Resources */}
+          <RecommendedResources resources={feedbackData.recommendedResources} />
+          
+          {/* Next Challenge */}
+          <NextChallenge nextChallenge={feedbackData.nextChallenge} />
+        </div>
+      </div>
+    </PageLayout>
+  )
+}
