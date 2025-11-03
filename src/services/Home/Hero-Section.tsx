@@ -57,7 +57,7 @@ export function HeroSection() {
                 <h1 className='text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 leading-[1.1] tracking-tight'>
                   Master
                   <br />
-                  <span className='bg-gradient-to-r from-primary via-primary/80 to-accent bg-clip-text text-transparent'>
+                  <span className='bg-gradient-to-r from-primary via-primary to-primary/90 bg-clip-text text-transparent'>
                     Frontend
                   </span>
                   <br />
@@ -119,11 +119,16 @@ export function HeroSection() {
                         try {
                           await supabase.auth.signInWithOAuth({
                             provider: 'github',
-                            options: { redirectTo: window.location.origin + '/challenges' },
-                          });
+                            options: {
+                              redirectTo:
+                                window.location.origin + '/challenges',
+                            },
+                          })
                         } catch (error) {
-                          window.alert('Authentication failed. Please try again.');
-                          console.error('OAuth sign-in error:', error);
+                          window.alert(
+                            'Authentication failed. Please try again.'
+                          )
+                          console.error('OAuth sign-in error:', error)
                         }
                       }}
                       className='bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 rounded-xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group'
