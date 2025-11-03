@@ -72,11 +72,11 @@ export function ChallengeSection() {
         <StaggerContainer>
           {/* Section Header */}
           <StaggerItem>
-            <div className='text-center mb-16'>
-              <h2 className='text-4xl lg:text-6xl font-bold text-foreground mb-6'>
+            <div className='text-center mb-12 lg:mb-16'>
+              <h2 className='text-3xl sm:text-4xl lg:text-6xl font-bold text-foreground mb-4 lg:mb-6'>
                 Featured <span className='text-primary'>Challenges</span>
               </h2>
-              <p className='text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed'>
+              <p className='text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4'>
                 Dive into real-world projects and sharpen your skills with our
                 hand-picked challenges
               </p>
@@ -87,23 +87,23 @@ export function ChallengeSection() {
           <div className='max-w-7xl mx-auto'>
             {/* Hero Section with Stats */}
             <StaggerItem>
-              <div className='bg-card/60 backdrop-blur-lg rounded-2xl p-8 lg:p-12 mb-16 border border-border/30 hover:border-primary/30 transition-all duration-300'>
-                <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center'>
+              <div className='bg-card/60 backdrop-blur-lg rounded-2xl p-6 sm:p-8 lg:p-12 mb-12 lg:mb-16 border border-border/30 hover:border-primary/30 transition-all duration-300'>
+                <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center'>
                   {/* Left Side - Content */}
-                  <div className='space-y-6'>
-                    <div className='inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2 border border-primary/20'>
-                      <Sparkles className='w-4 h-4 text-primary' />
-                      <span className='text-sm font-semibold text-primary'>
+                  <div className='space-y-4 sm:space-y-6'>
+                    <div className='inline-flex items-center gap-2 bg-primary/10 rounded-full px-3 sm:px-4 py-1.5 sm:py-2 border border-primary/20'>
+                      <Sparkles className='w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary' />
+                      <span className='text-xs sm:text-sm font-semibold text-primary'>
                         Hand-picked Challenges
                       </span>
                     </div>
 
-                    <h3 className='text-3xl lg:text-4xl font-bold text-foreground leading-tight'>
+                    <h3 className='text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground leading-tight'>
                       Master Frontend Development with{' '}
                       <span className='text-primary'>Real Projects</span>
                     </h3>
 
-                    <p className='text-muted-foreground text-lg leading-relaxed'>
+                    <p className='text-muted-foreground text-base sm:text-lg leading-relaxed'>
                       Join thousands of developers building portfolio-worthy
                       projects and getting AI-powered feedback.
                     </p>
@@ -111,7 +111,7 @@ export function ChallengeSection() {
                     <Button
                       asChild
                       size='lg'
-                      className='bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group'
+                      className='bg-primary hover:bg-primary/90 text-primary-foreground px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group w-full sm:w-auto'
                     >
                       <Link to='/roadmap'>
                         <motion.div
@@ -119,14 +119,14 @@ export function ChallengeSection() {
                           className='flex items-center gap-2'
                         >
                           Start Learning Path
-                          <ArrowRight className='w-5 h-5 group-hover:translate-x-1 transition-transform duration-300' />
+                          <ArrowRight className='w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform duration-300' />
                         </motion.div>
                       </Link>
                     </Button>
                   </div>
 
                   {/* Right Side - Stats Grid */}
-                  <div ref={statsRef} className='grid grid-cols-2 gap-4'>
+                  <div ref={statsRef} className='grid grid-cols-2 gap-3 sm:gap-4'>
                     {[
                       { label: 'Challenges', value: '12+', icon: Target },
                       { label: 'Skill Levels', value: '3', icon: Users },
@@ -146,15 +146,15 @@ export function ChallengeSection() {
                             : 'translateY(20px)',
                           transition: `all 0.6s ease-out ${index * 0.1}s`,
                         }}
-                        className='bg-background/50 border border-border/50 rounded-xl p-4 text-center hover:border-primary/30 hover:shadow-md transition-all duration-300 group hover:-translate-y-1 hover:scale-[1.02]'
+                        className='bg-background/50 border border-border/50 rounded-xl p-3 sm:p-4 text-center hover:border-primary/30 hover:shadow-md transition-all duration-300 group hover:-translate-y-1 hover:scale-[1.02]'
                       >
-                        <div className='w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:bg-primary/20 transition-colors duration-150'>
-                          <stat.icon className='w-5 h-5 text-primary' />
+                        <div className='w-8 h-8 sm:w-10 sm:h-10 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-2 sm:mb-3 group-hover:bg-primary/20 transition-colors duration-150'>
+                          <stat.icon className='w-4 h-4 sm:w-5 sm:h-5 text-primary' />
                         </div>
-                        <div className='text-2xl font-bold text-foreground mb-1'>
+                        <div className='text-xl sm:text-2xl font-bold text-foreground mb-1'>
                           {stat.value}
                         </div>
-                        <div className='text-sm text-muted-foreground'>
+                        <div className='text-xs sm:text-sm text-muted-foreground'>
                           {stat.label}
                         </div>
                       </div>
@@ -166,20 +166,20 @@ export function ChallengeSection() {
 
             {/* Featured Challenges */}
             <StaggerItem>
-              <div className='mb-16'>
-                <div className='flex items-center justify-between mb-8'>
+              <div className='mb-12 lg:mb-16'>
+                <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 sm:mb-8 gap-4'>
                   <div>
-                    <h3 className='text-2xl font-bold text-foreground mb-2'>
+                    <h3 className='text-xl sm:text-2xl font-bold text-foreground mb-2'>
                       Featured Challenges
                     </h3>
-                    <p className='text-muted-foreground'>
+                    <p className='text-sm sm:text-base text-muted-foreground'>
                       Carefully curated projects to build your portfolio
                     </p>
                   </div>
                   <Button
                     asChild
                     variant='outline'
-                    className='hidden sm:flex border-primary/30 text-primary hover:bg-primary/10'
+                    className='hidden sm:flex border-primary/30 text-primary hover:bg-primary/10 whitespace-nowrap'
                   >
                     <Link to='/challenges'>
                       Browse All Challenges
@@ -188,7 +188,7 @@ export function ChallengeSection() {
                   </Button>
                 </div>
 
-                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+                <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6'>
                   {isLoading
                     ? // Loading skeleton
                       Array.from({ length: 3 }).map((_, index) => (
@@ -236,6 +236,20 @@ export function ChallengeSection() {
                           </motion.div>
                         </motion.div>
                       ))}
+                </div>
+
+                {/* Mobile Browse All Button */}
+                <div className='mt-6 sm:hidden'>
+                  <Button
+                    asChild
+                    variant='outline'
+                    className='w-full border-primary/30 text-primary hover:bg-primary/10'
+                  >
+                    <Link to='/challenges'>
+                      Browse All Challenges
+                      <MoveRight className='w-4 h-4 ml-2' />
+                    </Link>
+                  </Button>
                 </div>
               </div>
             </StaggerItem>

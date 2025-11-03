@@ -1,5 +1,9 @@
 import { motion } from 'motion/react'
 import { Search, Code, MessageSquare, Globe, Github, Heart } from 'lucide-react'
+import {
+  StaggerContainer,
+  StaggerItem,
+} from '@/components/ui/animate-on-scroll'
 
 const steps = [
   {
@@ -32,47 +36,58 @@ export function HowWorkSection() {
   return (
     <section className='relative py-20 lg:py-32 bg-background overflow-hidden'>
       <div className='container mx-auto px-4 sm:px-6 lg:px-8'>
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className='text-center mb-24'
-        >
-          <h2 className='text-4xl lg:text-6xl font-bold text-foreground mb-6'>
-            How It <span className='text-primary'>Works</span>
-          </h2>
-          <p className='text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed'>
-            Three simple steps to transform your frontend development skills and
-            build an impressive portfolio
-          </p>
-        </motion.div>
+        <StaggerContainer>
+          {/* Section Header */}
+          <StaggerItem>
+            <div className='text-center mb-16 lg:mb-24'>
+              <h2 className='text-4xl lg:text-6xl font-bold text-foreground mb-6'>
+                How It <span className='text-primary'>Works</span>
+              </h2>
+              <p className='text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed'>
+                Three simple steps to transform your frontend development skills
+                and build an impressive portfolio
+              </p>
+            </div>
+          </StaggerItem>
 
-        {/* Steps */}
-        <div className='max-w-7xl mx-auto space-y-32'>
-          {steps.map((step, index) => (
-            <motion.div
-              key={step.step}
-              initial={{ opacity: 0, y: 60 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: index * 0.2 }}
-              viewport={{ once: true, margin: '-100px' }}
-              className={`flex flex-col lg:flex-row items-center gap-12 lg:gap-20 ${
-                index % 2 === 1 ? 'lg:flex-row-reverse' : ''
-              }`}
-            >
-              {/* Mockup/Visual Side */}
-              <div className='flex-1 relative'>
-                <motion.div
-                  whileHover={{ scale: 1.02, y: -5 }}
-                  transition={{ duration: 0.3 }}
-                  className='relative'
-                >
-                  {/* Card/Mockup Container */}
-                  <div
-                    className={`relative ${step.bgColor} rounded-3xl p-8 lg:p-12 shadow-2xl border border-primary/10`}
+          {/* Steps */}
+          <div className='max-w-7xl mx-auto space-y-24 lg:space-y-32'>
+            {steps.map((step, index) => (
+              <motion.div
+                key={step.step}
+                initial={{ opacity: 0, y: 60 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.7,
+                  delay: 0.2,
+                  ease: [0.25, 0.1, 0.25, 1],
+                }}
+                viewport={{ once: true, amount: 0.2 }}
+                className={`flex flex-col lg:flex-row items-center gap-8 lg:gap-12 xl:gap-20 ${
+                  index % 2 === 1 ? 'lg:flex-row-reverse' : ''
+                }`}
+              >
+                  {/* Mockup/Visual Side */}
+                  <motion.div
+                    className='flex-1 w-full relative'
+                    initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{
+                      duration: 0.6,
+                      delay: 0.3,
+                      ease: [0.25, 0.1, 0.25, 1],
+                    }}
+                    viewport={{ once: true, amount: 0.3 }}
                   >
+                    <motion.div
+                      whileHover={{ scale: 1.02, y: -5 }}
+                      transition={{ duration: 0.3 }}
+                      className='relative'
+                    >
+                      {/* Card/Mockup Container */}
+                      <div
+                        className={`relative ${step.bgColor} rounded-3xl p-6 lg:p-8 xl:p-12 shadow-2xl border border-primary/10`}
+                      >
                     {/* Mockup Content based on step */}
                     {index === 0 && (
                       <div className='bg-card/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-border/40'>
@@ -172,37 +187,41 @@ export function HowWorkSection() {
                     )}
                   </div>
                 </motion.div>
-              </div>
+                  </motion.div>
 
-              {/* Content Side */}
-              <div className='flex-1 text-center lg:text-left space-y-6'>
-                <motion.div
-                  initial={{ opacity: 0, x: index % 2 === 0 ? 50 : -50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: 0.3 }}
-                  viewport={{ once: true }}
-                >
-                  <div className='inline-flex items-center gap-3 mb-6'>
-                    <div className='w-12 h-12 bg-primary rounded-2xl flex items-center justify-center shadow-lg'>
-                      <step.icon className='w-6 h-6 text-primary-foreground' />
+                  {/* Content Side */}
+                  <motion.div
+                    className='flex-1 w-full text-center lg:text-left space-y-4 lg:space-y-6'
+                    initial={{ opacity: 0, x: index % 2 === 0 ? 30 : -30 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{
+                      duration: 0.6,
+                      delay: 0.4,
+                      ease: [0.25, 0.1, 0.25, 1],
+                    }}
+                    viewport={{ once: true, amount: 0.3 }}
+                  >
+                    <div className='inline-flex items-center gap-3 mb-4 lg:mb-6'>
+                      <div className='w-10 h-10 lg:w-12 lg:h-12 bg-primary rounded-2xl flex items-center justify-center shadow-lg'>
+                        <step.icon className='w-5 h-5 lg:w-6 lg:h-6 text-primary-foreground' />
+                      </div>
+                      <span className='text-4xl lg:text-5xl font-black text-primary/20'>
+                        {step.step}
+                      </span>
                     </div>
-                    <span className='text-5xl font-black text-primary/20'>
-                      {step.step}
-                    </span>
-                  </div>
 
-                  <h3 className='text-3xl lg:text-4xl font-bold text-foreground mb-6'>
-                    {step.title}
-                  </h3>
+                    <h3 className='text-2xl lg:text-3xl xl:text-4xl font-bold text-foreground mb-4 lg:mb-6'>
+                      {step.title}
+                    </h3>
 
-                  <p className='text-lg text-muted-foreground leading-relaxed max-w-lg'>
-                    {step.description}
-                  </p>
+                    <p className='text-base lg:text-lg text-muted-foreground leading-relaxed max-w-lg mx-auto lg:mx-0'>
+                      {step.description}
+                    </p>
+                  </motion.div>
                 </motion.div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </StaggerContainer>
       </div>
     </section>
   )
