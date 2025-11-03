@@ -140,14 +140,18 @@ export function ChallengeSection() {
                       },
                       { label: 'Resources', value: '25+', icon: TrendingUp },
                     ].map((stat, index) => (
-                      <div
+                      <motion.div
                         key={stat.label}
-                        style={{
-                          opacity: isInView ? 1 : 0,
-                          transform: isInView
-                            ? 'translateY(0px)'
-                            : 'translateY(20px)',
-                          transition: `all 0.6s ease-out ${index * 0.1}s`,
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={
+                          isInView
+                            ? { opacity: 1, y: 0 }
+                            : { opacity: 0, y: 20 }
+                        }
+                        transition={{
+                          duration: 0.6,
+                          delay: index * 0.1,
+                          ease: 'easeOut',
                         }}
                         className='bg-background/50 border border-border/50 rounded-xl p-3 sm:p-4 text-center hover:border-primary/30 hover:shadow-md transition-all duration-300 group hover:-translate-y-1 hover:scale-[1.02]'
                       >
@@ -160,7 +164,7 @@ export function ChallengeSection() {
                         <div className='text-xs sm:text-sm text-muted-foreground'>
                           {stat.label}
                         </div>
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
                 </div>
