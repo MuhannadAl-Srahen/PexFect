@@ -1,4 +1,10 @@
 import { Badge } from '@/components/ui/badge'
+import {
+  Card,
+  CardTitle,
+  CardContent,
+  CardDescription,
+} from '@/components/ui/card'
 import { Video, FileText, BookOpen, Wrench, Play } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import type { Challenge } from '@/types'
@@ -30,50 +36,67 @@ export function ChallengeResources({ challenge }: ChallengeResourcesProps) {
 
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 px-4 md:px-6'>
           {resources.videos.map((video, index) => (
-            <div
+            <a
               key={index}
-              className='bg-background rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-border group'
+              href={video.url}
+              target='_blank'
+              rel='noopener noreferrer'
+              className='block h-full group'
             >
-              <div className='aspect-video bg-muted relative overflow-hidden'>
-                <img
-                  src={
-                    video.thumbnail || (() => {
-                      try {
-                        const u = new URL(video.url)
-                        let id = ''
-                        if (u.hostname.includes('youtu.be')) id = u.pathname.slice(1)
-                        else if (u.hostname.includes('youtube.com')) id = u.searchParams.get('v') || ''
-                        if (id) return `https://img.youtube.com/vi/${id}/maxresdefault.jpg`
-                      } catch (e) {
-                        // ignore
-                      }
-                      return '/placeholder.svg'
-                    })()
-                  }
-                  alt={video.title}
-                  className='w-full h-full object-cover transition-transform duration-500 group-hover:scale-105'
-                />
-                <div className='absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
-                  <Link
-                    to={video.url}
-                    className='w-10 h-10 md:w-14 md:h-14 bg-primary rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110'
-                  >
-                    <Play className='h-5 w-5 md:h-7 md:w-7 text-primary-foreground ml-0.5 md:ml-1' />
-                  </Link>
+              <Card className='flex h-full flex-col overflow-hidden rounded-xl border border-border/50 bg-card shadow-md transition-all duration-300 hover:shadow-xl hover:scale-[1.02] p-0 gap-0'>
+                {/* Video Thumbnail Section */}
+                <div className='aspect-video bg-muted relative overflow-hidden'>
+                  <img
+                    src={
+                      video.thumbnail ||
+                      (() => {
+                        try {
+                          const u = new URL(video.url)
+                          let id = ''
+                          if (u.hostname.includes('youtu.be'))
+                            id = u.pathname.slice(1)
+                          else if (u.hostname.includes('youtube.com'))
+                            id = u.searchParams.get('v') || ''
+                          if (id)
+                            return `https://img.youtube.com/vi/${id}/maxresdefault.jpg`
+                        } catch {
+                          // ignore
+                        }
+                        return '/placeholder.svg'
+                      })()
+                    }
+                    alt={video.title}
+                    className='w-full h-full object-cover transition-transform duration-500 group-hover:scale-105'
+                  />
+                  <div className='absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
+                    <div className='w-10 h-10 md:w-14 md:h-14 bg-primary rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110'>
+                      <Play className='h-5 w-5 md:h-7 md:w-7 text-primary-foreground ml-0.5 md:ml-1' />
+                    </div>
+                  </div>
+                  {video.duration && (
+                    <div className='absolute bottom-2 md:bottom-3 right-2 md:right-3 bg-primary/80 text-white text-xs px-1.5 md:px-2 py-0.5 md:py-1 rounded-full font-medium'>
+                      {video.duration}
+                    </div>
+                  )}
                 </div>
-                <div className='absolute bottom-2 md:bottom-3 right-2 md:right-3 bg-black/80 text-white text-xs px-1.5 md:px-2 py-0.5 md:py-1 rounded-full font-medium'>
-                  {video.duration}
-                </div>
-              </div>
-              <div className='p-3 md:p-4'>
-                <h4 className='font-semibold text-foreground mb-1 md:mb-2 line-clamp-1 text-sm md:text-base'>
-                  {video.title}
-                </h4>
-                <p className='text-xs md:text-sm text-muted-foreground mb-2 md:mb-4 line-clamp-2'>
-                  {video.description}
-                </p>
-              </div>
-            </div>
+
+                {/* Content Section */}
+                <CardContent className='flex flex-col flex-1 px-6 py-5'>
+                  {/* Title with Icon */}
+                  <div className='flex items-center gap-2 mb-4'>
+                    <Video className='h-5 w-5 text-primary flex-shrink-0' />
+                    <CardTitle className='line-clamp-1 text-lg font-semibold tracking-tight text-card-foreground group-hover:text-primary transition-colors'>
+                      {video.title}
+                    </CardTitle>
+                  </div>
+
+                  {/* Description */}
+                  <CardDescription className='line-clamp-2 text-sm text-muted-foreground'>
+                    {video.description}
+                  </CardDescription>
+                </CardContent>
+              </Card>
+            </a>
           ))}
         </div>
       </div>

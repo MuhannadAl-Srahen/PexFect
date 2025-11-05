@@ -46,23 +46,28 @@ export function ChallengeDesign({ challenge }: ChallengeDesignProps) {
           <div className='grid grid-cols-1 lg:grid-cols-3 gap-3 md:gap-4'>
             {/* Font Family */}
             <div className='bg-background rounded-xl p-3 md:p-4 border border-border'>
-              <h4 className='font-semibold text-foreground mb-3 flex items-center text-sm md:text-base'>
-                <span className='w-2 h-2 bg-primary rounded-full mr-2'></span>
-                Font Family
+              <h4 className='font-semibold text-foreground mb-3 flex items-center justify-between text-sm md:text-base'>
+                <span className='flex items-center'>
+                  <span className='w-2 h-2 bg-primary rounded-full mr-2'></span>
+                  Font Family
+                </span>
+                <span className='text-xs text-muted-foreground font-normal'>
+                  Click to copy
+                </span>
               </h4>
               <div
-                className='bg-background rounded-xl p-3 md:p-4 cursor-pointer transition-all duration-300 group'
+                className='bg-background rounded-xl p-3 md:p-4 cursor-pointer transition-all duration-300 group hover:bg-primary/5 hover:border-primary/20 border border-transparent'
                 onClick={handleFontCopy}
               >
                 <div className='flex items-center justify-between mb-2 md:mb-3'>
                   <div className='flex items-center space-x-2 md:space-x-3'>
-                    <div className='w-8 h-8 md:w-10 md:h-10 bg-primary/10 rounded-lg flex items-center justify-center'>
+                    <div className='w-8 h-8 md:w-10 md:h-10 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors'>
                       <span className='text-primary font-bold text-sm md:text-lg'>
                         Aa
                       </span>
                     </div>
                   </div>
-                  <div className='opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
+                  <div className='transition-opacity duration-300'>
                     <span className='text-xs text-primary font-medium'>
                       {copiedFont ? '✓ Copied!' : 'Copy'}
                     </span>

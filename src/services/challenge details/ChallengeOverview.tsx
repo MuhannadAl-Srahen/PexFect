@@ -12,8 +12,8 @@ export function ChallengeOverview({ challenge }: ChallengeOverviewProps) {
     <div className='space-y-4 md:space-y-8'>
       <div className='grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6'>
         <div className='lg:col-span-2 space-y-4 md:space-y-6'>
-          <Card className='transition-all duration-300 hover:shadow-xl hover:scale-[1.01]'>
-            <CardHeader className='pb-3 md:pb-6'>
+          <Card className='transition-all duration-300 hover:shadow-xl hover:scale-[1.01] gap-3 '>
+            <CardHeader>
               <div className='flex items-center'>
                 <div className='p-1.5 md:p-2 bg-primary/10 rounded-lg mr-2 md:mr-3'>
                   <BookOpen className='h-4 w-4 md:h-6 md:w-6 text-primary' />
@@ -28,7 +28,7 @@ export function ChallengeOverview({ challenge }: ChallengeOverviewProps) {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className='pt-0'>
+            <CardContent>
               <p className='text-sm md:text-base text-muted-foreground leading-relaxed mb-3 md:mb-4'>
                 {challenge.description}
               </p>
@@ -46,8 +46,8 @@ export function ChallengeOverview({ challenge }: ChallengeOverviewProps) {
             </CardContent>
           </Card>
 
-          <Card className='transition-all duration-300 hover:shadow-xl hover:scale-[1.01]'>
-            <CardHeader className='pb-3 md:pb-6'>
+          <Card className='transition-all duration-300 hover:shadow-xl hover:scale-[1.01] gap-3'>
+            <CardHeader>
               <div className='flex items-center'>
                 <div className='p-1.5 md:p-2 bg-primary/10 rounded-lg mr-2 md:mr-3'>
                   <FileText className='h-4 w-4 md:h-6 md:w-6 text-primary' />
@@ -62,7 +62,7 @@ export function ChallengeOverview({ challenge }: ChallengeOverviewProps) {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className='pt-0'>
+            <CardContent>
               <ul className='space-y-2 md:space-y-3'>
                 {challenge.requirements.map((req, index) => (
                   <li key={index} className='flex items-start group'>
@@ -78,8 +78,8 @@ export function ChallengeOverview({ challenge }: ChallengeOverviewProps) {
         </div>
 
         <div className='space-y-4 md:space-y-6'>
-          <Card className='transition-all duration-300 hover:shadow-xl hover:scale-[1.01]'>
-            <CardHeader className='pb-3 md:pb-6'>
+          <Card className='transition-all duration-300 hover:shadow-xl hover:scale-[1.01] gap-3'>
+            <CardHeader>
               <div className='flex items-center'>
                 <div className='p-1.5 md:p-2 bg-primary/10 rounded-lg mr-2 md:mr-3'>
                   <Lightbulb className='h-4 w-4 md:h-6 md:w-6 text-primary' />
@@ -94,7 +94,7 @@ export function ChallengeOverview({ challenge }: ChallengeOverviewProps) {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className='pt-0'>
+            <CardContent>
               <ul className='space-y-2 md:space-y-3'>
                 {challenge.tips.map((tip, index) => (
                   <li
@@ -109,8 +109,8 @@ export function ChallengeOverview({ challenge }: ChallengeOverviewProps) {
             </CardContent>
           </Card>
 
-          <Card className='transition-all duration-300 hover:shadow-xl hover:scale-[1.01]'>
-            <CardHeader className='pb-3 md:pb-6'>
+          <Card className='transition-all duration-300 hover:shadow-xl hover:scale-[1.01] gap-3'>
+            <CardHeader>
               <div className='flex items-center'>
                 <div className='p-1.5 md:p-2 bg-destructive/10 rounded-lg mr-2 md:mr-3'>
                   <AlertTriangle className='h-4 w-4 md:h-6 md:w-6 text-destructive' />
@@ -125,7 +125,7 @@ export function ChallengeOverview({ challenge }: ChallengeOverviewProps) {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className='pt-0'>
+            <CardContent>
               <ul className='space-y-2 md:space-y-3'>
                 {challenge.pitfalls.map((pitfall, index) => (
                   <li

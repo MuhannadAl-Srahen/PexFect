@@ -11,7 +11,7 @@ import {
   Upload,
   CheckCircle,
   AlertCircle,
-  HelpCircle,
+  Info,
   LogIn,
 } from 'lucide-react'
 import { submitChallengeSolution } from '../challenges/api'
@@ -69,16 +69,14 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
         }, 2000)
       } catch (err) {
         let errorMessage = 'Failed to submit solution. Please try again.'
-        
+
         if (err instanceof Error) {
           // Check for specific error codes
           if (err.message.startsWith('GITHUB_URL_USED:')) {
             errorMessage = err.message.replace('GITHUB_URL_USED: ', '')
-          }
-          else if (err.message.startsWith('LIVE_URL_USED:')) {
+          } else if (err.message.startsWith('LIVE_URL_USED:')) {
             errorMessage = err.message.replace('LIVE_URL_USED: ', '')
-          }
-          else if (err.message.startsWith('OFFICIAL_URL_USED:')) {
+          } else if (err.message.startsWith('OFFICIAL_URL_USED:')) {
             errorMessage = err.message.replace('OFFICIAL_URL_USED: ', '')
           }
           // Check for "URLs already used for another challenge" errors
@@ -86,23 +84,30 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
             errorMessage = err.message
           }
           // Check for duplicate GitHub URL error (should not happen with new logic)
-          else if (err.message.includes('challenge_submissions_github_url_key')) {
-            errorMessage = 'This GitHub repository URL is already in use. Please use a different repository.'
+          else if (
+            err.message.includes('challenge_submissions_github_url_key')
+          ) {
+            errorMessage =
+              'This GitHub repository URL is already in use. Please use a different repository.'
           }
           // Check for duplicate live site URL error (should not happen with new logic)
-          else if (err.message.includes('challenge_submissions_live_site_url_key')) {
-            errorMessage = 'This live preview URL is already in use. Please deploy your project to a different URL.'
+          else if (
+            err.message.includes('challenge_submissions_live_site_url_key')
+          ) {
+            errorMessage =
+              'This live preview URL is already in use. Please deploy your project to a different URL.'
           }
           // Generic duplicate key error
           else if (err.message.includes('duplicate key')) {
-            errorMessage = 'This URL is already in use. Please use different URLs for your repository and live site.'
+            errorMessage =
+              'This URL is already in use. Please use different URLs for your repository and live site.'
           }
           // Other errors
           else {
             errorMessage = err.message
           }
         }
-        
+
         setError(errorMessage)
       } finally {
         setIsSubmitting(false)
@@ -200,7 +205,9 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
             onClick={async () => {
               await supabase.auth.signInWithOAuth({
                 provider: 'github',
-                options: { redirectTo: window.location.href },
+                options: {
+                  redirectTo: `${window.location.origin}${window.location.pathname}`,
+                },
               })
             }}
             className='w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary'
@@ -235,32 +242,32 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
 
   return (
     <div className='space-y-4 md:space-y-8'>
-      <div className='grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8'>
+      <div className='grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8'>
         {/* Submit Form */}
-        <div className='lg:col-span-2 bg-card text-card-foreground flex flex-col gap-3 md:gap-6 rounded-xl border py-3 md:py-6 shadow-sm'>
-          <div className='flex items-center px-3 md:px-6'>
-            <div className='p-1.5 md:p-2 bg-primary/10 rounded-lg mr-2 md:mr-3'>
-              <Upload className='h-4 w-4 md:h-6 md:w-6 text-primary' />
+        <div className='lg:col-span-2 bg-card text-card-foreground rounded-xl border shadow-sm'>
+          <div className='flex items-center px-6 pt-6 '>
+            <div className='p-2 bg-primary/10 rounded-lg mr-3'>
+              <Upload className='h-5 w-5 text-primary' />
             </div>
             <div>
-              <h3 className='text-sm md:text-xl font-bold text-foreground'>
+              <h3 className='text-lg font-bold text-foreground'>
                 Submit Your Solution
               </h3>
-              <p className='text-xs md:text-sm text-muted-foreground'>
+              <p className='text-sm text-muted-foreground'>
                 Share your completed project and get AI-powered feedback
               </p>
             </div>
           </div>
-          <div className='px-3 md:px-6'>
+          <div className='px-6 py-6'>
             <form
               onSubmit={(e) => {
                 e.preventDefault()
                 e.stopPropagation()
                 form.handleSubmit()
               }}
-              className='space-y-4 md:space-y-6'
+              className='space-y-6'
             >
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6'>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                 <form.Field
                   name='githubUrl'
                   children={(field) => (
@@ -268,9 +275,9 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
                       <div className='flex items-center space-x-2'>
                         <Label
                           htmlFor={field.name}
-                          className='flex items-center text-sm md:text-base font-semibold'
+                          className='flex items-center text-sm font-semibold'
                         >
-                          <Github className='h-4 w-4 md:h-5 md:w-5 mr-1.5 md:mr-2 text-muted-foreground' />
+                          <Github className='h-4 w-4 mr-2 text-muted-foreground' />
                           GitHub Repository URL{' '}
                           <span className='text-destructive ml-1'>*</span>
                         </Label>
@@ -283,7 +290,7 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
                         value={field.state.value}
                         onBlur={field.handleBlur}
                         onChange={(e) => field.handleChange(e.target.value)}
-                        className='py-2 md:py-3 px-3 md:px-4 text-sm md:text-base border-2 border-border rounded-lg focus:border-primary focus:ring-0'
+                        className='h-10 px-3 text-sm border-2 border-border rounded-lg focus:border-primary focus:ring-0'
                         required
                       />
                     </div>
@@ -297,9 +304,9 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
                       <div className='flex items-center space-x-2'>
                         <Label
                           htmlFor={field.name}
-                          className='flex items-center text-sm md:text-base font-semibold'
+                          className='flex items-center text-sm font-semibold'
                         >
-                          <ExternalLink className='h-4 w-4 md:h-5 md:w-5 mr-1.5 md:mr-2 text-muted-foreground' />
+                          <ExternalLink className='h-4 w-4 mr-2 text-muted-foreground' />
                           Live Site URL{' '}
                           <span className='text-destructive ml-1'>*</span>
                         </Label>
@@ -312,7 +319,7 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
                         value={field.state.value}
                         onBlur={field.handleBlur}
                         onChange={(e) => field.handleChange(e.target.value)}
-                        className='py-2 md:py-3 px-3 md:px-4 text-sm md:text-base border-2 border-border rounded-lg focus:border-primary focus:ring-0'
+                        className='h-10 px-3 text-sm border-2 border-border rounded-lg focus:border-primary focus:ring-0'
                         required
                       />
                     </div>
@@ -325,16 +332,16 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
                 <div className='flex items-center space-x-2'>
                   <Label
                     htmlFor='screenshot'
-                    className='flex items-center text-sm md:text-base font-semibold'
+                    className='flex items-center text-sm font-semibold'
                   >
-                    <Upload className='h-4 w-4 md:h-5 md:w-5 mr-1.5 md:mr-2 text-muted-foreground' />
+                    <Upload className='h-4 w-4 mr-2 text-muted-foreground' />
                     Project Screenshot (Optional)
                   </Label>
                 </div>
                 <div
-                  className={`border-2 border-dashed rounded-xl p-4 md:p-8 text-center transition-all duration-200 cursor-pointer ${
+                  className={`border-2 border-dashed rounded-lg p-8 text-center transition-all duration-200 cursor-pointer ${
                     isDragOver
-                      ? 'border-primary bg-primary/10 scale-105'
+                      ? 'border-primary bg-primary/10 scale-[1.02]'
                       : 'border-border hover:border-primary/40 hover:bg-primary/5'
                   }`}
                   onDragOver={handleDragOver}
@@ -358,15 +365,15 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
                         <img
                           src={URL.createObjectURL(screenshot)}
                           alt='Uploaded screenshot preview'
-                          className='max-h-32 md:max-h-48 object-contain mb-2 md:mb-4 rounded-lg shadow-sm'
+                          className='max-h-40 object-contain mb-4 rounded-lg shadow-sm'
                         />
-                        <p className='text-xs md:text-sm text-foreground font-medium mb-1 md:mb-2'>
+                        <p className='text-sm text-foreground font-medium mb-3'>
                           {screenshot.name}
                         </p>
                         <Button
                           variant='ghost'
                           size='sm'
-                          className='text-destructive hover:text-destructive hover:bg-destructive/10 text-xs md:text-sm'
+                          className='text-destructive hover:text-destructive hover:bg-destructive/10 text-sm'
                           onClick={(e) => {
                             e.preventDefault()
                             setScreenshot(null)
@@ -379,12 +386,12 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
                     ) : (
                       <>
                         <Upload
-                          className={`h-8 w-8 md:h-12 md:w-12 text-muted-foreground mx-auto mb-2 md:mb-4 transition-all duration-200 ${
+                          className={`h-12 w-12 text-muted-foreground mx-auto mb-4 transition-all duration-200 ${
                             isDragOver ? 'scale-110 text-primary' : ''
                           }`}
                         />
                         <p
-                          className={`text-sm md:text-lg font-medium mb-1 md:mb-2 transition-colors duration-200 ${
+                          className={`text-base font-medium mb-2 transition-colors duration-200 ${
                             isDragOver
                               ? 'text-primary'
                               : 'text-muted-foreground'
@@ -401,7 +408,7 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
                             </>
                           )}
                         </p>
-                        <p className='text-xs md:text-sm text-muted-foreground'>
+                        <p className='text-sm text-muted-foreground'>
                           PNG, JPG up to 10MB
                         </p>
                       </>
@@ -410,41 +417,17 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
                 </div>
               </div>
 
-              <form.Field
-                name='description'
-                children={(field) => (
-                  <div className='space-y-2'>
-                    <Label
-                      htmlFor={field.name}
-                      className='text-sm md:text-base font-semibold'
-                    >
-                      Project Description (Optional)
-                    </Label>
-                    <textarea
-                      id={field.name}
-                      name={field.name}
-                      placeholder="Tell us about your approach, challenges you faced, or features you're proud of..."
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                        field.handleChange(e.target.value)
-                      }
-                      rows={4}
-                      className='w-full py-2 md:py-3 px-3 md:px-4 text-sm md:text-base border-2 border-border rounded-lg focus:border-primary focus:ring-0 resize-none bg-background'
-                    />
-                  </div>
-                )}
-              />
-
               {error && (
-                <div className='bg-destructive/10 border border-destructive/20 text-destructive px-3 md:px-4 py-2 md:py-3 rounded-lg'>
-                  <div className='flex items-center'>
-                    <AlertCircle className='h-4 w-4 mr-2' />
-                    <span className='font-semibold text-sm md:text-base'>
-                      Submission Error
-                    </span>
+                <div className='bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-lg'>
+                  <div className='flex items-start'>
+                    <AlertCircle className='h-4 w-4 mr-2 flex-shrink-0 mt-0.5' />
+                    <div>
+                      <span className='font-semibold text-sm'>
+                        Submission Error
+                      </span>
+                      <p className='mt-1 text-sm'>{error}</p>
+                    </div>
                   </div>
-                  <p className='mt-1 text-xs md:text-sm'>{error}</p>
                 </div>
               )}
 
@@ -453,17 +436,17 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
                 children={([canSubmit, isSubmittingForm]) => (
                   <Button
                     type='submit'
-                    className='w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground text-base md:text-lg py-4 md:py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200'
+                    className='w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground text-base py-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200'
                     disabled={!canSubmit || isSubmitting || isSubmittingForm}
                   >
                     {isSubmitting || isSubmittingForm ? (
                       <>
-                        <div className='animate-spin w-4 h-4 md:w-5 md:h-5 border-2 border-primary-foreground border-t-transparent rounded-full mr-2 md:mr-3'></div>
+                        <div className='animate-spin w-5 h-5 border-2 border-primary-foreground border-t-transparent rounded-full mr-2'></div>
                         Analyzing Solution...
                       </>
                     ) : (
                       <>
-                        <Upload className='mr-2 h-4 w-4 md:h-5 md:w-5' />
+                        <Upload className='mr-2 h-5 w-5' />
                         Submit for AI Review
                       </>
                     )}
@@ -474,91 +457,82 @@ export function ChallengeSubmission({ challenge }: ChallengeSubmissionProps) {
           </div>
         </div>
 
-        {/* Tips & Guidelines */}
-        <div className='space-y-4 md:space-y-6'>
-          <div className='bg-card text-card-foreground flex flex-col gap-3 md:gap-6 rounded-xl border py-3 md:py-6 shadow-sm'>
-            <div className='flex items-center px-3 md:px-6'>
-              <div className='p-1.5 md:p-2 bg-primary/10 rounded-lg mr-2 md:mr-3'>
-                <HelpCircle className='h-4 w-4 md:h-6 md:w-6 text-primary' />
+        {/* URL Explanations & Guidelines */}
+        <div className='space-y-6'>
+          <div className='bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm'>
+            <div className='flex items-center px-6'>
+              <div className='p-2 bg-primary/10 rounded-lg mr-3'>
+                <Info className='h-5 w-5 text-primary' />
               </div>
               <div>
-                <h3 className='text-sm md:text-xl font-bold text-foreground'>
-                  Submission Tips
+                <h3 className='text-base font-bold text-foreground'>
+                  What to Submit
                 </h3>
-                <p className='text-xs md:text-sm text-muted-foreground'>
-                  Guidelines for better results
+                <p className='text-sm text-muted-foreground'>
+                  Two essential links required
                 </p>
               </div>
             </div>
-            <div className='px-3 md:px-6 space-y-3 md:space-y-4'>
-              <div className='flex items-start space-x-2 md:space-x-3 group'>
-                <div className='w-1.5 h-1.5 md:w-2 md:h-2 bg-primary rounded-full mt-1.5 md:mt-2 flex-shrink-0 transition-all duration-300 group-hover:scale-125'></div>
-                <div>
-                  <h4 className='font-medium text-foreground mb-1 text-sm md:text-base'>
-                    Test Your Links
+            <div className='px-6 space-y-5'>
+              <div className='space-y-2'>
+                <div className='flex items-center space-x-2'>
+                  <Github className='h-5 w-5 text-primary flex-shrink-0' />
+                  <h4 className='font-semibold text-foreground text-sm'>
+                    GitHub Repository
                   </h4>
-                  <p className='text-xs md:text-sm text-muted-foreground'>
-                    Ensure both URLs are working correctly.
-                  </p>
                 </div>
+                <p className='text-sm text-muted-foreground leading-relaxed'>
+                  Your project's source code hosted on GitHub for code review
+                  and quality assessment.
+                </p>
               </div>
-              <div className='flex items-start space-x-2 md:space-x-3 group'>
-                <div className='w-1.5 h-1.5 md:w-2 md:h-2 bg-secondary rounded-full mt-1.5 md:mt-2 flex-shrink-0 transition-all duration-300 group-hover:scale-125'></div>
-                <div>
-                  <h4 className='font-medium text-foreground mb-1 text-sm md:text-base'>
-                    Clean Code
+
+              <div className='space-y-2'>
+                <div className='flex items-center space-x-2'>
+                  <ExternalLink className='h-5 w-5 text-primary flex-shrink-0' />
+                  <h4 className='font-semibold text-foreground text-sm'>
+                    Live Site URL
                   </h4>
-                  <p className='text-xs md:text-sm text-muted-foreground'>
-                    Organize your code for better feedback.
-                  </p>
                 </div>
+                <p className='text-sm text-muted-foreground leading-relaxed'>
+                  Deployed version of your project to test functionality,
+                  design, and user experience.
+                </p>
               </div>
             </div>
           </div>
 
-          <div className='bg-card text-card-foreground flex flex-col gap-3 md:gap-6 rounded-xl border py-3 md:py-6 shadow-sm'>
-            <div className='flex items-center px-3 md:px-6'>
-              <div className='p-1.5 md:p-2 bg-primary/10 rounded-lg mr-2 md:mr-3'>
-                <CheckCircle className='h-4 w-4 md:h-6 md:w-6 text-primary' />
+          <div className='bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm'>
+            <div className='flex items-center px-6'>
+              <div className='p-2 bg-primary/10 rounded-lg mr-3'>
+                <CheckCircle className='h-5 w-5 text-primary' />
               </div>
               <div>
-                <h3 className='text-sm md:text-xl font-bold text-foreground'>
+                <h3 className='text-base font-bold text-foreground'>
                   What We Analyze
                 </h3>
-                <p className='text-xs md:text-sm text-muted-foreground'>
+                <p className='text-sm text-muted-foreground'>
                   Our AI evaluation criteria
                 </p>
               </div>
             </div>
-            <div className='px-3 md:px-6 space-y-2 md:space-y-3'>
-              <div className='flex items-center space-x-2 group'>
-                <CheckCircle className='h-3 w-3 md:h-4 md:w-4 text-primary transition-all duration-300 group-hover:scale-110' />
-                <span className='text-xs md:text-sm text-muted-foreground'>
+            <div className='px-6 space-y-3'>
+              <div className='flex items-center space-x-3 group'>
+                <CheckCircle className='h-4 w-4 text-primary flex-shrink-0' />
+                <span className='text-sm text-muted-foreground'>
                   Code structure & organization
                 </span>
               </div>
-              <div className='flex items-center space-x-2 group'>
-                <CheckCircle className='h-3 w-3 md:h-4 md:w-4 text-primary transition-all duration-300 group-hover:scale-110' />
-                <span className='text-xs md:text-sm text-muted-foreground'>
+              <div className='flex items-center space-x-3 group'>
+                <CheckCircle className='h-4 w-4 text-primary flex-shrink-0' />
+                <span className='text-sm text-muted-foreground'>
                   Responsive design implementation
                 </span>
               </div>
-              <div className='flex items-center space-x-2 group'>
-                <CheckCircle className='h-3 w-3 md:h-4 md:w-4 text-primary transition-all duration-300 group-hover:scale-110' />
-                <span className='text-xs md:text-sm text-muted-foreground'>
+              <div className='flex items-center space-x-3 group'>
+                <CheckCircle className='h-4 w-4 text-primary flex-shrink-0' />
+                <span className='text-sm text-muted-foreground'>
                   Accessibility best practices
-                </span>
-              </div>
-              <div className='flex items-center space-x-2 group'>
-                <CheckCircle className='h-3 w-3 md:h-4 md:w-4 text-primary transition-all duration-300 group-hover:scale-110' />
-                <span className='text-xs md:text-sm text-muted-foreground'>
-                  Performance optimization
-                </span>
-              </div>
-              <div className='flex items-center space-x-2 group'>
-                <CheckCircle className='h-3 w-3 md:h-4 md:w-4 text-primary transition-all duration-300 group-hover:scale-110' />
-                <span className='text-xs md:text-sm text-muted-foreground'>
-                  Design accuracy & creativity
                 </span>
               </div>
             </div>
