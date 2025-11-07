@@ -44,6 +44,8 @@ export const useNavbarLogic = () => {
   const [user, setUser] = useState<any>(null)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [scrollY, setScrollY] = useState(0)
+  const [lastScrollY, setLastScrollY] = useState(0)
+  const [isNavbarVisible, setIsNavbarVisible] = useState(true)
   // Use the shared auth query to avoid duplicate fetches and to centralize auth state
   const { data: authData } = useAuth()
   const queryClient = useQueryClient()
@@ -54,17 +56,26 @@ export const useNavbarLogic = () => {
 
     // Ensure the user's profile exists when they sign in
     if (authData?.session?.user) {
-      ensureProfileExists().catch((e) => console.error('[ensureProfileExists]', e))
+      ensureProfileExists().catch((e) =>
+        console.error('[ensureProfileExists]', e)
+      )
     }
 
     // Subscribe to Supabase auth changes and update the shared query cache so all components see updates
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      queryClient.setQueryData(['auth'], { isAuthenticated: !!session, session })
-      setUser(session?.user ?? null)
-      if (session?.user) {
-        ensureProfileExists().catch((e) => console.error('[ensureProfileExists]', e))
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        queryClient.setQueryData(['auth'], {
+          isAuthenticated: !!session,
+          session,
+        })
+        setUser(session?.user ?? null)
+        if (session?.user) {
+          ensureProfileExists().catch((e) =>
+            console.error('[ensureProfileExists]', e)
+          )
+        }
       }
-    })
+    )
 
     return () => {
       if (
@@ -78,8 +89,33 @@ export const useNavbarLogic = () => {
   }, [authData, queryClient])
 
   const handleScroll = useCallback(() => {
-    setScrollY(window.scrollY)
-  }, [])
+    const currentScrollY = window.scrollY
+
+    // Don't hide navbar if mobile menu is open
+    if (isMobileMenuOpen) {
+      setScrollY(currentScrollY)
+      return
+    }
+
+    // Show navbar when at the top
+    if (currentScrollY < SCROLL_THRESHOLD) {
+      setIsNavbarVisible(true)
+    }
+    // Hide navbar when scrolling down, show when scrolling up
+    else if (
+      currentScrollY > lastScrollY &&
+      currentScrollY > SCROLL_THRESHOLD
+    ) {
+      // Scrolling down
+      setIsNavbarVisible(false)
+    } else if (currentScrollY < lastScrollY) {
+      // Scrolling up
+      setIsNavbarVisible(true)
+    }
+
+    setLastScrollY(currentScrollY)
+    setScrollY(currentScrollY)
+  }, [lastScrollY, isMobileMenuOpen])
 
   useEffect(() => {
     const throttledHandler = throttle(handleScroll, THROTTLE_DELAY)
@@ -90,13 +126,16 @@ export const useNavbarLogic = () => {
   const navbarClasses = useMemo(
     () =>
       cn(
-        'sticky top-0 w-full z-50 transition-all duration-300 ease-out',
-        'bg-background/80 backdrop-blur-xl border-b',
-        scrollY > SCROLL_THRESHOLD
-          ? 'border-border/80 shadow-lg shadow-primary/5'
-          : 'border-border/30 shadow-sm'
+        'fixed top-0 w-full z-50 transition-all duration-500 ease-in-out',
+        'bg-background/70 backdrop-blur-2xl border-b',
+        !isMobileMenuOpen &&
+          (scrollY > SCROLL_THRESHOLD
+            ? 'border-border/80 shadow-lg shadow-primary/5'
+            : 'border-border/30 shadow-sm'),
+        isMobileMenuOpen && 'border-b-0',
+        !isNavbarVisible && !isMobileMenuOpen && '-translate-y-full'
       ),
-    [scrollY]
+    [scrollY, isNavbarVisible, isMobileMenuOpen]
   )
 
   const toggleTheme = useCallback(() => {
@@ -137,6 +176,7 @@ export const useNavbarLogic = () => {
     user,
     isMobileMenuOpen,
     scrollY,
+    isNavbarVisible,
     navbarClasses,
     toggleTheme,
     closeMobileMenu,
