@@ -33,7 +33,7 @@ export const ScrollToTop = () => {
 
   const scrollToTop = () => {
     const start = window.scrollY
-    const duration = 1300 // 1.5 seconds for slower scroll
+    const duration = 1300 // 1.3 seconds for slower scroll
     const startTime = performance.now()
 
     const easeInOutCubic = (t: number) => {
