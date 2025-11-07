@@ -33,7 +33,7 @@ export const PageLayout = ({
   padding = 'lg',
 }: PageLayoutProps) => {
   return (
-    <div className={cn('bg-background min-h-screen', className)}>
+    <div className={cn('bg-background min-h-screen mt-18', className)}>
       <div className='container mx-auto px-4'>
         <div
           className={cn(

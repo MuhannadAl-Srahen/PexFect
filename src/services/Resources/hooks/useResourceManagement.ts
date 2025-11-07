@@ -1,12 +1,22 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useResources } from './useResources'
 import type { ResourceItem } from '@/types'
 
 export function useResourceManagement(externalSearchTerm?: string) {
+  // Load saved tab from sessionStorage, default to 'documentation'
   const [activeTab, setActiveTab] = useState<
     'documentation' | 'video' | 'tools'
-  >('documentation')
+  >(() => {
+    const saved = sessionStorage.getItem('resources-active-tab')
+    return (saved as 'documentation' | 'video' | 'tools') || 'documentation'
+  })
+
   const [searchTerm, setSearchTerm] = useState('')
+
+  // Save active tab to sessionStorage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem('resources-active-tab', activeTab)
+  }, [activeTab])
 
   // Use external search term if provided, otherwise use internal search term
   const effectiveSearchTerm =

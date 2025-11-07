@@ -4,7 +4,10 @@ import type { LearningPath } from '../../../types/roadmap'
 
 import { BookOpen, Zap, Trophy } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
-import { useProfile, useUpdateProfile } from '@/services/profile/hooks/useProfile'
+import {
+  useProfile,
+  useUpdateProfile,
+} from '@/services/profile/hooks/useProfile'
 import { Button } from '@/components/ui/button'
 import { useChallenges } from '@/services/challenges/hooks/useChallenges'
 
@@ -72,11 +75,19 @@ const LearningPathCard: React.FC<LearningPathCardProps> = ({ path }) => {
   const updateProfile = useUpdateProfile()
   const progress = profile?.learningPaths?.[path.id]?.progress ?? 0
   const started = Boolean(profile?.learningPaths?.[path.id]?.started)
-  const completedCount = profile?.learningPaths?.[path.id]?.completedChallenges?.length ?? 0
+  const completedCount =
+    profile?.learningPaths?.[path.id]?.completedChallenges?.length ?? 0
 
   const { data: allChallenges = [] } = useChallenges()
-  const difficultyLabel = key === 'beginner' ? 'Beginner' : key === 'intermediate' ? 'Intermediate' : 'Advanced'
-  const totalForDifficulty = allChallenges.filter((c) => c.difficulty === difficultyLabel).length
+  const difficultyLabel =
+    key === 'beginner'
+      ? 'Beginner'
+      : key === 'intermediate'
+        ? 'Intermediate'
+        : 'Advanced'
+  const totalForDifficulty = allChallenges.filter(
+    (c) => c.difficulty === difficultyLabel
+  ).length
 
   return (
     <Link to={CTA_LINKS[key]} className='w-full h-full'>
@@ -157,10 +168,20 @@ const LearningPathCard: React.FC<LearningPathCardProps> = ({ path }) => {
                     e.preventDefault()
                     e.stopPropagation()
                     if (!profile?.id) return
-                    const lp = {
-                      [path.id]: { started: true, progress: 0, completedChallenges: [] },
+                    // Merge with existing learningPaths instead of replacing
+                    const existingPaths = profile.learningPaths || {}
+                    const updatedPaths = {
+                      ...existingPaths,
+                      [path.id]: {
+                        started: true,
+                        progress: 0,
+                        completedChallenges: [],
+                      },
                     }
-                    updateProfile.mutate({ userId: profile.id, updates: { learningPaths: lp } })
+                    updateProfile.mutate({
+                      userId: profile.id,
+                      updates: { learningPaths: updatedPaths },
+                    })
                   }}
                   aria-label={`Start ${key} path`}
                 >

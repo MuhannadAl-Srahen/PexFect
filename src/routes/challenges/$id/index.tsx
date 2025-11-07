@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { Button } from '@/components/ui/button'
@@ -12,6 +12,7 @@ import {
   ChallengeResources,
   ChallengeSubmission,
 } from '@/services/challenges'
+import { ChallengeDetailSkeleton } from '@/components/ui/challenge-detail-skeleton'
 
 type TabType = 'overview' | 'design' | 'resources' | 'submission'
 
@@ -21,8 +22,17 @@ export const Route = createFileRoute('/challenges/$id/')({
 
 function RouteComponent() {
   const { id } = Route.useParams()
-  const [activeTab, setActiveTab] = useState<TabType>('overview')
+  // Load saved tab from sessionStorage
+  const [activeTab, setActiveTab] = useState<TabType>(() => {
+    const saved = sessionStorage.getItem(`challenge-${id}-active-tab`)
+    return (saved as TabType) || 'overview'
+  })
   const navigate = useNavigate()
+
+  // Save active tab to sessionStorage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem(`challenge-${id}-active-tab`, activeTab)
+  }, [activeTab, id])
 
   const {
     data: challenge,
@@ -35,13 +45,11 @@ function RouteComponent() {
     retry: 2,
   })
 
-  // TODO: Add proper error handling and loading states
+  // Show skeleton loading state
   if (isLoading) {
     return (
       <PageLayout>
-        <div className='flex items-center justify-center min-h-[50vh]'>
-          <div className='animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full'></div>
-        </div>
+        <ChallengeDetailSkeleton />
       </PageLayout>
     )
   }

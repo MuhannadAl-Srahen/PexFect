@@ -24,7 +24,17 @@ export const Route = createFileRoute('/challenges/')({
 })
 
 function RouteComponent() {
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  // Load saved view mode from sessionStorage
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>(() => {
+    const saved = sessionStorage.getItem('challenges-view-mode')
+    return (saved as 'grid' | 'list') || 'grid'
+  })
+
+  // Save view mode to sessionStorage whenever it changes
+  const handleViewModeChange = (mode: 'grid' | 'list') => {
+    setViewMode(mode)
+    sessionStorage.setItem('challenges-view-mode', mode)
+  }
 
   // Use React Query hooks for data fetching
   const { data: authData, isLoading: isAuthLoading } = useAuth()
@@ -94,7 +104,7 @@ function RouteComponent() {
         onDifficultyChange={setSelectedDifficulty}
         onLanguageChange={setSelectedLanguage}
         viewMode={viewMode}
-        onViewModeChange={setViewMode}
+        onViewModeChange={handleViewModeChange}
         filteredCount={filteredChallenges.length}
         totalCount={allChallenges.length}
       />

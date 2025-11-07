@@ -11,7 +11,6 @@ import { CheckCircle, Trophy, Heart, LogIn } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import { useAuth } from '@/services/challenges/hooks/useAuth'
-import useDelayedLoading from '@/lib/useDelayedLoading'
 import { useQueryClient } from '@tanstack/react-query'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -42,32 +41,50 @@ export const Route = createFileRoute('/profile')({
 
 function RouteComponent() {
   const { tab } = Route.useSearch()
-  const [activeTab, setActiveTab] = useState(tab || 'recent')
+  // Load saved tab from sessionStorage or default to 'recent'
+  const [activeTab, setActiveTab] = useState(() => {
+    const saved = sessionStorage.getItem('profile-active-tab')
+    return saved || 'recent'
+  })
   // Use the shared useAuth query so auth state is cached and consistent
   const { data: authData, isLoading: isAuthLoading } = useAuth()
   const isAuthenticated = authData?.isAuthenticated ?? false
 
-  // delay showing the spinner a little so short loads don't flicker
-  const showLoading = useDelayedLoading(isAuthLoading, 180)
-
   // Keep the auth query up-to-date if Supabase emits auth changes (update the query cache)
   const queryClient = useQueryClient()
   useEffect(() => {
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      queryClient.setQueryData(['auth'], { isAuthenticated: !!session, session })
-    })
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        queryClient.setQueryData(['auth'], {
+          isAuthenticated: !!session,
+          session,
+        })
+      }
+    )
 
     return () => {
-      if (listener.subscription && typeof listener.subscription.unsubscribe === 'function') {
-        listener.subscription.unsubscribe();
+      if (
+        listener.subscription &&
+        typeof listener.subscription.unsubscribe === 'function'
+      ) {
+        listener.subscription.unsubscribe()
       }
     }
   }, [queryClient])
 
-  // Update tab when search param changes
+  // Update tab ONLY when URL search param changes
   useEffect(() => {
-    setActiveTab(tab || 'recent')
+    if (tab) {
+      setActiveTab(tab)
+      sessionStorage.setItem('profile-active-tab', tab)
+    }
   }, [tab])
+
+  // Save tab to sessionStorage when user clicks a tab
+  const handleTabChange = (newTab: string) => {
+    setActiveTab(newTab)
+    sessionStorage.setItem('profile-active-tab', newTab)
+  }
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -82,8 +99,8 @@ function RouteComponent() {
     }
   }
 
-  // Show loading state while checking auth
-  if (showLoading && isAuthLoading) {
+  // Show loading state while checking auth (always show if loading to prevent flash)
+  if (isAuthLoading) {
     return (
       <PageLayout maxWidth='6xl'>
         <div className='flex items-center justify-center min-h-[60vh]'>
@@ -96,7 +113,7 @@ function RouteComponent() {
     )
   }
 
-  // Show sign-in prompt if not authenticated
+  // Show sign-in prompt if not authenticated (only after loading completes)
   if (!isAuthenticated) {
     return (
       <PageLayout maxWidth='6xl'>
@@ -111,15 +128,18 @@ function RouteComponent() {
               Sign In to View Your Profile
             </h2>
             <p className='text-muted-foreground text-lg mb-8 leading-relaxed'>
-              Create an account or sign in to access your personalized dashboard, track your progress, 
-              save your favorite challenges, and view your learning journey.
+              Create an account or sign in to access your personalized
+              dashboard, track your progress, save your favorite challenges, and
+              view your learning journey.
             </p>
             <div className='flex flex-col sm:flex-row gap-4 justify-center'>
-              <Button 
+              <Button
                 onClick={async () => {
                   await supabase.auth.signInWithOAuth({
                     provider: 'github',
-                    options: { redirectTo: window.location.origin + '/profile' },
+                    options: {
+                      redirectTo: window.location.origin + '/profile',
+                    },
                   })
                 }}
                 size='lg'
@@ -178,7 +198,7 @@ function RouteComponent() {
                   return (
                     <button
                       key={tab.key}
-                      onClick={() => setActiveTab(tab.key)}
+                      onClick={() => handleTabChange(tab.key)}
                       className={`relative z-10 inline-flex items-center justify-center gap-2 rounded-lg px-3 py-3 text-sm font-medium transition-all duration-300 ease-out flex-1 ${
                         isActive
                           ? 'text-primary-foreground'
