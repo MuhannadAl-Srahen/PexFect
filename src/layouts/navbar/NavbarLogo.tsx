@@ -1,23 +1,19 @@
 import { Link } from '@tanstack/react-router'
-import { Code2 } from 'lucide-react'
 
 export const NavbarLogo = () => {
   return (
-    <Link
-      to='/'
-      className='flex items-center space-x-2 sm:space-x-3 group relative'
-    >
-      <div className='relative'>
-        {/* Main icon */}
-        <div className='relative bg-gradient-to-br from-primary/10 to-secondary/10 p-2 rounded-xl transition-all duration-300 group-hover:scale-110 group-hover:shadow-primary/20'>
-          <Code2 className='h-6 w-6 text-primary transition-all duration-300 group-hover:rotate-12' />
-        </div>
-      </div>
-
-      <div className='relative'>
-        <span className='text-xl sm:text-2xl font-bold text-primary transition-all duration-300 group-hover:text-primary/80'>
-          PexFect
-        </span>
+    <Link to='/' className='flex items-center group relative'>
+      <div className='relative transition-all duration-300 group-hover:scale-105'>
+        <img
+          src='/pexfect_white.svg'
+          alt='PexFect Logo'
+          className='h-18 sm:h-26 w-auto dark:block hidden'
+        />
+        <img
+          src='/pextfect_balck.svg'
+          alt='PexFect Logo'
+          className='h-18 sm:h-26 w-auto dark:hidden block'
+        />
       </div>
     </Link>
   )
