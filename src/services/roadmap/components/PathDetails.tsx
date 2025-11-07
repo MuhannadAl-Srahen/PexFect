@@ -5,7 +5,6 @@ import { learningPaths } from '../data'
 import { useProfile } from '@/services/profile/hooks/useProfile'
 import { useMemo } from 'react'
 import { useChallenges } from '@/services/challenges/hooks/useChallenges'
-import { PathDetailsSkeleton } from '@/components/ui/roadmap-skeleton'
 import {
   ArrowLeft,
   BookOpen,
@@ -239,9 +238,7 @@ const PathDetails: React.FC<PathDetailsProps> = ({ pathId }) => {
     profile?.learningPaths?.[pathId]?.completedChallenges?.length ?? 0
   const progress =
     profile?.learningPaths?.[pathId]?.progress ??
-    (totalChallenges > 0
-      ? Math.round((completedChallenges / totalChallenges) * 100)
-      : 0)
+    (totalChallenges > 0 ? Math.round((completedChallenges / totalChallenges) * 100) : 0)
 
   if (!path) return null
 
@@ -339,7 +336,10 @@ const PathDetails: React.FC<PathDetailsProps> = ({ pathId }) => {
       {/* Challenge list */}
       <div className='w-full flex flex-col items-center mt-2'>
         {isLoading ? (
-          <PathDetailsSkeleton />
+          <div className='text-muted-foreground text-center py-10'>
+            <div className='animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4'></div>
+            Loading challenges...
+          </div>
         ) : pathChallenges.length === 0 ? (
           <div className='text-muted-foreground text-center py-10'>
             No challenges found for this path.

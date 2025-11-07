@@ -14,7 +14,6 @@ import { useAuth } from '@/services/challenges/hooks/useAuth'
 import { useQueryClient } from '@tanstack/react-query'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { ProfileSkeleton } from '@/components/ui/profile-skeleton'
 import '@/types/profile.css'
 
 interface TabItem {
@@ -34,7 +33,7 @@ const tabs: TabItem[] = [
 export const Route = createFileRoute('/profile')({
   validateSearch: (search: Record<string, unknown>) => {
     return {
-      tab: search.tab as string | undefined,
+      tab: (search.tab as string) || 'recent',
     }
   },
   component: RouteComponent,
@@ -102,7 +101,16 @@ function RouteComponent() {
 
   // Show loading state while checking auth (always show if loading to prevent flash)
   if (isAuthLoading) {
-    return <ProfileSkeleton />
+    return (
+      <PageLayout maxWidth='6xl'>
+        <div className='flex items-center justify-center min-h-[60vh]'>
+          <div className='text-center space-y-4'>
+            <div className='w-12 h-12 mx-auto border-4 border-primary border-t-transparent rounded-full animate-spin' />
+            <p className='text-muted-foreground'>Loading...</p>
+          </div>
+        </div>
+      </PageLayout>
+    )
   }
 
   // Show sign-in prompt if not authenticated (only after loading completes)

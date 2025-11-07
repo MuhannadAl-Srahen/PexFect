@@ -24,12 +24,13 @@ export const Route = createFileRoute('/challenges/')({
 })
 
 function RouteComponent() {
+  // Load saved view mode from sessionStorage
   const [viewMode, setViewMode] = useState<'grid' | 'list'>(() => {
     const saved = sessionStorage.getItem('challenges-view-mode')
     return (saved as 'grid' | 'list') || 'grid'
   })
 
-  // Save view mode to sessionStorage when it changes
+  // Save view mode to sessionStorage whenever it changes
   const handleViewModeChange = (mode: 'grid' | 'list') => {
     setViewMode(mode)
     sessionStorage.setItem('challenges-view-mode', mode)
