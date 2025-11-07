@@ -62,11 +62,11 @@ export const MobileMenu = ({
     >
       <div
         className={cn(
-          'shadow-lg',
+          'bg-background/95 backdrop-blur-sm border-t border-border/20 shadow-lg',
           isOpen ? 'animate-in slide-in-from-top-2 fade-in-0 duration-300' : ''
         )}
       >
-        <div className='px-6 py-6 max-w-7xl mx-auto'>
+        <div className='container mx-auto px-6 py-6'>
           {/* Navigation Section */}
           <div className='mb-6'>
             <div className='text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3 px-1'>
