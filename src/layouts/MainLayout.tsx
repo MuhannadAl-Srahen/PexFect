@@ -23,42 +23,10 @@ export function MainLayout({ children }: Props) {
   useEffect(() => {
     const key = location.pathname
 
-    // Restore scroll position after images are loaded or when browser is idle
-    let restored = false;
-    function doRestore() {
-      if (!restored) {
-        restoreScrollPosition(key);
-        restored = true;
-      }
-    }
-    const images = Array.from(document.images);
-    const unloadedImages = images.filter(img => !img.complete);
-    if (unloadedImages.length > 0) {
-      let loadedCount = 0;
-      unloadedImages.forEach(img => {
-        img.addEventListener('load', () => {
-          loadedCount++;
-          if (loadedCount === unloadedImages.length) {
-            doRestore();
-          }
-        });
-        img.addEventListener('error', () => {
-          loadedCount++;
-          if (loadedCount === unloadedImages.length) {
-            doRestore();
-          }
-        });
-      });
-      // Fallback: in case images never load, restore after idle
-      if ('requestIdleCallback' in window) {
-        (window as any).requestIdleCallback(doRestore, { timeout: 500 });
-      } else {
-        setTimeout(doRestore, 500);
-      }
-    } else {
-      // No images to wait for, restore immediately
-      doRestore();
-    }
+    // Restore scroll position after a short delay to ensure content is loaded
+    const timeout = setTimeout(() => {
+      restoreScrollPosition(key)
+    }, 100)
 
     // Save scroll position before user leaves the page
     const handleBeforeUnload = () => {
