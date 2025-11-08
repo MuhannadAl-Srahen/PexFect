@@ -66,7 +66,7 @@ export function DesignComparison({
         </div>
       </div>
 
-      {/* Key Differences - Only show if AI will not compare images */}
+      {/* Key Differences  */}
       {keyDifferences.length > 0 && (
         <div>
           <h4 className='font-semibold text-foreground mb-3'>Key Differences</h4>
@@ -77,7 +77,7 @@ export function DesignComparison({
             <ul className='space-y-2'>
               {keyDifferences.map((difference, index) => (
                 <li key={index} className='text-sm text-muted-foreground flex items-start'>
-                  <span className='text-orange-500 mr-2'>•</span>
+                  <span className='text-orange-400 mr-2'>•</span>
                   {difference}
                 </li>
               ))}

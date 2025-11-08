@@ -60,11 +60,11 @@ function RouteComponent() {
               
               {/* Action Buttons */}
               <div className='flex space-x-4'>
-                <Button className='bg-primary text-primary-foreground hover:bg-primary/90'>
+                <Button className='bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 transition-all duration-300'>
                   <Eye className='w-4 h-4 mr-2' />
                   Live Preview
                 </Button>
-                <Button variant='outline'>
+                <Button variant='outline'  className='hover:bg-primary/10 hover:text-primary hover:scale-105 transition-all duration-300'>
                   <Code2 className='w-4 h-4 mr-2' />
                   View Code
                 </Button>
@@ -110,15 +110,15 @@ function RouteComponent() {
             {/* Areas for Improvement */}
             <div>
               <div className='flex items-center mb-4'>
-                <AlertTriangle className='w-5 h-5 text-orange-500 mr-2' />
-                <h3 className='text-lg font-semibold text-orange-700 dark:text-orange-400'>
+                <AlertTriangle className='w-5 h-5 text-orange-400 mr-2' />
+                <h3 className='text-lg font-semibold text-orange-400 dark:text-orange-400'>
                   Areas for Improvement
                 </h3>
               </div>
               <ul className='space-y-3'>
                 {feedbackData.bestPractices.areasForImprovement.map((item: string, index: number) => (
                   <li key={index} className='text-sm text-muted-foreground flex items-start'>
-                    <AlertTriangle className='w-4 h-4 text-orange-500 mr-2 mt-0.5 flex-shrink-0' />
+                    <AlertTriangle className='w-4 h-4 text-orange-400 mr-2 mt-0.5 flex-shrink-0' />
                     {item}
                   </li>
                 ))}

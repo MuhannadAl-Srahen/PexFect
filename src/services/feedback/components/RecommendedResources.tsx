@@ -1,130 +1,59 @@
-import { BookOpen, ExternalLink, FileText, Video, Wrench } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent } from '@/components/ui/card'
-import { Link } from '@tanstack/react-router'
+import { BookOpen } from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { ResourceCard } from '@/services/Resources'
+import { useResources } from '@/services/Resources/hooks/useResources'
+import type { ResourceItem as MainResourceItem } from '@/types/index'
 
-interface ResourceItem {
-  id: string
-  title: string
-  category: string
-  description: string
-  url?: string
-  thumbnail?: string
-  author?: string
-  difficulty?: string
-}
-
-interface RecommendedResourcesProps {
-  resources: ResourceItem[]
-}
-
-// Function to get appropriate icon based on category type
-const getCategoryIcon = (category: string) => {
-  const categoryLower = category.toLowerCase()
-
-  if (categoryLower.includes('video') || categoryLower.includes('youtube')) {
-    return Video
-  }
-  if (
-    categoryLower.includes('tool') ||
-    categoryLower.includes('editor') ||
-    categoryLower.includes('debug') ||
-    categoryLower.includes('hosting') ||
-    categoryLower.includes('design')
-  ) {
-    return Wrench
-  }
-  return FileText
-}
-
-const getBadgeColors = (category: string) => {
-  const categoryLower = category.toLowerCase()
+export function RecommendedResources() {
+  // Fetch real video resources from the resources page
+  const { data: videoResources = [] } = useResources('video')
+  const { data: documentationResources = [] } = useResources('documentation')
   
-  if (categoryLower.includes('tutorial')) {
-    return 'bg-blue-100 text-blue-800 hover:bg-blue-100'
-  }
-  if (categoryLower.includes('documentation')) {
-    return 'bg-gray-100 text-gray-800 hover:bg-gray-100'
-  }
-  if (categoryLower.includes('video')) {
-    return 'bg-red-100 text-red-800 hover:bg-red-100'
-  }
-  if (categoryLower.includes('tool')) {
-    return 'bg-purple-100 text-purple-800 hover:bg-purple-100'
-  }
-  return 'bg-green-100 text-green-800 hover:bg-green-100'
-}
+  // Use real video from resources page
+  const videoResource = videoResources[0] || null
+  
+  // Use real documentation from resources page  
+  const documentResources = documentationResources.slice(0, 2)
 
-export function RecommendedResources({ resources }: RecommendedResourcesProps) {
   return (
     <Card className='p-6'>
-      <div className='flex items-center justify-between mb-6'>
-        <div className='flex items-center'>
-          <BookOpen className='w-5 h-5 text-primary mr-2' />
-          <h3 className='text-xl font-bold text-foreground'>Recommended Learning Resources</h3>
+      <CardHeader className='px-0 pt-0'>
+        <div className='flex items-center gap-2'>
+          <BookOpen className='w-5 h-5 text-primary' />
+          <CardTitle className='text-xl font-bold'>Recommended Learning Resources</CardTitle>
         </div>
-        <Button variant='outline' size='sm' asChild>
-          <Link to='/resources'>
-            View All Resources
-            <ExternalLink className='w-4 h-4 ml-2' />
-          </Link>
-        </Button>
-      </div>
+      </CardHeader>
       
-      <div className='space-y-4'>
-        {resources.map((resource) => {
-          const CategoryIcon = getCategoryIcon(resource.category)
-          
-          return (
-            <Card key={resource.id} className='p-4 hover:shadow-md transition-shadow duration-200'>
-              <CardContent className='p-0'>
-                <div className='flex items-start justify-between'>
-                  <div className='flex items-start space-x-3 flex-1'>
-                    <div className='p-2 bg-muted rounded-lg'>
-                      <CategoryIcon className='w-4 h-4 text-muted-foreground' />
-                    </div>
-                    
-                    <div className='flex-1'>
-                      <div className='flex items-center space-x-2 mb-1'>
-                        <h4 className='font-semibold text-foreground'>{resource.title}</h4>
-                        <Badge variant='secondary' className={getBadgeColors(resource.category)}>
-                          {resource.category}
-                        </Badge>
-                        {resource.difficulty && (
-                          <Badge variant='outline' className='text-xs'>
-                            {resource.difficulty}
-                          </Badge>
-                        )}
-                      </div>
-                      
-                      <p className='text-sm text-muted-foreground mb-2'>{resource.description}</p>
-                      
-                      {resource.author && (
-                        <p className='text-xs text-muted-foreground'>by {resource.author}</p>
-                      )}
-                    </div>
-                  </div>
-                  
-                  {resource.url && (
-                    <Button variant='ghost' size='sm' asChild>
-                      <a 
-                        href={resource.url} 
-                        target='_blank' 
-                        rel='noopener noreferrer'
-                        title={`Open ${resource.title} in new tab`}
-                      >
-                        <ExternalLink className='w-4 h-4' />
-                        <span className='sr-only'>Open {resource.title} in new tab</span>
-                      </a>
-                    </Button>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          )
-        })}
-      </div>
+      <CardContent className='px-0 space-y-6'>
+        {/* Video Section - Centered on Top with smaller size */}
+        {videoResource && (
+          <div className='flex justify-center'>
+            <div className='w-full max-w-sm lg:max-w-xs'>
+              {/* Use real video resource directly since it's already MainResourceItem */}
+              <ResourceCard resource={videoResource as MainResourceItem} />
+            </div>
+          </div>
+        )}
+
+        {/* Document Resources  */}
+        {documentResources.length > 0 && (
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto'>
+            {documentResources.map((resource, index) => (
+              <div key={index} className='max-w-sm mx-auto md:mx-0'>
+                <ResourceCard resource={resource as MainResourceItem} />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Fallback if no resources */}
+        {!videoResource && documentResources.length === 0 && (
+          <div className='text-center py-8 text-muted-foreground'>
+            <BookOpen className='w-12 h-12 mx-auto mb-3 opacity-50' />
+            <p>No recommended resources available at this time.</p>
+          </div>
+        )}
+      </CardContent>
     </Card>
   )
 }

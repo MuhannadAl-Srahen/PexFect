@@ -1,8 +1,20 @@
-import { ArrowRight, Target, Clock, Zap } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Target, Clock, Users } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Link } from '@tanstack/react-router'
+import { useChallenges } from '@/services/challenges/hooks/useChallenges'
+import { getBadgeColors } from '@/services/Resources/utils/badgeColors'
+import type { ChallengeListItem } from '@/types'
+
+const DIFFICULTY_COLORS = {
+  Beginner:
+    'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-400',
+  Intermediate:
+    'bg-amber-100 text-amber-800 dark:bg-amber-900/20 dark:text-amber-400',
+  Advanced: 'bg-rose-100 text-rose-800 dark:bg-rose-900/20 dark:text-rose-400',
+} as const
+
+type DifficultyLevel = keyof typeof DIFFICULTY_COLORS
 
 interface NextChallengeProps {
   nextChallenge?: {
@@ -19,122 +31,110 @@ interface NextChallengeProps {
 }
 
 export function NextChallenge({ nextChallenge }: NextChallengeProps) {
-  if (!nextChallenge) return null
+  // Fetch real challenges data
+  const { data: challenges = [] } = useChallenges()
+  
+  // Use real challenge data or fallback to passed props
+  const challenge: ChallengeListItem | null = challenges[0] || null
 
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty.toLowerCase()) {
-      case 'beginner':
-        return 'bg-green-100 text-green-800 hover:bg-green-100'
-      case 'intermediate':
-        return 'bg-yellow-100 text-yellow-800 hover:bg-yellow-100'
-      case 'advanced':
-        return 'bg-red-100 text-red-800 hover:bg-red-100'
-      default:
-        return 'bg-gray-100 text-gray-800 hover:bg-gray-100'
-    }
+  if (!challenge && !nextChallenge) return null
+
+  const displayChallenge = challenge || {
+    id: nextChallenge!.id,
+    title: nextChallenge!.title,
+    difficulty: nextChallenge!.difficulty.charAt(0).toUpperCase() + nextChallenge!.difficulty.slice(1) as 'Beginner' | 'Intermediate' | 'Advanced',
+    tags: nextChallenge!.technologies,
+    description: nextChallenge!.description,
+    estimatedTime: nextChallenge!.estimatedTime || '2-3 hours',
+    submissions: 0,
+    image: undefined,
   }
 
-  const getDifficultyIcon = (difficulty: string) => {
-    switch (difficulty.toLowerCase()) {
-      case 'beginner':
-        return '🌱'
-      case 'intermediate':
-        return '⚡'
-      case 'advanced':
-        return '🚀'
-      default:
-        return '📝'
-    }
+  const getDifficultyColor = (difficulty: string) => {
+    const normalizedDifficulty = difficulty.charAt(0).toUpperCase() + difficulty.slice(1).toLowerCase()
+    return DIFFICULTY_COLORS[normalizedDifficulty as DifficultyLevel] || 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400'
   }
 
   return (
-    <Card className='p-6 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-blue-200 dark:border-blue-800'>
-      <div className='flex items-center justify-between mb-4'>
-        <div className='flex items-center'>
-          <Target className='w-5 h-5 text-blue-500 mr-2' />
-          <h3 className='text-xl font-bold text-foreground'>Recommended Next</h3>
-        </div>
-        <Button variant='outline' size='sm' asChild>
-          <Link to='/roadmap'>
-            View Full Roadmap
-            <ArrowRight className='w-4 h-4 ml-2' />
-          </Link>
-        </Button>
+    <Card className='p-4 md:p-6 bg-gradient-to-b from-primary/5 to-background border-primary/20'>
+      <div className='flex items-center mb-4'>
+        <Target className='w-5 h-5 text-primary mr-2' />
+        <h3 className='text-lg md:text-xl font-bold text-foreground'>Recommended Next</h3>
       </div>
       
       <p className='text-sm text-muted-foreground mb-4'>Based on your current skills</p>
 
-      <Card className='bg-white dark:bg-gray-800 border border-blue-100 dark:border-gray-700'>
-        <CardContent className='p-4'>
-          {/* Challenge Header */}
-          <div className='flex items-start justify-between mb-3'>
-            <div className='flex-1'>
-              <div className='flex items-center space-x-2 mb-2'>
-                <span className='text-lg'>{getDifficultyIcon(nextChallenge.difficulty)}</span>
-                <h4 className='text-lg font-bold text-foreground'>{nextChallenge.title}</h4>
-              </div>
-              
-              <div className='flex items-center space-x-2 mb-3'>
-                <Badge variant='secondary' className={getDifficultyColor(nextChallenge.difficulty)}>
-                  {nextChallenge.difficulty}
-                </Badge>
-                {nextChallenge.estimatedTime && (
-                  <Badge variant='outline' className='text-xs'>
-                    <Clock className='w-3 h-3 mr-1' />
-                    {nextChallenge.estimatedTime}
-                  </Badge>
-                )}
-              </div>
+      {/* Challenge Card with same style as challenges page */}
+      <Link to='/challenges/$id' params={{ id: displayChallenge.id }} className='block group'>
+        <Card className='flex flex-col overflow-hidden rounded-xl border border-border/50 bg-card shadow-md transition-transform duration-300 hover:shadow-xl hover:scale-[1.02] py-0 gap-0'>
+          {/* Image Section */}
+          <div className='relative aspect-[16/9] overflow-hidden rounded-t-xl'>
+            <img
+              src={displayChallenge.image || '/src/assets/images/girl.jpg'}
+              alt={displayChallenge.title}
+              className='h-full w-full object-cover transition-transform duration-500 group-hover:scale-105'
+            />
+
+            {/* Overlay */}
+            <div className='absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent' />
+
+            {/* Difficulty Badge */}
+            <div className='absolute top-4 left-4'>
+              <Badge
+                className={`${getDifficultyColor(displayChallenge.difficulty)} px-2.5 py-0.5 text-xs border-0 font-semibold shadow-sm`}
+              >
+                {displayChallenge.difficulty}
+              </Badge>
             </div>
           </div>
-          
-          {/* Technologies */}
-          <div className='flex flex-wrap gap-1 mb-3'>
-            {nextChallenge.technologies.map((tech: string, index: number) => (
-              <Badge key={index} variant='outline' className='text-xs bg-blue-50 text-blue-700 border-blue-200'>
-                {tech}
-              </Badge>
-            ))}
-          </div>
-          
-          {/* Description */}
-          <p className='text-sm text-muted-foreground mb-4'>{nextChallenge.description}</p>
-          
-          {/* Roadmap Path Info */}
-          {nextChallenge.roadmapPath && (
-            <div className='bg-muted/50 rounded-lg p-3 mb-4 border border-border/50'>
-              <div className='flex items-center space-x-2 mb-1'>
-                <Zap className='w-4 h-4 text-blue-500' />
-                <span className='text-sm font-medium text-foreground'>
-                  Part of {nextChallenge.roadmapPath} Learning Path
-                </span>
-              </div>
-              {nextChallenge.challengeCount && (
-                <p className='text-xs text-muted-foreground'>
-                  {nextChallenge.challengeCount} challenges • {nextChallenge.progressPercentage || 0}% completed
-                </p>
+
+          {/* Content Section */}
+          <CardContent className='flex flex-col flex-1 px-6 py-5'>
+            <h4 className='mb-3 line-clamp-1 text-lg font-semibold tracking-tight text-card-foreground group-hover:text-primary transition-colors'>
+              {displayChallenge.title}
+            </h4>
+
+            <p className='mb-4 line-clamp-2 text-sm text-muted-foreground'>
+              {displayChallenge.description}
+            </p>
+
+            {/* Tags */}
+            <div className='mb-4 flex flex-wrap gap-2'>
+              {displayChallenge.tags.slice(0, 3).map((tag, index) => (
+                <Badge
+                  key={index}
+                  variant='outline'
+                  className={`rounded-full px-2.5 py-0.5 text-xs font-medium border ${getBadgeColors(tag)}`}
+                >
+                  {tag}
+                </Badge>
+              ))}
+              {displayChallenge.tags.length > 3 && (
+                <Badge
+                  variant='outline'
+                  className='rounded-full px-2.5 py-0.5 text-xs font-medium border-border bg-muted/50 text-muted-foreground'
+                >
+                  +{displayChallenge.tags.length - 3}
+                </Badge>
               )}
             </div>
-          )}
-          
-          {/* Action Buttons */}
-          <div className='flex space-x-2'>
-            <Button className='flex-1 bg-blue-600 hover:bg-blue-700 text-white' asChild>
-              <Link to='/challenges' search={{ filter: nextChallenge.id }}>
-                Start Challenge
-                <ArrowRight className='w-4 h-4 ml-2' />
-              </Link>
-            </Button>
-            {nextChallenge.roadmapPath && (
-              <Button variant='outline' size='sm' asChild>
-                <Link to='/roadmap'>
-                  View Path
-                </Link>
-              </Button>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+
+            {/* Stats */}
+            <div className='mt-auto flex items-center justify-between border-t border-border/50 pt-4 text-sm text-muted-foreground'>
+              <div className='flex items-center gap-1.5'>
+                <Users className='h-4 w-4 text-green-400/80' />
+                <span className='font-medium'>
+                  {displayChallenge.submissions?.toLocaleString() || '0'}
+                </span>
+              </div>
+              <div className='flex items-center gap-1.5'>
+                <Clock className='h-4 w-4 text-primary/80' />
+                <span className='font-medium'>{displayChallenge.estimatedTime}</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </Link>
     </Card>
   )
 }

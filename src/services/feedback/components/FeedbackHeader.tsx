@@ -20,22 +20,19 @@ export function FeedbackHeader({
     return 'text-red-500'
   }
 
-  return (
-    <div className='bg-card border border-border rounded-2xl p-6 mb-6'>
-      {/* Page Title */}
-      <div className='text-center mb-8'>
-        <h1 className='text-3xl font-bold text-foreground mb-2'>Feedback page</h1>
-      </div>
+    return (
+    <div className=' bg-card border border-border rounded-2xl p-6 mb-6'>
+    
 
       {/* Challenge Info */}
       <div className='flex items-start justify-between mb-6'>
         <div>
           <h2 className='text-2xl font-bold text-foreground mb-2'>{challengeTitle}</h2>
           <p className='text-muted-foreground'>
-            Responsive Navigation Bar • Submitted on {submissionDate}
+            Submitted on {submissionDate}
           </p>
         </div>
-        
+
         {/* Score Section */}
         <div className='text-right'>
           <div className={`text-4xl font-bold ${getScoreColor(overallScore)} mb-1`}>
