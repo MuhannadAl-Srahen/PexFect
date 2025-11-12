@@ -1,0 +1,5 @@
+export { FeedbackHeader } from './FeedbackHeader'
+export { DesignComparison } from './DesignComparison'
+export { ExpandableSection } from './ExpandableSection'
+export { RecommendedResources } from './RecommendedResources'
+export { NextChallenge } from './NextChallenge'

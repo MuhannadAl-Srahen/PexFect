@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Eye, Code2, CheckCircle, Info, Circle, Github,Lightbulb  } from 'lucide-react'
+import { Eye, Code2, CheckCircle, AlertTriangle, Info, Circle } from 'lucide-react'
 import { PageLayout } from '@/layouts'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import {
@@ -10,23 +11,13 @@ import {
   mockFeedbackData
 } from '@/services/feedback'
 
-export const Route = createFileRoute('/feedback/$submissionId')({
+export const Route = createFileRoute('/feedback/')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const { submissionId } = Route.useParams()
-  
-  // TODO: In the future, fetch actual feedback data based on submissionId
-  // For now, we'll use mock data and show the submissionId
-  const feedbackData = {
-    ...mockFeedbackData,
-    submissionId: submissionId
-  }
-
-  // Extract challengeId from the feedback data or from the mock data
-  // In a real application, this would come from the submission data
-  const challengeId = feedbackData.challengeId || mockFeedbackData.nextChallenge?.id || 'interactive-dashboard-widget'
+  // Using mock data - will be replaced with actual data from Supabase/AI
+  const feedbackData = mockFeedbackData
 
   const getScoreColor = (score: number) => {
     if (score >= 90) return 'text-green-500'
@@ -35,15 +26,32 @@ function RouteComponent() {
     return 'text-red-500'
   }
 
+  const getScoreBadgeColor = (score: number) => {
+    if (score >= 90) return 'bg-green-100 text-green-800 hover:bg-green-100'
+    if (score >= 80) return 'bg-blue-100 text-blue-800 hover:bg-blue-100'
+    if (score >= 70) return 'bg-yellow-100 text-yellow-800 hover:bg-yellow-100'
+    return 'bg-red-100 text-red-800 hover:bg-red-100'
+  }
+
   return (
     <PageLayout maxWidth='6xl'>
       <div className='space-y-8'>
+        {/* Top Badge - User Result */}
+        <div className='flex justify-start'>
+          <Badge 
+            variant='secondary' 
+            className={`text-lg px-4 py-2 ${getScoreBadgeColor(feedbackData.overallScore)}`}
+          >
+            {feedbackData.overallScore} {feedbackData.scoreLevel}
+          </Badge>
+        </div>
+
         {/* Header Section */}
         <Card className='p-6'>
           <div className='flex items-start justify-between'>
             {/* Left Side - Title, Date, Buttons */}
             <div className='flex-1'>
-              <h1 className='text-3xl font-bold text-primary mb-2'>
+              <h1 className='text-3xl font-bold text-foreground mb-2'>
                 {feedbackData.challengeTitle}
               </h1>
               <p className='text-muted-foreground mb-6'>
@@ -52,26 +60,24 @@ function RouteComponent() {
               
               {/* Action Buttons */}
               <div className='flex space-x-4'>
-               
-                  <Button className='bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 transition-all duration-300'>
-                    <Eye className='w-4 h-4' />
-                    Live Preview
-                  </Button>
-
-                  <Button variant='outline' className='hover:bg-primary/10 hover:text-primary hover:scale-105 transition-all duration-300'>
-                    <Github className='w-4 h-4' />
-                    View Code
-                  </Button>
+                <Button className='bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 transition-all duration-300'>
+                  <Eye className='w-4 h-4 mr-2' />
+                  Live Preview
+                </Button>
+                <Button variant='outline'  className='hover:bg-primary/10 hover:text-primary hover:scale-105 transition-all duration-300'>
+                  <Code2 className='w-4 h-4 mr-2' />
+                  View Code
+                </Button>
               </div>
             </div>
             
             {/* Right Side - Overall Score */}
-           <div className='text-center md:text-right md:self-start md:pr-4'>
-  <div className={`text-5xl md:text-6xl font-bold ${getScoreColor(feedbackData.overallScore)} mb-1 md:mb-2`}>
-    {feedbackData.overallScore}
-  </div>
-  <div className='text-xs md:text-sm text-muted-foreground mb-1'>Overall Score</div>
-</div>
+            <div className='text-center'>
+              <div className={`text-6xl font-bold ${getScoreColor(feedbackData.overallScore)} mb-2`}>
+                {feedbackData.overallScore}
+              </div>
+              <div className='text-muted-foreground text-sm'>Overall Score</div>
+            </div>
           </div>
         </Card>
 
@@ -104,7 +110,7 @@ function RouteComponent() {
             {/* Areas for Improvement */}
             <div>
               <div className='flex items-center mb-4'>
-                <Lightbulb  className='w-5 h-5 text-orange-400 mr-2' />
+                <AlertTriangle className='w-5 h-5 text-orange-400 mr-2' />
                 <h3 className='text-lg font-semibold text-orange-400 dark:text-orange-400'>
                   Areas for Improvement
                 </h3>
@@ -112,7 +118,7 @@ function RouteComponent() {
               <ul className='space-y-3'>
                 {feedbackData.bestPractices.areasForImprovement.map((item: string, index: number) => (
                   <li key={index} className='text-sm text-muted-foreground flex items-start'>
-                    <Lightbulb  className='w-4 h-4 text-orange-400 mr-2 mt-0.5 flex-shrink-0' />
+                    <AlertTriangle className='w-4 h-4 text-orange-400 mr-2 mt-0.5 flex-shrink-0' />
                     {item}
                   </li>
                 ))}
@@ -160,32 +166,32 @@ function RouteComponent() {
           {/* Best Practices */}
           <ExpandableSection 
             section={feedbackData.bestPractices}
-            icon={<CheckCircle className='w-5 h-5 text-blue-500' />}
+            icon={<CheckCircle className='w-5 h-5' />}
           />
           
           {/* Code Formatting */}
           <ExpandableSection 
             section={feedbackData.codeFormatting}
-            icon={<Code2 className='w-5 h-5 text-blue-500' />}
+            icon={<Code2 className='w-5 h-5' />}
           />
           
           {/* Functionality */}
           <ExpandableSection 
             section={feedbackData.functionality}
-            icon={<Circle className='w-5 h-5 text-blue-500' />}
+            icon={<Circle className='w-5 h-5' />}
           />
           
           {/* Accessibility */}
           <ExpandableSection 
             section={feedbackData.accessibility}
-            icon={<Info className='w-5 h-5 text-blue-500' />}
+            icon={<Info className='w-5 h-5' />}
           />
         </div>
 
         {/* Bottom Section - Recommendations */}
         <div className='grid lg:grid-cols-2 gap-8'>
           {/* Recommended Learning Resources */}
-          <RecommendedResources challengeId={challengeId} />
+          <RecommendedResources resources={feedbackData.recommendedResources} />
           
           {/* Next Challenge */}
           <NextChallenge nextChallenge={feedbackData.nextChallenge} />

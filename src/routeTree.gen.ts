@@ -16,6 +16,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as SettingsIndexRouteImport } from './routes/settings/index'
 import { Route as RoadmapIndexRouteImport } from './routes/roadmap/index'
 import { Route as ResourcesIndexRouteImport } from './routes/resources/index'
+import { Route as FeedbackIndexRouteImport } from './routes/feedback/index'
 import { Route as ChallengesIndexRouteImport } from './routes/challenges/index'
 import { Route as FeedbackSubmissionIdRouteImport } from './routes/feedback/$submissionId'
 import { Route as RoadmapPathIdIndexRouteImport } from './routes/roadmap/$pathId/index'
@@ -56,6 +57,11 @@ const ResourcesIndexRoute = ResourcesIndexRouteImport.update({
   path: '/resources/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FeedbackIndexRoute = FeedbackIndexRouteImport.update({
+  id: '/feedback/',
+  path: '/feedback/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ChallengesIndexRoute = ChallengesIndexRouteImport.update({
   id: '/challenges/',
   path: '/challenges/',
@@ -84,6 +90,7 @@ export interface FileRoutesByFullPath {
   '/progress': typeof ProgressRoute
   '/feedback/$submissionId': typeof FeedbackSubmissionIdRoute
   '/challenges': typeof ChallengesIndexRoute
+  '/feedback': typeof FeedbackIndexRoute
   '/resources': typeof ResourcesIndexRoute
   '/roadmap': typeof RoadmapIndexRoute
   '/settings': typeof SettingsIndexRoute
@@ -97,6 +104,7 @@ export interface FileRoutesByTo {
   '/progress': typeof ProgressRoute
   '/feedback/$submissionId': typeof FeedbackSubmissionIdRoute
   '/challenges': typeof ChallengesIndexRoute
+  '/feedback': typeof FeedbackIndexRoute
   '/resources': typeof ResourcesIndexRoute
   '/roadmap': typeof RoadmapIndexRoute
   '/settings': typeof SettingsIndexRoute
@@ -111,6 +119,7 @@ export interface FileRoutesById {
   '/progress': typeof ProgressRoute
   '/feedback/$submissionId': typeof FeedbackSubmissionIdRoute
   '/challenges/': typeof ChallengesIndexRoute
+  '/feedback/': typeof FeedbackIndexRoute
   '/resources/': typeof ResourcesIndexRoute
   '/roadmap/': typeof RoadmapIndexRoute
   '/settings/': typeof SettingsIndexRoute
@@ -126,6 +135,7 @@ export interface FileRouteTypes {
     | '/progress'
     | '/feedback/$submissionId'
     | '/challenges'
+    | '/feedback'
     | '/resources'
     | '/roadmap'
     | '/settings'
@@ -139,6 +149,7 @@ export interface FileRouteTypes {
     | '/progress'
     | '/feedback/$submissionId'
     | '/challenges'
+    | '/feedback'
     | '/resources'
     | '/roadmap'
     | '/settings'
@@ -152,6 +163,7 @@ export interface FileRouteTypes {
     | '/progress'
     | '/feedback/$submissionId'
     | '/challenges/'
+    | '/feedback/'
     | '/resources/'
     | '/roadmap/'
     | '/settings/'
@@ -166,6 +178,7 @@ export interface RootRouteChildren {
   ProgressRoute: typeof ProgressRoute
   FeedbackSubmissionIdRoute: typeof FeedbackSubmissionIdRoute
   ChallengesIndexRoute: typeof ChallengesIndexRoute
+  FeedbackIndexRoute: typeof FeedbackIndexRoute
   ResourcesIndexRoute: typeof ResourcesIndexRoute
   RoadmapIndexRoute: typeof RoadmapIndexRoute
   SettingsIndexRoute: typeof SettingsIndexRoute
@@ -224,6 +237,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResourcesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/feedback/': {
+      id: '/feedback/'
+      path: '/feedback'
+      fullPath: '/feedback'
+      preLoaderRoute: typeof FeedbackIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/challenges/': {
       id: '/challenges/'
       path: '/challenges'
@@ -262,6 +282,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProgressRoute: ProgressRoute,
   FeedbackSubmissionIdRoute: FeedbackSubmissionIdRoute,
   ChallengesIndexRoute: ChallengesIndexRoute,
+  FeedbackIndexRoute: FeedbackIndexRoute,
   ResourcesIndexRoute: ResourcesIndexRoute,
   RoadmapIndexRoute: RoadmapIndexRoute,
   SettingsIndexRoute: SettingsIndexRoute,
