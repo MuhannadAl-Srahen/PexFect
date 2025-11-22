@@ -16,7 +16,7 @@ export function DesignComparison({
         Side-by-side comparison with the original design
       </p>
 
-      <div className='grid md:grid-cols-2 gap-6 mb-6'>
+      <div className='grid md:grid-cols-2 gap-6 mb-4'>
         {/* Original Design */}
         <div>
           <h4 className='font-semibold text-foreground mb-3'>Original Design</h4>
@@ -44,7 +44,7 @@ export function DesignComparison({
         {/* Your Result */}
         <div>
           <h4 className='font-semibold text-foreground mb-3'>Your Result</h4>
-          <div className='bg-muted rounded-lg aspect-video flex items-center justify-center border-2 border-dashed border-border'>
+          <div className='bg-muted rounded-lg aspect-video flex items-center justify-center border-2 border-dashed border-border '>
             {userResult ? (
               <img 
                 src={userResult} 

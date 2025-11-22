@@ -13,7 +13,7 @@ export function RecommendedResources() {
   const videoResource = videoResources[0] || null
   
   // Use real documentation from resources page  
-  const documentResources = documentationResources.slice(0, 2)
+  const documentResources = documentationResources.slice(0, 1)
 
   return (
     <Card className='p-6'>
@@ -25,7 +25,7 @@ export function RecommendedResources() {
       </CardHeader>
       
       <CardContent className='px-0 space-y-6'>
-        {/* Video Section - Centered on Top with smaller size */}
+        {/* Video Section */}
         {videoResource && (
           <div className='flex justify-center'>
             <div className='w-full max-w-sm lg:max-w-xs'>
@@ -35,14 +35,12 @@ export function RecommendedResources() {
           </div>
         )}
 
-        {/* Document Resources  */}
+        {/* Document Resource */}
         {documentResources.length > 0 && (
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto'>
-            {documentResources.map((resource, index) => (
-              <div key={index} className='max-w-sm mx-auto md:mx-0'>
-                <ResourceCard resource={resource as MainResourceItem} />
-              </div>
-            ))}
+          <div className='flex justify-center'>
+            <div className='max-w-sm'>
+              <ResourceCard resource={documentResources[0] as MainResourceItem} />
+            </div>
           </div>
         )}
 

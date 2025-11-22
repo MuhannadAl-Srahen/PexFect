@@ -1,3 +1,49 @@
+// Database types (Supabase schema)
+export interface Feedback {
+  id: string
+  submission_id: string
+  overall_score: number
+  overall_rating: string
+  overall_analysis_description: string
+  best_practices: string[]
+  code_formatting: string[]
+  functionality: string[]
+  accessibility: string[]
+  overall_good_practices: string[]
+  improvement_advices: string[]
+  recommended_next_challenge?: string
+  live_preview?: string
+  view_code?: string
+  created_at: string
+  updated_at?: string
+}
+
+export interface ChallengeSubmission {
+  id: string
+  challenge_title: string
+  submitted_at: string
+  user_id: string
+  challenge_id: string
+}
+
+// Request/Response types
+export interface CreateFeedbackRequest {
+  submission_id: string
+  overall_score: number
+  overall_rating: string
+  overall_analysis_description: string
+  best_practices: string[]
+  code_formatting: string[]
+  functionality: string[]
+  accessibility: string[]
+  overall_good_practices: string[]
+  improvement_advices: string[]
+  recommended_next_challenge?: string
+  live_preview?: string
+  view_code?: string
+}
+
+// Frontend data structures (UI-focused)
 export interface FeedbackData {
   submissionId: string
   challengeTitle: string
@@ -5,6 +51,12 @@ export interface FeedbackData {
   overallScore: number
   scoreLevel: 'Poor' | 'Fair' | 'Good' | 'Excellent'
   overallAnalysis: string
+  
+  // Submission URLs for user's work
+  submissionUrls?: {
+    livePreview?: string
+    viewCode?: string
+  }
   
   // Design Comparison
   designComparison: {
@@ -33,6 +85,7 @@ export interface FeedbackSection {
   whatYouDidWell: string[]
   areasForImprovement: string[]
   specificFeedback: string[]
+  criticalIssues?: string[] // Added for ExpandableSection compatibility
   isExpanded?: boolean
 }
 

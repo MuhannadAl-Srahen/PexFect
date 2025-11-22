@@ -2,8 +2,8 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react'
-import { profileStats } from '@/services/profile/data'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { supabase } from '@/lib/supabaseClient'
 import '@/types/profile.css'
 
 interface Submission {
@@ -15,90 +15,199 @@ interface Submission {
   score: number
 }
 
-const mockSubmissions: Submission[] = [
-  {
-    id: '1',
-    name: 'E-commerce Product Card',
-    level: 'Beginner',
-    technologies: ['HTML', 'CSS', 'JavaScript'],
-    date: '2 hours ago',
-    score: 95,
-  },
-  {
-    id: '2',
-    name: 'Todo App with Local Storage',
-    level: 'Intermediate',
-    technologies: ['React', 'TypeScript', 'LocalStorage'],
-    date: '1 day ago',
-    score: 88,
-  },
-  {
-    id: '3',
-    name: 'Responsive Navigation Bar',
-    level: 'Beginner',
-    technologies: ['HTML', 'CSS', 'Flexbox'],
-    date: '3 days ago',
-    score: 92,
-  },
-  {
-    id: '4',
-    name: 'Weather Dashboard',
-    level: 'Advanced',
-    technologies: ['React', 'API', 'Charts'],
-    date: '1 week ago',
-    score: 87,
-  },
-  {
-    id: '5',
-    name: 'Social Media Feed',
-    level: 'Advanced',
-    technologies: ['Vue', 'CSS', 'JavaScript'],
-    date: '1 week ago',
-    score: 93,
-  },
-  {
-    id: '6',
-    name: 'Chat Application',
-    level: 'Advanced',
-    technologies: ['React', 'Socket.io', 'Node.js'],
-    date: '2 weeks ago',
-    score: 91,
-  },
-  {
-    id: '7',
-    name: 'Image Gallery',
-    level: 'Intermediate',
-    technologies: ['HTML', 'CSS', 'JavaScript'],
-    date: '2 weeks ago',
-    score: 85,
-  },
-  {
-    id: '8',
-    name: 'Shopping Cart',
-    level: 'Intermediate',
-    technologies: ['React', 'Redux', 'TypeScript'],
-    date: '3 weeks ago',
-    score: 89,
-  },
-  {
-    id: '9',
-    name: 'Recipe Finder',
-    level: 'Beginner',
-    technologies: ['HTML', 'CSS', 'API'],
-    date: '3 weeks ago',
-    score: 94,
-  },
-]
+interface UserStats {
+  completed_challenges: number
+  average_score: number
+  current_streak: number
+}
+
+interface RecentActivityItem {
+  submission_id: string
+  challenge_id: string
+  submitted_at: string
+}
 
 const ITEMS_PER_PAGE = 3
 
 export function RecentActivityTab() {
   const [currentPage, setCurrentPage] = useState(1)
+  const [submissions, setSubmissions] = useState<Submission[]>([])
+  const [stats, setStats] = useState<UserStats>({
+    completed_challenges: 0,
+    average_score: 0,
+    current_streak: 0
+  })
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchUserProgressData()
+  }, [])
+
+  const fetchUserProgressData = async () => {
+    try {
+      setLoading(true)
+      const { data: { user } } = await supabase.auth.getUser()
+      
+      if (!user) {
+        setSubmissions([])
+        return
+      }
+
+      console.log('[RecentActivityTab] Fetching data for user:', user.id)
+
+      // Fetch user_progress table for stats and recent_activity
+      const { data: progressData, error: progressError } = await supabase
+        .from('user_progress')
+        .select('completed_challenges, average_score, current_streak, recent_activity')
+        .eq('profile_id', user.id)
+        .single()
+
+      if (progressError) {
+        console.error('[RecentActivityTab] Error fetching user_progress:', progressError)
+        // Continue with empty stats
+      } else if (progressData) {
+        // Cast progressData to proper type
+        const progress = progressData as {
+          completed_challenges: number
+          average_score: number
+          current_streak: number
+          recent_activity: unknown
+        }
+
+        // Update stats
+        setStats({
+          completed_challenges: progress.completed_challenges || 0,
+          average_score: progress.average_score || 0,
+          current_streak: progress.current_streak || 0
+        })
+
+        console.log('[RecentActivityTab] Stats:', {
+          completed: progress.completed_challenges,
+          avgScore: progress.average_score,
+          streak: progress.current_streak
+        })
+
+        // Process recent_activity array
+        const recentActivity = progress.recent_activity as RecentActivityItem[] | null
+        
+        if (recentActivity && Array.isArray(recentActivity) && recentActivity.length > 0) {
+          console.log('[RecentActivityTab] Found', recentActivity.length, 'recent activities')
+          
+          // Get submission IDs and challenge IDs
+          const submissionIds = recentActivity.map(item => item.submission_id)
+          const challengeIds = [...new Set(recentActivity.map(item => item.challenge_id))]
+
+          // Fetch submissions with feedback
+          const { data: submissionsData, error: submissionsError } = await supabase
+            .from('challenge_submissions')
+            .select('id, challenge_title, challenge_feedback (overall_score)')
+            .in('id', submissionIds)
+
+          if (submissionsError) {
+            console.error('[RecentActivityTab] Error fetching submissions:', submissionsError)
+          }
+
+          // Fetch challenges
+          const { data: challengesData, error: challengesError } = await supabase
+            .from('challenges')
+            .select('id, difficulty, category')
+            .in('id', challengeIds)
+
+          if (challengesError) {
+            console.error('[RecentActivityTab] Error fetching challenges:', challengesError)
+          }
+
+          // Create lookup maps
+          interface SubmissionData {
+            id: string
+            challenge_title: string
+            challenge_feedback?: Array<{ overall_score: number }>
+          }
+
+          interface ChallengeData {
+            id: string
+            difficulty: string
+            category: string
+          }
+
+          const submissionMap = new Map(
+            (submissionsData || []).map((s: SubmissionData) => [
+              s.id,
+              {
+                challenge_title: s.challenge_title,
+                overall_score: s.challenge_feedback?.[0]?.overall_score || 0
+              }
+            ])
+          )
+
+          const challengeMap = new Map(
+            (challengesData || []).map((c: ChallengeData) => [
+              c.id,
+              {
+                difficulty: c.difficulty,
+                category: c.category
+              }
+            ])
+          )
+
+          // Transform to UI format
+          const transformedSubmissions: Submission[] = recentActivity
+            .map((activity) => {
+              const submission = submissionMap.get(activity.submission_id)
+              const challenge = challengeMap.get(activity.challenge_id)
+
+              if (!submission) return null
+
+              const difficulty = challenge?.difficulty || 'Beginner'
+              const category = challenge?.category || 'General'
+              
+              // Calculate relative time
+              const submittedDate = new Date(activity.submitted_at)
+              const now = new Date()
+              const diffTime = Math.abs(now.getTime() - submittedDate.getTime())
+              const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
+              const diffHours = Math.floor(diffTime / (1000 * 60 * 60))
+              const diffMinutes = Math.floor(diffTime / (1000 * 60))
+              
+              let relativeTime = ''
+              if (diffDays > 0) {
+                relativeTime = diffDays === 1 ? '1 day ago' : `${diffDays} days ago`
+              } else if (diffHours > 0) {
+                relativeTime = diffHours === 1 ? '1 hour ago' : `${diffHours} hours ago`
+              } else {
+                relativeTime = diffMinutes === 0 ? 'Just now' : diffMinutes === 1 ? '1 minute ago' : `${diffMinutes} minutes ago`
+              }
+
+              return {
+                id: activity.submission_id,
+                name: submission.challenge_title,
+                level: (difficulty.charAt(0).toUpperCase() + difficulty.slice(1)) as 'Beginner' | 'Intermediate' | 'Advanced',
+                technologies: [category],
+                date: relativeTime,
+                score: Math.round(submission.overall_score)
+              }
+            })
+            .filter((item): item is Submission => item !== null)
+
+          console.log('[RecentActivityTab] Transformed', transformedSubmissions.length, 'submissions')
+          setSubmissions(transformedSubmissions)
+        } else {
+          console.log('[RecentActivityTab] No recent_activity found')
+          setSubmissions([])
+        }
+      }
+    } catch (error) {
+      console.error('[RecentActivityTab] Error in fetchUserProgressData:', error)
+      setSubmissions([])
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
   const endIndex = startIndex + ITEMS_PER_PAGE
-  const currentSubmissions = mockSubmissions.slice(startIndex, endIndex)
-  const totalPages = Math.ceil(mockSubmissions.length / ITEMS_PER_PAGE)
+  const currentSubmissions = submissions.slice(startIndex, endIndex)
+  const totalPages = Math.ceil(submissions.length / ITEMS_PER_PAGE)
 
   const goToNextPage = () => {
     if (currentPage < totalPages) {
@@ -140,7 +249,7 @@ export function RecentActivityTab() {
                 </div>
               </div>
               <div className='profile-text-blue text-lg sm:text-xl md:text-2xl font-bold'>
-                {profileStats.challengesCompleted}
+                {stats.completed_challenges}
               </div>
               <div className='profile-text-blue-muted text-xs sm:text-sm mt-1'>
                 Completed
@@ -161,7 +270,7 @@ export function RecentActivityTab() {
                 </svg>
               </div>
               <div className='profile-text-yellow text-lg sm:text-xl md:text-2xl font-bold'>
-                {profileStats.averageRating}%
+                {Math.round(stats.average_score)}%
               </div>
               <div className='profile-text-yellow-muted text-xs sm:text-sm mt-1'>
                 Avg Score
@@ -186,7 +295,7 @@ export function RecentActivityTab() {
                 </svg>
               </div>
               <div className='profile-text-green text-lg sm:text-xl md:text-2xl font-bold'>
-                {profileStats.currentStreak}
+                {stats.current_streak}
               </div>
               <div className='profile-text-green-muted text-xs sm:text-sm mt-1'>
                 Day Streak
@@ -215,7 +324,19 @@ export function RecentActivityTab() {
         </div>
 
         <div className='divide-y divide-border'>
-          {currentSubmissions.map((submission) => (
+          {loading ? (
+            <div className='p-8 text-center'>
+              <div className='animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4'></div>
+              <p className='text-muted-foreground'>Loading your submissions...</p>
+            </div>
+          ) : submissions.length === 0 ? (
+            <div className='p-8 text-center'>
+              <CheckCircle className='w-12 h-12 text-muted-foreground/50 mx-auto mb-4' />
+              <p className='text-muted-foreground'>No submissions yet</p>
+              <p className='text-sm text-muted-foreground mt-2'>Start solving challenges to see your activity here!</p>
+            </div>
+          ) : (
+            currentSubmissions.map((submission) => (
             <div
               key={submission.id}
               className='p-4 relative overflow-hidden transition-all duration-300 hover:bg-muted/50 cursor-pointer group'
@@ -273,17 +394,18 @@ export function RecentActivityTab() {
                 </div>
               </div>
             </div>
-          ))}
+          ))
+          )}
         </div>
 
         {/* Pagination Controls */}
-        {totalPages > 1 && (
+        {!loading && totalPages > 1 && (
           <div className='p-4 border-t border-border bg-muted/10'>
             <div className='flex items-center justify-between'>
               <div className='text-sm text-muted-foreground'>
                 Showing {startIndex + 1}-
-                {Math.min(endIndex, mockSubmissions.length)} of{' '}
-                {mockSubmissions.length} submissions
+                {Math.min(endIndex, submissions.length)} of{' '}
+                {submissions.length} submissions
               </div>
               <div className='flex items-center gap-2'>
                 <Button

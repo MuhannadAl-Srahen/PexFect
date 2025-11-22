@@ -1,9 +1,10 @@
+// Types
 export * from './types'
-export { mockFeedbackData } from './data.ts'
+// Components
 export { 
-  FeedbackHeader,
   DesignComparison,
   ExpandableSection,
   RecommendedResources,
   NextChallenge as NextChallengeComponent
 } from './components'
+
